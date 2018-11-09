@@ -1,0 +1,27 @@
+<mat-toolbar color="accent">
+  <button
+    type="button"
+    aria-label="Toggle sidenav"
+    mat-icon-button
+    (click)="drawer.toggle()"
+   >
+    <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+  </button>
+  <span>Stormwater Manager</span>
+  <!-- <button mat-button *ngIf="!loggedIn" (click)="logInClicked()">Login</button>
+  <button mat-button *ngIf="loggedIn" (click)="logOutClicked()">Logout</button> -->
+
+</mat-toolbar>
+<mat-sidenav-container class="sidenav-container dark-theme">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+      [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="!(isHandset$ | async)">
+      
+    <app-tabs></app-tabs>
+  </mat-sidenav>
+  <mat-sidenav-content>
+
+    <app-map></app-map>
+  </mat-sidenav-content>
+</mat-sidenav-container>

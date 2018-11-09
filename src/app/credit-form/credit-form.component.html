@@ -1,0 +1,69 @@
+<form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+
+      <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput #ControlledAcreage placeholder="Controlled Acreaged" type="number" formControlName="ControlledAcreage">
+            </mat-form-field>
+          </div>
+          <div class="col">
+              <mat-form-field class="full-width">
+                <input matInput #ControlledSurface placeholder="Controlled Surface" type="number" formControlName="ControlledSurface">
+              </mat-form-field>
+            </div>          
+        </div>
+        <div class="row">
+            <div class="col">
+                <mat-form-field class="full-width">
+                  <mat-select placeholder="Upstream Code" formControlName="UpstreamCode">
+                    <mat-option *ngFor="let uCode of uCodes" [value]="uCode.code">
+                      {{ uCode.name }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="form.controls['UpstreamCode'].hasError('required')">
+                      Upstream Code is <strong>required</strong>
+                  </mat-error>
+                </mat-form-field>
+              </div>          
+              <div class="col">
+                  <mat-form-field class="full-width">
+                    <mat-select placeholder="On Site Code" formControlName="OnSiteCode">
+                      <mat-option *ngFor="let oCode of oCodes" [value]="oCode.code">
+                        {{ oCode.name }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.controls['OnSiteCode'].hasError('required')">
+                        Onsite Code is <strong>required</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>                    
+        </div>
+        <div class="row">
+            <div class="col">
+              <mat-form-field class="full-width">
+                <input matInput #NpdesPercentage placeholder="NPDES Percentage" type="number" formControlName="NpdesPercentage">
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col">
+                <mat-form-field class="full-width">
+                  <input matInput [matDatepicker]="ApprovalDate" placeholder="Approval Date" [formControl]="approvalDate" name="ApprovalDate">
+                  <mat-datepicker-toggle matSuffix [for]="ApprovalDate"></mat-datepicker-toggle>
+                  <mat-datepicker #ApprovalDate></mat-datepicker>              
+                </mat-form-field>
+              </div>
+              <div class="col">
+                  <mat-form-field class="full-width">
+                    <input matInput [matDatepicker]="InceptionDate" placeholder="Inception Date" [formControl]="inceptionDate" name="InceptionDate">
+                    <mat-datepicker-toggle matSuffix [for]="InceptionDate"></mat-datepicker-toggle>
+                    <mat-datepicker #InceptionDate></mat-datepicker>              
+                  </mat-form-field>
+                </div>          
+            </div>      
+            <div class="row">
+                <div class="col">     
+                  <button mat-raised-button color="primary" type="submit">Submit</button>
+                </div>          
+              </div>   
+</form>

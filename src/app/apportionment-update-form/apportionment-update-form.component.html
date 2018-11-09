@@ -1,0 +1,32 @@
+<mat-list role="list" *ngIf="ccbAccount">
+    <mat-list-item role="listitem">CCB Premise: {{ccbAccount.premId}}</mat-list-item>
+    <mat-list-item role="listitem">CCB Account: {{ccbAccount.acctId}}</mat-list-item>
+    <mat-list-item role="listitem">Address: {{ccbAccount.address}}</mat-list-item>
+    <mat-list-item role="listitem">Entity: {{ccbAccount.entityName}}</mat-list-item>
+</mat-list>
+<form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+    <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <input matInput #Parcent placeholder="Percent" type="number" formControlName="Parcent">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+          <div class="col">
+            <mat-form-field class="full-width">
+              <input matInput [matDatepicker]="ExpirationDate" placeholder="Expiration Date" [formControl]="expirationDate" name="ExpirationDate">
+              <mat-datepicker-toggle matSuffix [for]="ExpirationDate"></mat-datepicker-toggle>
+              <mat-datepicker #ExpirationDate></mat-datepicker>              
+            </mat-form-field>
+          </div>
+        </div>     
+        <div class="row">
+            <div class="col">     
+              <button mat-raised-button color="primary" type="submit" [disabled]="checkInvalid()">Submit</button>
+            </div>          
+            <div class="col">     
+                <button mat-raised-button color="warn" (click)="delete()" *ngIf="mode === 'update'">Delete</button>
+              </div>               
+          </div>   
+</form>

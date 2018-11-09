@@ -1,0 +1,49 @@
+<div>
+  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort matSortActive="OBJECTID" matSortDirection="asc" aria-label="Apportionments">
+    <!-- OBJECTID Column -->
+    <ng-container matColumnDef="OBJECTID">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+      <td mat-cell *matCellDef="let row">{{row.OBJECTID}}</td>
+    </ng-container>
+
+    <!-- PremiseId Column -->
+    <ng-container matColumnDef="PremiseId">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>PremiseId</th>
+      <td mat-cell *matCellDef="let row">{{row.PremiseId}}</td>
+    </ng-container>
+    <!-- Address Column -->
+    <ng-container matColumnDef="Address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+      <td mat-cell *matCellDef="let row">{{row.Address}}</td>
+    </ng-container>
+
+    <!-- Parcent Column -->
+    <ng-container matColumnDef="Parcent">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Percent</th>
+      <td mat-cell *matCellDef="let row">{{row.Parcent | percent}}</td>
+    </ng-container>
+
+    <!-- Sfeu Column -->
+    <ng-container matColumnDef="Sfeu">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Sfeu</th>
+      <td mat-cell *matCellDef="let row">{{row.Sfeu | number}}</td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="Impervious">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Impervious</th>
+      <td mat-cell *matCellDef="let row">{{row.Impervious | number}}</td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="rowClicked(row)"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource.data.length"
+      [pageIndex]="0"
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100, 250]">
+  </mat-paginator>
+</div>

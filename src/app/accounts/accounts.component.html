@@ -1,0 +1,119 @@
+<mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header class="dark-theme">
+      <mat-panel-title>
+        Accounts
+      </mat-panel-title>
+
+    </mat-expansion-panel-header>
+    <div class="row">
+      <div class="col">
+        <div class="row">
+          Account ID
+        </div>
+        <div class="row">
+            {{account.AccountId}}
+        </div>        
+      </div>
+      <div class="col">
+          <div class="row">
+            CSA ID
+          </div>
+          <div class="row">
+              {{account.CSA_ID}}
+          </div>        
+      </div>           
+      <div class="col">
+          <div class="row">
+            Premise ID
+          </div>
+          <div class="row">
+              {{account.PremiseId}}
+          </div>        
+      </div>     
+    </div>
+    <mat-divider></mat-divider>
+
+    <div class="row">
+        <div class="col">
+          <div class="row">
+            Status
+          </div>
+          <div class="row">
+              {{getDomain(account.Status, 'Status', 1)}}
+          </div>        
+        </div>
+        <div class="col">
+            <div class="row">
+              SFEU
+            </div>
+            <div class="row">
+                {{account.Sfeu}}
+            </div>        
+        </div>           
+        <div class="col">
+            <div class="row">
+              Use Class
+            </div>
+            <div class="row">
+                {{getDomain(account.UseClass, 'UseClass', 1)}}            </div>        
+        </div>     
+      </div>   
+      <mat-divider></mat-divider>
+
+      <div class="row">
+          <div class="col">
+            <div class="row">
+              Billing Tier
+            </div>
+            <div class="row">
+                {{account.BillingTier}}
+            </div>        
+          </div>
+          <div class="col" *ngIf="parcel">
+              <div class="row">
+                Parcel Address
+              </div>
+              <div class="row">
+                  {{parcel.SiteAddress}}
+              </div>        
+          </div>           
+          <div class="col" *ngIf="parcel">
+              <div class="row">
+                  Owner
+              </div>
+              <div class="row">
+                  {{parcel.Owner}}
+              </div>        
+          </div>     
+        </div>     
+        <mat-divider></mat-divider>
+
+        <div class="row">
+            <div class="col" *ngIf="parcel">
+              <div class="row">
+                Real Estate ID
+              </div>
+              <div class="row">
+                  {{parcel.RealEstateId}}
+              </div>        
+            </div>
+            <div class="col" *ngIf="parcel">
+                <div class="row">
+                  PIN #
+                </div>
+                <div class="row">
+                    {{parcel.PinNum}}
+                </div>        
+            </div>           
+            <div class="col" *ngIf="parcel">
+                <div class="row">
+                </div>
+                <div class="row">
+                </div>        
+            </div>     
+          </div>             
+    <!-- <app-account-table></app-account-table> -->
+    <mat-action-row>
+      <button mat-button (click)="update()">Update</button>
+    </mat-action-row>
+  </mat-expansion-panel>

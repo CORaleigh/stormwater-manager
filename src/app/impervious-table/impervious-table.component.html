@@ -1,0 +1,64 @@
+<div>
+  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort matSortActive="MethodDate" matSortDirection="desc" multiTemplateDataRows aria-label="Elements">
+    <!-- EffectiveDate Column -->
+    <ng-container matColumnDef="EffectiveDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Effective Date</th>
+      <td mat-cell *matCellDef="let row">{{row.EffectiveDate | date}}</td>
+    </ng-container>
+
+    <!-- TotalImpervious Column -->
+    <ng-container matColumnDef="TotalImpervious">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+      <td mat-cell *matCellDef="let row">{{row.TotalImpervious | number}}</td>
+    </ng-container>
+
+    <!-- MethodUsed Column -->
+    <ng-container matColumnDef="MethodUsed">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Method</th>
+      <td mat-cell *matCellDef="let row">{{row.MethodUsed}}</td>
+    </ng-container>
+
+    <!-- MethodDate Column -->
+    <ng-container matColumnDef="MethodDate">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Method Date</th>
+      <td mat-cell *matCellDef="let row">{{row.MethodDate| date}}</td>
+    </ng-container>
+    
+    <!-- Status Column -->
+    <ng-container matColumnDef="Status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+      <td mat-cell *matCellDef="let row">{{row.Status}}</td>
+    </ng-container>    
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail"
+            [@detailExpand]="row === expandedRow ? 'expanded' : 'collapsed'">
+          <div class="example-element-diagram">
+            <div class="example-element-position">Building: {{row.Building | number}} ft<sup>2</sup> </div>
+            <div class="example-element-position">Road: {{row.RoadTrailImpervious | number}} ft<sup>2</sup> </div>
+            <div class="example-element-position">Parking: {{row.ParkingImpervious | number}} ft<sup>2</sup> </div>
+            <div class="example-element-weight">Recreation: {{row.RecreationImpervious | number}} ft<sup>2</sup> </div>
+            <div class="example-element-position">Miscellaneous: {{row.MiscImpervious | number}} ft<sup>2</sup> </div>
+            <div class="example-element-name">Permitted: {{row.PermittedImpervious | number}} ft<sup>2</sup> </div>            
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+    class="example-expanded-row"
+    [class.example-expanded-row]="expandedRow === row"
+    (click)="rowClick(row)">    
+    ></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource.data.length"
+      [pageIndex]="0"
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100, 250]">
+  </mat-paginator>
+</div>

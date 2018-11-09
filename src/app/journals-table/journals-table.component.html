@@ -1,0 +1,29 @@
+<div>
+  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort matSortActive="created_date" matSortDirection="desc"  aria-label="Elements">
+    <!-- created_user Column -->
+    <ng-container matColumnDef="created_user">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>User</th>
+      <td mat-cell *matCellDef="let row">{{row.created_user}}</td>
+    </ng-container>
+
+    <!-- created_date Column -->
+    <ng-container matColumnDef="created_date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
+      <td mat-cell *matCellDef="let row">{{row.created_date | date}}</td>
+    </ng-container>
+    <!-- JournalEntry Column -->
+    <ng-container matColumnDef="JournalEntry">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Entry</th>
+      <td mat-cell *matCellDef="let row">{{row.JournalEntry}}</td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource.data.length"
+      [pageIndex]="0"
+      [pageSize]="10"
+      [pageSizeOptions]="[10, 25, 50, 100, 250]">
+  </mat-paginator>
+</div>

@@ -1,0 +1,13 @@
+<mat-expansion-panel [expanded]="apportionments.length > 0">
+    <mat-expansion-panel-header class="dark-theme">
+      <mat-panel-title>
+        Apportionments
+      </mat-panel-title>
+
+    </mat-expansion-panel-header>
+    <app-apportionment-form [apportionments]="apportionments"></app-apportionment-form>
+    <app-apportionments-table (apportionmentSelected)="apportionmentSelected($event)"></app-apportionments-table>
+    <mat-action-row>
+      <button mat-button (click)="apportion()" *ngIf="account.ApportionmentCode != 'NA' && account.ApportionmentUnits > 0 && apportionments.length < account.ApportionmentUnits">Apportion</button>
+    </mat-action-row>
+  </mat-expansion-panel>

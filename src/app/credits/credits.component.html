@@ -1,0 +1,13 @@
+<mat-expansion-panel [expanded]="credits.length > 0">
+    <mat-expansion-panel-header class="dark-theme">
+      <mat-panel-title>
+        Credits
+      </mat-panel-title>
+
+    </mat-expansion-panel-header>
+
+    <app-credits-table></app-credits-table>
+    <mat-action-row>
+      <button mat-button (click)="update()">Update</button>
+    </mat-action-row>
+  </mat-expansion-panel>

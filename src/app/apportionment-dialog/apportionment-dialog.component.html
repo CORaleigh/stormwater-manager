@@ -1,0 +1,14 @@
+<mat-horizontal-stepper #stepper linear="true">
+    <mat-step label="Select Account" state="phone" *ngIf="mode === 'add'" [completed]="ccbAccount">
+      <app-apportionment-search [account]="account" (ccbAccountSelected)="ccbAccountSelected($event)"></app-apportionment-search>
+    </mat-step>
+    <mat-step label="Submit" state="chat">
+      <app-apportionment-update-form [ccbAccount]="ccbAccount" [account]="account" (submitted)="submitted($event)" [apportionment]="apportionment" [mode]="mode" (ccbAccountSelected)="goToNextStep($event)" (deleted)="apportionmentDeleted($event)" [stepper]="stepper"></app-apportionment-update-form>
+      <div>
+        <button mat-button matStepperPrevious  *ngIf="mode === 'add'">Back</button>
+
+      </div>
+    </mat-step>
+
+
+  </mat-horizontal-stepper>

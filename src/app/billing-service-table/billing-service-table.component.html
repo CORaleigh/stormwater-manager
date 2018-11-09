@@ -1,0 +1,33 @@
+<div class="mat-elevation-z8">
+  <table mat-table class="full-width-table" [dataSource]="dataSource"  aria-label="Billing Service">
+    <!-- Id Column -->
+    <ng-container matColumnDef="spId">
+      <th mat-header-cell *matHeaderCellDef>Account</th>
+      <td mat-cell *matCellDef="let row">{{row.spId}}</td>
+    </ng-container>
+
+    <!-- spTyp Column -->
+    <ng-container matColumnDef="spTyp">
+      <th mat-header-cell *matHeaderCellDef>Type</th>
+      <td mat-cell *matCellDef="let row">{{row.spTyp}}</td>
+    </ng-container>
+    <!-- NaspStatusme Column -->
+    <ng-container matColumnDef="spStatus">
+        <th mat-header-cell *matHeaderCellDef>Service Status</th>
+        <td mat-cell *matCellDef="let row">{{row.spStatus}}</td>
+      </ng-container>
+    <!-- spSrcStatus Column -->
+    <ng-container matColumnDef="spSrcStatus">
+        <th mat-header-cell *matHeaderCellDef>Source Status</th>
+        <td mat-cell *matCellDef="let row">{{row.spSrcStatus}}</td>
+      </ng-container>
+    <!-- installed Column -->
+    <ng-container matColumnDef="installed">
+        <th mat-header-cell *matHeaderCellDef>Installed</th>
+        <td mat-cell *matCellDef="let row">{{row.installed}}</td>
+      </ng-container>            
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+</div>

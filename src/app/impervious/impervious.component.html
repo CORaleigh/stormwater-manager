@@ -1,0 +1,15 @@
+<mat-expansion-panel  expanded="true" >
+    <mat-expansion-panel-header class="dark-theme">
+      <mat-panel-title>
+        Impervious
+      </mat-panel-title>
+
+    </mat-expansion-panel-header>
+
+    <app-impervious-table></app-impervious-table>
+    <mat-action-row>
+      <button *ngIf="apportionments.length > 0" mat-button (click)="addPropertiesClicked()">Apportioned To</button>    
+      <button *ngIf="impervious.length > 0" mat-button (click)="updateClicked()">Update</button>
+      <button *ngIf="impervious.length === 0" mat-button (click)="updateClicked()">Add</button>    
+    </mat-action-row>
+  </mat-expansion-panel>

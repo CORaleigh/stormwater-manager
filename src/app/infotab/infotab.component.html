@@ -1,0 +1,10 @@
+<mat-accordion *ngIf="account"  class="example-headers-align" multi="true">
+<app-accounts></app-accounts>
+<app-impervious></app-impervious>
+<app-apportionments></app-apportionments>
+<app-credits></app-credits>
+<app-billing></app-billing>
+<app-journals></app-journals>
+<app-logs></app-logs>
+</mat-accordion>
+<span *ngIf="!account">No Account Selected</span>

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+  <app-impervious-update-form *ngIf="data.title === 'Update Impervious'" [impervious]="data.impervious" (submitted)="imperviousSubmitted($event)"></app-impervious-update-form>
+  <app-credit-form *ngIf="data.title === 'Update Credit'" [credit]="data.credit" (submitted)="creditSubmitted($event)" [mode]="data.mode"></app-credit-form>
+  <app-apportionment-dialog *ngIf="data.title === 'Apportion'" [mode]="data.mode" [apportionment]="data.apportionment" (close)="apportionmentClosed($event)"></app-apportionment-dialog>
+  <app-journal-form *ngIf="data.title === 'Add Journal Entry'"  (submitted)="journalSubmitted($event)"></app-journal-form>
+  <app-account-form *ngIf="data.title  === 'Update Account'" (submitted)="accountSubmitted($event)"></app-account-form>
+  <app-confirm-dialog *ngIf="data.title  === 'Confirm'" (confirmed)="confirmed($event)" [message]="data.message"></app-confirm-dialog>
+
+</div>
+  

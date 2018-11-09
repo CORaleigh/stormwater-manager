@@ -1,0 +1,87 @@
+<mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header class="dark-theme">
+      <mat-panel-title>
+        Billing
+      </mat-panel-title>
+
+    </mat-expansion-panel-header>
+    <div class="row" *ngIf="billingInfo">
+      <div class="col">
+        <div class="row">
+          Account ID
+        </div>
+        <div class="row">
+            {{billingInfo.acctId}}
+        </div>        
+      </div>
+      <div class="col">
+          <div class="row">
+            Premise ID
+          </div>
+          <div class="row">
+              {{billingInfo.premId}}
+          </div>        
+      </div>           
+      <div class="col">
+          <div class="row">
+            Billing Address
+          </div>
+          <div class="row">
+              {{billingInfo.address}}
+          </div>        
+      </div>     
+    </div>
+    <mat-divider></mat-divider>
+    <div class="row" *ngIf="billingInfo">
+        <div class="col">
+          <div class="row">
+            Customer
+          </div>
+          <div class="row">
+              {{billingInfo.entityName}}
+          </div>        
+        </div>
+        <div class="col">
+            <div class="row">
+              Bill ID
+            </div>
+            <div class="row">
+                {{billingInfo.lastBill.billId}}
+            </div>        
+        </div>           
+        <div class="col">
+            <div class="row">
+              Bill Date
+            </div>
+            <div class="row">
+                {{billingInfo.lastBill.completed}}
+            </div>        
+        </div>             
+      </div>
+      <mat-divider></mat-divider>
+
+      <div class="row" *ngIf="billingInfo">
+          <div class="col">
+              <div class="row">
+                Bill Amount
+              </div>
+              <div class="row">
+                  {{billingInfo.lastStormwaterBill.total | currency: 'USD':true:'1.0-0'}}
+              </div>        
+          </div>     
+          <div class="col">
+              <div class="row">
+              </div>
+              <div class="row">
+              </div>        
+          </div>    
+          <div class="col">
+              <div class="row">
+              </div>
+              <div class="row">
+              </div>        
+          </div>                        
+      </div>
+    <app-billing-service-table *ngIf="billingInfo" [services]="billingInfo.services"></app-billing-service-table>
+
+  </mat-expansion-panel>
