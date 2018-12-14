@@ -13,7 +13,15 @@ export class InfotabComponent implements OnInit {
   account:Account = null;
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
-      this.account = account;
+      if (account) {
+        this.account = account;
+        let el = document.getElementById('accountPanel');
+        if (el) {
+          el.scrollIntoView();
+
+        }
+      }
+
     });
   }
 
