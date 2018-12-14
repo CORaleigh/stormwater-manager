@@ -293,11 +293,13 @@ export class MapComponent implements OnInit {
         this.stormwater.accountList.next([]);
         this.stormwater.accountListSelected.next(null);
       } else {
+        
         this.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], geometry: event.result.feature.geometry, outSpatialReference: mapView.spatialReference}).then(result => {
           if (result.features) {
             if (result.features.length > 0) {
               let parcel:Parcel = result.features[0].attributes as Parcel;
               this.stormwater.parcel.next(parcel);                    
+              this.getAccount(RelationshipQuery, result.features[0], QueryTask, esriRequest);
               let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
               mapView.goTo(parcelExtent);
               this.highlightSingleParcel(result.features[0]);
