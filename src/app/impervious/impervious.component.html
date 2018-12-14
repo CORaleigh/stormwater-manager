@@ -8,7 +8,7 @@
 
     <app-impervious-table></app-impervious-table>
     <mat-action-row>
-      <button *ngIf="apportionments.length > 0" mat-button (click)="addPropertiesClicked()">Apportioned To</button>    
+      <button *ngIf="apportionedTo.length > 0" mat-button (click)="apportionedToClicked()">Apportioned To</button>    
       <button *ngIf="impervious.length > 0" mat-button (click)="updateClicked()">Update</button>
       <button *ngIf="impervious.length === 0" mat-button (click)="updateClicked()">Add</button>    
     </mat-action-row>

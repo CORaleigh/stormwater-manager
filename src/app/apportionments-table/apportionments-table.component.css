@@ -1,3 +1,32 @@
 .full-width-table {
   width: 100%;
 }
+.mat-column-OBJECTID {
+  flex: 0 0 17% !important;
+  min-width: 50px !important;
+}
+
+.mat-column-PremiseId {
+  flex: 0 0 17% !important;
+  min-width: 100px !important;
+}
+
+.mat-column-Address {
+  flex: 0 0 17% !important;
+  min-width: 100px !important;
+}
+
+.mat-column-Parcent {
+  flex: 0 0 17% !important;
+  min-width: 50px !important;
+}
+
+.mat-column-Sfeu {
+  flex: 0 0 17% !important;
+  min-width: 50px !important;
+}
+
+.mat-column-Impervious {
+  flex: 0 0 17% !important;
+  min-width: 50px !important;
+}

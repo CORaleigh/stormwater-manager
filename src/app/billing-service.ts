@@ -16,7 +16,7 @@ export class BillingService {
   }  
   
     public getBillingData(account:Account):Promise<BillingInfo> {
-    
+
     let promise = new Promise<BillingInfo>((resolve, reject) => {
       if (account.PremiseId) {
         let info = new BillingInfo();
@@ -48,7 +48,7 @@ export class BillingService {
 
         });
       } else {
-        reject('No Premise ID')
+        resolve(null);
       }
     });
     return promise;

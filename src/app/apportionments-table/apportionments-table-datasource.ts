@@ -22,7 +22,7 @@ export interface ApportionmentsTableItem {
  */
 export class ApportionmentsTableDataSource extends DataSource<ApportionmentsTableItem> {
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private data: ApportionmentsTableItem[]) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, public data: ApportionmentsTableItem[]) {
     super();
   }
 

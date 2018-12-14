@@ -15,6 +15,7 @@ export class ApportionmentsComponent implements OnInit {
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }
   account:Account = null;
   apportionments:Apportionment[] = [];
+
   ngOnInit() {
     this.stormwater.apportionments.subscribe(apportionments => {
       this.apportionments = apportionments;

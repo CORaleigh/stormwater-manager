@@ -15,7 +15,7 @@ export class BillingServiceTableComponent implements OnInit {
 
   @Input('services') 
   set services(services:BillService[]) {
-    debugger
+    
     this.dataSource = new BillingServiceTableDataSource(services);
   };
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

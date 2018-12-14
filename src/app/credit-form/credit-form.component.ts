@@ -66,7 +66,7 @@ export class CreditFormComponent implements OnInit {
 
       this.form.get('ApprovalDate').setValue(this.credit.ApprovalDate);
       this.form.get('InceptionDate').setValue(this.credit.InceptionDate);
-      debugger
+      
 
 
     }

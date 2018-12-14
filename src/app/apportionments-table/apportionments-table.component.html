@@ -20,13 +20,13 @@
     <!-- Parcent Column -->
     <ng-container matColumnDef="Parcent">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Percent</th>
-      <td mat-cell *matCellDef="let row">{{row.Parcent | percent}}</td>
+      <td mat-cell *matCellDef="let row">{{row.Parcent | percent:'.2'}}</td>
     </ng-container>
 
     <!-- Sfeu Column -->
     <ng-container matColumnDef="Sfeu">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Sfeu</th>
-      <td mat-cell *matCellDef="let row">{{row.Sfeu | number}}</td>
+      <td mat-cell *matCellDef="let row">{{row.Sfeu | number:'1.1-1'}}</td>
     </ng-container>
 
     <!-- Name Column -->

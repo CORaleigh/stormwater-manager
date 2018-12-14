@@ -40,7 +40,7 @@ export class ApportionmentDialogComponent implements OnInit {
   }
 
   goToNextStep() {
-    debugger
+    
     //this.stepper.next()
     window.setTimeout(() => {this.stepper.next();}, 100)
     

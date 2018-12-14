@@ -1,3 +1,20 @@
 .full-width-table {
   width: 100%;
 }
+
+.mat-column-created_user {
+  flex: 0 0 33% !important;
+  min-width: 50px !important;
+  word-break: break-all;
+}
+
+.mat-column-created_date{
+  flex: 0 0 33% !important;
+  min-width: 70px !important;
+
+}
+
+.mat-column-JournalEntry{
+  flex: 0 0 33% !important;
+  min-width: 100px !important;
+}

@@ -1,0 +1,54 @@
+<div class="mat-elevation-z8">
+  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort matSortActive="SiteAddress" matSortDirection="asc" aria-label="Elements">
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox color="primary" (click)="$event.stopPropagation();rowClicked(row);"
+                      (change)="$event ? selection.toggle(row) : null"
+                      [checked]="selection.isSelected(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+    <!-- SiteAddress Column -->
+    <ng-container matColumnDef="SiteAddress">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+      <td mat-cell *matCellDef="let row">{{row.SiteAddress}}</td>
+    </ng-container>
+    <!-- RealEstateId Column -->
+    <ng-container matColumnDef="RealEstateId">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>REID</th>
+      <td mat-cell *matCellDef="let row">{{row.RealEstateId}}</td>
+    </ng-container>
+    <!-- AccountId Column -->
+    <ng-container matColumnDef="AccountId">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Account Id</th>
+      <td mat-cell *matCellDef="let row">{{row.AccountId}}</td>
+    </ng-container>
+    <!-- Status Column -->
+    <ng-container matColumnDef="Status">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+      <td mat-cell *matCellDef="let row">{{row.Status}}</td>
+    </ng-container>
+    <!-- TotalImpervious Column -->
+    <ng-container matColumnDef="TotalImpervious">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Impervious</th>
+      <td mat-cell *matCellDef="let row">{{row.TotalImpervious}}</td>
+    </ng-container>
+    <!-- ApportionmentUnits Column -->
+    <ng-container matColumnDef="ApportionmentUnits">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Apportionment Units</th>
+      <td mat-cell *matCellDef="let row">{{row.ApportionmentUnits}}</td>
+    </ng-container>            
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row);rowClicked(row);"></tr>
+  </table>
+
+  <mat-paginator #paginator
+      [length]="dataSource.data.length"
+      [pageIndex]="0"
+      [pageSize]="50"
+      [pageSizeOptions]="[25, 50, 100, 250]">
+  </mat-paginator>
+</div>

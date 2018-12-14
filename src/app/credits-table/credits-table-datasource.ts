@@ -16,7 +16,7 @@ export interface CreditsTableItem {
  */
 export class CreditsTableDataSource extends DataSource<CreditsTableItem> {
 
-  constructor(private data:CreditsTableItem[]) {
+  constructor(public data:CreditsTableItem[]) {
     super();
   }
 

@@ -18,7 +18,7 @@ export interface LogsTableItem {
  */
 export class LogsTableDataSource extends DataSource<LogsTableItem> {
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private data: LogsTableItem[]) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, public data: LogsTableItem[]) {
     super();
   }
 

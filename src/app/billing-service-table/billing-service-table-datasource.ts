@@ -20,7 +20,7 @@ export interface BillingServiceTableItem {
  */
 export class BillingServiceTableDataSource extends DataSource<BillingServiceTableItem> {
 
-  constructor(private data: BillingServiceTableItem[]) {
+  constructor(public data: BillingServiceTableItem[]) {
     super();
   }
 

@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationComponent } from './navigation/navigation.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatExpansionModule, MatFormFieldModule, MatTableModule, MatPaginatorModule, MatSortModule, MatDialogModule, MatInputModule, MatSelectModule, MatRadioModule, MatCardModule, MatDatepickerModule, MatNativeDateModule, MatStepperModule, MatAutocompleteModule, MatDividerModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatTabsModule, MatExpansionModule, MatFormFieldModule, MatTableModule, MatPaginatorModule, MatSortModule, MatDialogModule, MatInputModule, MatSelectModule, MatRadioModule, MatCardModule, MatDatepickerModule, MatNativeDateModule, MatStepperModule, MatAutocompleteModule, MatDividerModule, MatCheckboxModule } from '@angular/material';
 import { TabsComponent } from './tabs/tabs.component';
 import { InfotabComponent } from './infotab/infotab.component';
 import { SearchtabComponent } from './searchtab/searchtab.component';
@@ -39,6 +39,7 @@ import { BillingComponent } from './billing/billing.component';
 import { BillingServiceTableComponent } from './billing-service-table/billing-service-table.component';
 import { AccountFormComponent } from './account-form/account-form.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { AccountListTableComponent } from './account-list-table/account-list-table.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     BillingComponent,
     BillingServiceTableComponent,
     AccountFormComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    AccountListTableComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +103,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
     HttpClientModule,
     MatStepperModule,
     MatAutocompleteModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule
   ],
   entryComponents: [DialogComponent],
   providers: [],

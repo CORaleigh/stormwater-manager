@@ -1,3 +1,17 @@
 .full-width-table {
   width: 100%;
 }
+.mat-column-created_user {
+  flex: 0 0 33% !important;
+  min-width: 100px !important;
+}
+
+.mat-column-created_date{
+  flex: 0 0 33% !important;
+  min-width: 70px !important;
+}
+
+.mat-column-Entry{
+  flex: 0 0 33% !important;
+  min-width: 150px !important;
+}

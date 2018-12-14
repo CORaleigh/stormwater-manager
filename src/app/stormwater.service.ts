@@ -35,6 +35,11 @@ export class StormwaterService {
   parcel:BehaviorSubject<Parcel> = new BehaviorSubject<Parcel>(null);
   fieldInfo:FieldInfo;
   streetName:BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  accountSearch:BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  accountList:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  accountListSelected:BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  apportionedToClicked:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  
   applyEdits(id:number, adds?:Array<Feature>, updates?:Array<Feature>, deletes?:Array<number>): Observable<any> {
     
     let params:HttpParams = new HttpParams()
@@ -57,9 +62,25 @@ export class StormwaterService {
     
     return this.http.post<any>(url + id + '/query', params, httpOptions);    
   }
+
+  checkApportioned(id:number, premiseId:string): Observable<any> {
+    let params:HttpParams = new HttpParams()
+    .set('where', "PremiseId = '" + premiseId + "'")
+    .set('outFields', '*')
+    .set('returnGeometry', 'false')
+    .set('f', 'json')
+    .set('token', this.credentials.getValue().token);
+    
+    return this.http.post<any>(url + id + '/query', params, httpOptions);    
+  }
   searchByStreet(input:string):Observable<any> { 
     let token:string = this.credentials.getValue().token;
     let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/0/query?f=json&outFields=FullStreetName&returnDistinctValues=true&returnGeometry=false&orderByFields=FullStreetName&&token="+ token + "&where=FullStreetName like '" + input.toUpperCase() +"%25'";
+    return this.http.get<any>(url);
+  }
+  searchAccounts(input:string, field:string):Observable<any> { 
+    let token:string = this.credentials.getValue().token;
+    let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/1/query?f=json&outFields="+field+"&returnDistinctValues=true&returnGeometry=false&orderByFields="+field+"&token="+ token + "&where="+field+" like '" + input.toUpperCase() +"%25'";
     return this.http.get<any>(url);
   }
 

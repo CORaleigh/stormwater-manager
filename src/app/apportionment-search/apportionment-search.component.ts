@@ -40,7 +40,7 @@ export class ApportionmentSearchComponent implements OnInit {
     this.billing.getBillingInfo(event.option.value.prem_id).subscribe(data => {
       if (data.Results.length > 0) {
         this.ccbAccount = data.Results[0];
-        debugger
+        
         this.ccbAccountSelected.emit(this.ccbAccount);
       }
     });

@@ -114,6 +114,7 @@
           </div>             
     <!-- <app-account-table></app-account-table> -->
     <mat-action-row>
+      <button mat-button (click)="sendToCCB()" *ngIf="account.CCBUpdateFlag === 'N'">Send To CCB</button>
       <button mat-button (click)="update()">Update</button>
     </mat-action-row>
   </mat-expansion-panel>

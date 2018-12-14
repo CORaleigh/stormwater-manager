@@ -21,7 +21,7 @@ export class AccountsComponent implements OnInit {
       this.account = account;
     });
     this.stormwater.parcel.subscribe(parcel => {
-      debugger
+      
       this.parcel = parcel;
     });
   }
@@ -39,7 +39,18 @@ export class AccountsComponent implements OnInit {
             this.stormwater.account.next(account);
           }
         }
-      })
+      });
+    });
+  }
+
+  sendToCCB() {
+    this.account.CCBUpdateFlag = 'Y';
+    this.stormwater.applyEdits(1, null, [new Feature(this.account)], null).subscribe(result => {
+      if (result.updateResults.length > 0) {
+        if (result.updateResults[0].success) {
+          this.stormwater.account.next(this.account);
+        }
+      }
     });
   }
 

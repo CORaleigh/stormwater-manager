@@ -17,17 +17,29 @@ export class ImperviousComponent implements OnInit {
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }
   impervious: Impervious[] = [];
   account: Account = null;
-  apportionments: Apportionment[] = [];
+  apportionedTo:Feature[] = [];
   ngOnInit() {
     this.stormwater.impervious.subscribe(impervious => {
       this.impervious = impervious;
     });
     this.stormwater.account.subscribe(account => {
       this.account = account;
+      this.apportionedTo = [];
+      if (this.account.PremiseId) {
+        this.stormwater.checkApportioned(4,this.account.PremiseId.toString()).subscribe(result => {
+          if (result.features.length > 0) {
+              this.apportionedTo = result.features;
+
+            }
+        });
+      }      
     });    
-    this.stormwater.apportionments.subscribe(apportionments => {
-      this.apportionments = apportionments;
-    });    
+
+
+  }
+
+  apportionedToClicked() {
+    this.stormwater.apportionedToClicked.next(this.apportionedTo);
   }
 
   updateClicked() {
@@ -36,11 +48,13 @@ export class ImperviousComponent implements OnInit {
       return (item as Impervious).Status === 'C';
     });
     if (i.length > 0) {
-      data = i[0];
+      let record = i[0];
+      data = new Impervious(record.AccountId, record.TotalImpervious, record.Building,record.MiscImpervious,record.OtherImpervious, record.RecreationImpervious, record.RoadTrailImpervious, record.ParkingImpervious, record.PermittedImpervious, record.MethodUsed, record.MethodDate, record.EffectiveDate, record.Status, record.ImperviousId, record.created_user, record.created_date, record.last_edited_user, record.last_edited_date, record.OBJECTID, record.GlobalId);
+    
     }
     if (!data) {
       data = new Impervious(this.account.AccountId, 0,0,0,0,0,0,0,0);
-    }
+    } 
     data.MethodUsed = 'MANUAL';
     data.Status = 'P';
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Impervious', impervious: data}});

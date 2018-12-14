@@ -19,7 +19,7 @@ export interface JournalsTableItem {
  */
 export class JournalsTableDataSource extends DataSource<JournalsTableItem> {
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private data: JournalsTableItem[]) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, public data: JournalsTableItem[]) {
     super();
   }
 
