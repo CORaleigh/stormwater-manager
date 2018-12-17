@@ -15,11 +15,6 @@ export class InfotabComponent implements OnInit {
     this.stormwater.account.subscribe(account => {
       if (account) {
         this.account = account;
-        let el = document.getElementById('accountPanel');
-        if (el) {
-          el.scrollIntoView();
-
-        }
       }
 
     });

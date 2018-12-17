@@ -81,7 +81,7 @@ export class MapComponent implements OnInit {
 
   async initializeMap() {
     try {
-      const [WebMap, MapView, Search, FeatureLayerSearchSource, RelationshipQuery, FeatureLayer, QueryTask, esriRequest, GroupLayer, Expand, LayerList, ActionButton, Collection, GraphicsLayer, config] = await loadModules([
+      const [WebMap, MapView, Search, FeatureLayerSearchSource, RelationshipQuery, FeatureLayer, QueryTask, esriRequest, GroupLayer, Expand, LayerList, ActionButton, Collection, GraphicsLayer, BasemapGallery, config] = await loadModules([
         'esri/WebMap',
         'esri/views/MapView',
         'esri/widgets/Search',
@@ -96,6 +96,7 @@ export class MapComponent implements OnInit {
         'esri/support/actions/ActionButton',
         'esri/core/Collection',
         'esri/layers/GraphicsLayer',
+        'esri/widgets/BasemapGallery',
         'esri/config'
       ]);
 
@@ -125,6 +126,7 @@ export class MapComponent implements OnInit {
         this._parcelGraphics = new GraphicsLayer();
         this._mapView.map.add(this._parcelGraphics);
         this.configLayerList(LayerList, GroupLayer, Expand, this._mapView);
+        this.configBasemapGallery(BasemapGallery, Expand, this._mapView);        
         this.setupSearch(this._mapView, Search, FeatureLayerSearchSource, RelationshipQuery, QueryTask, esriRequest);
         this.configPopupActions(this._mapView, ActionButton, Collection, RelationshipQuery, QueryTask, esriRequest);
 
@@ -220,6 +222,12 @@ export class MapComponent implements OnInit {
     mapView.map.layers.add(imperviousGrp, 2);
     let list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
     let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-layers', view: mapView, content: list.container});
+    mapView.ui.add(expand, 'top-right');
+  }
+
+  configBasemapGallery(BasemapGallery:any, Expand: any, mapView: esri.MapView) {
+    let gallery: esri.BasemapGallery = new BasemapGallery({view: mapView, container: document.createElement('div')});
+    let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-basemap', view: mapView, content: gallery.container});
     mapView.ui.add(expand, 'top-right');
   }
 
@@ -412,33 +420,36 @@ export class MapComponent implements OnInit {
   }
 
   getByAccountId(id: any[], field:string, QueryTask: any, esriRequest: any, mapView: esri.MapView) {
-    let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/1');
-    queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
-      if (result.features) {
-        if (result.features.length === 1) {
-          let account = result.features[0].attributes
-          this.stormwater.account.next(account);
-          this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-          this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
-        } else {
-          let oids = [];
-          result.features.forEach(feature => {
-            oids.push(feature.attributes.OBJECTID);
-          })
-          this.queryParcelsRelatedToAccounts(this.parcels.url+'/1', 0, QueryTask, oids).then(parcelResult => {
-            let data = [];
-            result.features.forEach(f => {
-              if (parcelResult[f.attributes.OBJECTID]) {
-                let feature = parcelResult[f.attributes.OBJECTID].features[0]
-                data.push({SiteAddress: feature.attributes.SiteAddress, RealEstateId: feature.attributes.RealEstateId, AccountId: f.attributes.AccountId, Status: f.attributes.Status, TotalImpervious: f.attributes.TotalImpervious, ApportionmentUnits: f.attributes.ApportionmentUnits, geometry: feature.geometry});
-              }
-            });
-            this.stormwater.accountList.next(data);
-          });
-        }
+    if (this.parcels) {
 
-      }
-    });
+      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/1');
+      queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
+        if (result.features) {
+          if (result.features.length === 1) {
+            let account = result.features[0].attributes
+            this.stormwater.account.next(account);
+            this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+            this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
+          } else {
+            let oids = [];
+            result.features.forEach(feature => {
+              oids.push(feature.attributes.OBJECTID);
+            })
+            this.queryParcelsRelatedToAccounts(this.parcels.url+'/1', 0, QueryTask, oids).then(parcelResult => {
+              let data = [];
+              result.features.forEach(f => {
+                if (parcelResult[f.attributes.OBJECTID]) {
+                  let feature = parcelResult[f.attributes.OBJECTID].features[0]
+                  data.push({SiteAddress: feature.attributes.SiteAddress, RealEstateId: feature.attributes.RealEstateId, AccountId: f.attributes.AccountId, Status: f.attributes.Status, TotalImpervious: f.attributes.TotalImpervious, ApportionmentUnits: f.attributes.ApportionmentUnits, geometry: feature.geometry});
+                }
+              });
+              this.stormwater.accountList.next(data);
+            });
+          }
+  
+        }
+      });
+    }
   }
 
   zoomToParcels(features, mapView) {
@@ -541,6 +552,9 @@ export class MapComponent implements OnInit {
       } else if (selection.premiseId) {
         field = 'PremiseId';
         value = selection.premiseId;
+      } else if (selection.csaId) {
+        field = 'CSA_ID';
+        value = selection.csaId;
       }
       loadModules([
         'esri/tasks/QueryTask',

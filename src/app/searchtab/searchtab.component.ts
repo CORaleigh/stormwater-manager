@@ -19,10 +19,11 @@ export class SearchtabComponent implements OnInit {
   streetChanges:Subscription;
   accountChanges:Subscription;
   premiseChanges:Subscription;
+  csaChanges:Subscription;  
   searchForm: FormGroup = this.fb.group({searchGroup: ''});
   control: FormControl = new FormControl();
   accountList: any[] = [];
-  searchGroups:SearchGroup[] = [{type:'Streets', values:[]},{type:'Account IDs', values:[]},{type:'Premise IDs', values:[]}];
+  searchGroups:SearchGroup[] = [{type:'Streets', values:[]},{type:'Account IDs', values:[]},{type:'Premise IDs', values:[]},{type:'CSA IDs', values:[]}];
   displayFn(user?: any): string | undefined {
     let value = undefined;
     if (user) {
@@ -32,6 +33,8 @@ export class SearchtabComponent implements OnInit {
         value = user.AccountId;
       } else if (user.PremiseId) {
         value = user.PremiseId;
+      } else if (user.CSA_ID) {
+        value = user.CSA_ID;
       }
     }
 
@@ -44,14 +47,15 @@ export class SearchtabComponent implements OnInit {
   }
 
   accountSelected($event) {
+    debugger
     if ($event.option.value.FullStreetName) {
       this.stormwater.streetName.next($event.option.value.FullStreetName);
     } else if ($event.option.value.AccountId) {
       this.stormwater.accountSearch.next({accountId: $event.option.value.AccountId});
-
     } else if ($event.option.value.PremiseId) {
       this.stormwater.accountSearch.next({premiseId: $event.option.value.PremiseId});
-
+    } else if ($event.option.value.CSA_ID) {
+      this.stormwater.accountSearch.next({csaId: $event.option.value.CSA_ID});
     }
   }  
   inputChanged(event) {
@@ -60,10 +64,12 @@ export class SearchtabComponent implements OnInit {
         this.streetChanges.unsubscribe();
         this.accountChanges.unsubscribe();
         this.premiseChanges.unsubscribe();
+        this.csaChanges.unsubscribe();
       }
       this.searchGroups[0].values=[];
       this.searchGroups[1].values=[];
-      this.searchGroups[2].values=[];              
+      this.searchGroups[2].values=[];           
+      this.searchGroups[3].values=[];               
       this.streetChanges = this.stormwater.searchByStreet(event.target.value).subscribe(result => {
         let values = [];
         if (result.features.length > 0) {
@@ -91,6 +97,15 @@ export class SearchtabComponent implements OnInit {
         }
         this.searchGroups[2].values = values;
       });
+      this.csaChanges = this.stormwater.searchAccounts(event.target.value, 'CSA_ID').subscribe(result => {
+        let values = [];
+        if (result.features.length > 0) {
+          result.features.forEach(feature => {
+              values.push(feature.attributes);
+          });
+        }
+        this.searchGroups[3].values = values;
+      });      
     }
   }
 }

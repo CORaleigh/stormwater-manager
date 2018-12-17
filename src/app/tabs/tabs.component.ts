@@ -17,6 +17,13 @@ export class TabsComponent implements OnInit {
     this.stormwater.account.subscribe(account => {
       if (account) {
         this.selectedIndex = 0;
+
+        let el = document.getElementById('tabGroup');
+        if (el) {
+          el.scrollIntoView();
+
+        }
+     
       }
     });
     this.stormwater.accountList.subscribe(result => {
