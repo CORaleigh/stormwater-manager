@@ -22,7 +22,7 @@ export class JournalsComponent implements OnInit {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Add Journal Entry'}});
     ref.afterClosed().subscribe((data:Journal) => {
       let feature = new Feature(data, null);
-      this.stormwater.applyEdits(5, [feature], null, null).subscribe(result => {
+      this.stormwater.applyEdits(6, [feature], null, null).subscribe(result => {
         if(result.addResults) {
           if (result.addResults[0].success) {
             this.stormwater.getByObjectId(5, result.addResults[0].objectId).subscribe(result => {

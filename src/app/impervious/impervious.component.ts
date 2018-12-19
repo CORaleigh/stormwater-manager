@@ -26,7 +26,7 @@ export class ImperviousComponent implements OnInit {
       this.account = account;
       this.apportionedTo = [];
       if (this.account.PremiseId) {
-        this.stormwater.checkApportioned(4,this.account.PremiseId.toString()).subscribe(result => {
+        this.stormwater.checkApportioned(5,this.account.PremiseId.toString()).subscribe(result => {
           if (result.features.length > 0) {
               this.apportionedTo = result.features;
 
@@ -60,7 +60,7 @@ export class ImperviousComponent implements OnInit {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Impervious', impervious: data}});
     ref.afterClosed().subscribe((data:Impervious) => {
       let feature = new Feature(data, null);
-      this.stormwater.applyEdits(2, [feature], null, null).subscribe(result => {
+      this.stormwater.applyEdits(3, [feature], null, null).subscribe(result => {
         if(result.addResults) {
           if (result.addResults[0].success) {
             data.TotalImpervious = data.Building + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;

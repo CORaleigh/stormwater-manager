@@ -33,7 +33,7 @@ export class AccountsComponent implements OnInit {
   update() {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Account'}});
     ref.afterClosed().subscribe((account:Account) => {
-      this.stormwater.applyEdits(1, null, [new Feature(account)], null).subscribe(result => {
+      this.stormwater.applyEdits(2, null, [new Feature(account)], null).subscribe(result => {
         if (result.updateResults.length > 0) {
           if (result.updateResults[0].success) {
             this.stormwater.account.next(account);
@@ -45,7 +45,7 @@ export class AccountsComponent implements OnInit {
 
   sendToCCB() {
     this.account.CCBUpdateFlag = 'Y';
-    this.stormwater.applyEdits(1, null, [new Feature(this.account)], null).subscribe(result => {
+    this.stormwater.applyEdits(2, null, [new Feature(this.account)], null).subscribe(result => {
       if (result.updateResults.length > 0) {
         if (result.updateResults[0].success) {
           this.stormwater.account.next(this.account);

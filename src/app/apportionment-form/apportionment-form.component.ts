@@ -53,7 +53,7 @@ export class ApportionmentFormComponent implements OnInit {
           this.apportionments.forEach(a => {
             deletes.push(a.OBJECTID);
           });
-          this.stormwater.applyEdits(4, null, null, deletes).subscribe(result => {
+          this.stormwater.applyEdits(5, null, null, deletes).subscribe(result => {
             this.stormwater.apportionments.next([]);
             this.stormwater.account.next(account);
           });
@@ -66,14 +66,14 @@ export class ApportionmentFormComponent implements OnInit {
       this.apptForm.controls.units.enable();
 
     }
-    this.stormwater.applyEdits(1, null, [new Feature(account, null)]).subscribe(result => {
+    this.stormwater.applyEdits(2, null, [new Feature(account, null)]).subscribe(result => {
       this.updateApportionments(account);
     });
   }
   unitsChanged(event) {
     let account = this.stormwater.account.getValue();
     account.ApportionmentUnits = this.apptForm.get('units').value;
-    this.stormwater.applyEdits(1, null, [new Feature(account, null)]).subscribe(result => {
+    this.stormwater.applyEdits(2, null, [new Feature(account, null)]).subscribe(result => {
       console.log(result);
       this.updateApportionments(account);
       
@@ -96,7 +96,7 @@ export class ApportionmentFormComponent implements OnInit {
         updates.push(new Feature(apportionment));
       });
       this.stormwater.apportionments.next(this.apportionments);
-      this.stormwater.applyEdits(4, [], updates, []).subscribe(result => {
+      this.stormwater.applyEdits(5, [], updates, []).subscribe(result => {
 
       });
     }

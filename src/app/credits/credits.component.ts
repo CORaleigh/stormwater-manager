@@ -40,7 +40,7 @@ export class CreditsComponent implements OnInit {
       } else {
         adds.push(feature);
       }
-      this.stormwater.applyEdits(3, adds , updates, null).subscribe(result => {
+      this.stormwater.applyEdits(4, adds , updates, null).subscribe(result => {
         if(result.updateResults.length > 0) {
           if (result.updateResults[0].success) {
             credits.push(this.credit);

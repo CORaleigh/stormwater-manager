@@ -68,7 +68,7 @@ export class ApportionmentDialogComponent implements OnInit {
     } else if (this.mode === 'update') {
       updates.push(new Feature(this.apportionment));
     }
-    this.stormwater.applyEdits(4, adds, updates, []).subscribe(result => {
+    this.stormwater.applyEdits(5, adds, updates, []).subscribe(result => {
       this.ccbAccount = null;
       if (result.addResults.length > 0) {
         let oid = result.addResults[0].objectId;
@@ -88,7 +88,7 @@ export class ApportionmentDialogComponent implements OnInit {
 }
 
   apportionmentDeleted(apportionment:Apportionment) {
-    this.stormwater.applyEdits(4, null, null, [apportionment.OBJECTID]).subscribe(result => {
+    this.stormwater.applyEdits(5, null, null, [apportionment.OBJECTID]).subscribe(result => {
       if (result.deleteResults.length > 0) {
         let oid = result.deleteResults[0].objectId;
         let apportionments:Apportionment[] = [];

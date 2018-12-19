@@ -201,7 +201,7 @@ export class MapComponent implements OnInit {
             let oldCsa = account.CSA_ID;
             if (newCsa != oldCsa) {
               account.CSA_ID = newCsa;
-              this.stormwater.applyEdits(1, null, [new Feature(account)]).subscribe(result => {
+              this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
                 if (result.updateResults.length > 0) {
                   this.stormwater.account.next(account);
                 }
@@ -343,7 +343,7 @@ export class MapComponent implements OnInit {
 
   queryRelatedTables (url: string, relationship: any, QueryTask: any, objectId: number):Promise<any> {
     let promise = new Promise<any>((resolve, reject) => {
-      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/1');
+      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
       queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['*']}).then(result => {
         resolve(result);
       });
@@ -354,7 +354,7 @@ export class MapComponent implements OnInit {
 
   queryTables (url: string, esriRequest: any, QueryTask: any, objectId: number) {
     
-    esriRequest(url + '/1?f=json', {responseType: 'json'}).then(response => {
+    esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleOrigin') {
           this.queryRelatedTables(url, relationship, QueryTask, objectId).then(result => {
@@ -394,10 +394,10 @@ export class MapComponent implements OnInit {
     return promise;
   }
   getParcel(url: string, esriRequest: any, QueryTask: any, objectId: number, mapView: esri.MapView) {
-    esriRequest(url + '/1?f=json', {responseType: 'json'}).then(response => {
+    esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleDestination') {
-          let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/1');
+          let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
           queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['OBJECTID'], returnGeometry: false, outSpatialReference: mapView.spatialReference}).then(result => {
             if (result[objectId]) {
 
@@ -422,7 +422,7 @@ export class MapComponent implements OnInit {
   getByAccountId(id: any[], field:string, QueryTask: any, esriRequest: any, mapView: esri.MapView) {
     if (this.parcels) {
 
-      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/1');
+      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
       queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
         if (result.features) {
           if (result.features.length === 1) {
@@ -435,7 +435,7 @@ export class MapComponent implements OnInit {
             result.features.forEach(feature => {
               oids.push(feature.attributes.OBJECTID);
             })
-            this.queryParcelsRelatedToAccounts(this.parcels.url+'/1', 0, QueryTask, oids).then(parcelResult => {
+            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 0, QueryTask, oids).then(parcelResult => {
               let data = [];
               result.features.forEach(f => {
                 if (parcelResult[f.attributes.OBJECTID]) {
@@ -483,7 +483,7 @@ export class MapComponent implements OnInit {
 
   queryRelatedParcels(oids:number[], features:any[]) {
     let data = [];
-    this.parcels.queryRelatedFeatures({relationshipId: 0, returnGeometry: false, objectIds: oids, outFields: ['*']}).then(relatedResults => {
+    this.parcels.queryRelatedFeatures({relationshipId: 1, returnGeometry: false, objectIds: oids, outFields: ['*']}).then(relatedResults => {
       features.forEach(feature => {
         
         if (relatedResults[feature.attributes.OBJECTID]) {

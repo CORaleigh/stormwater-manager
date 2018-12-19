@@ -80,7 +80,7 @@ export class StormwaterService {
   }
   searchAccounts(input:string, field:string):Observable<any> { 
     let token:string = this.credentials.getValue().token;
-    let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/1/query?f=json&outFields="+field+"&returnDistinctValues=true&returnGeometry=false&orderByFields="+field+"&token="+ token + "&where="+field+" like '" + input.toUpperCase() +"%25'";
+    let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2/query?f=json&outFields="+field+"&returnDistinctValues=true&returnGeometry=false&orderByFields="+field+"&token="+ token + "&where="+field+" like '" + input.toUpperCase() +"%25'";
     return this.http.get<any>(url);
   }
 

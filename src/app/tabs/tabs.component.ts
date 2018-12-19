@@ -18,11 +18,11 @@ export class TabsComponent implements OnInit {
       if (account) {
         this.selectedIndex = 0;
 
-        let el = document.getElementById('tabGroup');
-        if (el) {
-          el.scrollIntoView();
+        // let el = document.getElementById('tabGroup');
+        // if (el) {
+        //   el.scrollIntoView();
 
-        }
+        // }
      
       }
     });
