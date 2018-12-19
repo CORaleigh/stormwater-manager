@@ -215,11 +215,11 @@ export class MapComponent implements OnInit {
   }
 
   configLayerList(LayerList: any, GroupLayer: any, Expand: any, mapView: esri.MapView) {
-    let imperviousGrp:esri.GroupLayer = new GroupLayer();
-    imperviousGrp.title = 'Impervious Surface';
-    imperviousGrp.visible = false;
-    imperviousGrp.layers.addMany(this.getImperviousLayers(mapView));
-    mapView.map.layers.add(imperviousGrp, 2);
+    // let imperviousGrp:esri.GroupLayer = new GroupLayer();
+    // imperviousGrp.title = 'Impervious Surface';
+    // imperviousGrp.visible = false;
+    // imperviousGrp.layers.addMany(this.getImperviousLayers(mapView));
+    // mapView.map.layers.add(imperviousGrp, 2);
     let list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
     let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-layers', view: mapView, content: list.container});
     mapView.ui.add(expand, 'top-right');
