@@ -623,11 +623,11 @@ export class MapComponent implements OnInit {
 
                   let area:number = null;
                   features.forEach(f => {
-                    area = geometryEngine.planarArea(f.geometry, 'square-feet');
+                    //area = geometryEngine.planarArea(f.geometry, 'square-feet');
+                    area = f.attributes['Shape.STArea()'];
                     data.push({area:area, category:f.attributes.CATEGORY, updated:f.attributes.UPDATE_DATE});
                     
                   });
-                  console.log(reid);
                 this.stormwater.gisscan.next(data);
 
               }

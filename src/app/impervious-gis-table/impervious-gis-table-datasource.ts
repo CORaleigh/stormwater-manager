@@ -20,7 +20,7 @@ export interface ImperviousGisTableItem {
 export class ImperviousGisTableDataSource extends DataSource<ImperviousGisTableItem> {
 
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, public data: ImperviousGisTableItem[]) {
+  constructor(public data: ImperviousGisTableItem[]) {
     super();
   }
 
@@ -33,16 +33,12 @@ export class ImperviousGisTableDataSource extends DataSource<ImperviousGisTableI
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
-      observableOf(this.data),
-      this.paginator.page,
-      this.sort.sortChange
+      observableOf(this.data)
     ];
 
-    // Set the paginator's length
-    this.paginator.length = this.data.length;
 
     return merge(...dataMutations).pipe(map(() => {
-      return this.getPagedData(this.getSortedData([...this.data]));
+      return this.data;
     }));
   }
 
@@ -52,38 +48,4 @@ export class ImperviousGisTableDataSource extends DataSource<ImperviousGisTableI
    */
   disconnect() {}
 
-  /**
-   * Paginate the data (client-side). If you're using server-side pagination,
-   * this would be replaced by requesting the appropriate data from the server.
-   */
-  private getPagedData(data: ImperviousGisTableItem[]) {
-    const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
-    return data.splice(startIndex, this.paginator.pageSize);
-  }
-
-  /**
-   * Sort the data (client-side). If you're using server-side sorting,
-   * this would be replaced by requesting the appropriate data from the server.
-   */
-  private getSortedData(data: ImperviousGisTableItem[]) {
-    if (!this.sort.active || this.sort.direction === '') {
-      return data;
-    }
-
-    return data.sort((a, b) => {
-      const isAsc = this.sort.direction === 'asc';
-      switch (this.sort.active) {
-        case 'category': return compare(a.category, b.category, isAsc);
-        case 'area': return compare(a.area, b.area, isAsc);
-        case 'updated': return compare(a.updated, b.updated, isAsc);       
-
-        default: return 0;
-      }
-    });
-  }
-}
-
-/** Simple sort comparator for example ID/Name columns (for client-side sorting). */
-function compare(a, b, isAsc) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
