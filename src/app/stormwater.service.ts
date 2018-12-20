@@ -39,7 +39,8 @@ export class StormwaterService {
   accountList:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   accountListSelected:BehaviorSubject<any> = new BehaviorSubject<any>(null);
   apportionedToClicked:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  
+  gisScanSelected: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  gisscan: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   applyEdits(id:number, adds?:Array<Feature>, updates?:Array<Feature>, deletes?:Array<number>): Observable<any> {
     
     let params:HttpParams = new HttpParams()

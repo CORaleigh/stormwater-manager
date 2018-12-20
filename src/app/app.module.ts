@@ -40,6 +40,7 @@ import { BillingServiceTableComponent } from './billing-service-table/billing-se
 import { AccountFormComponent } from './account-form/account-form.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { AccountListTableComponent } from './account-list-table/account-list-table.component';
+import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-gis-table.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { AccountListTableComponent } from './account-list-table/account-list-tab
     BillingServiceTableComponent,
     AccountFormComponent,
     ConfirmDialogComponent,
-    AccountListTableComponent
+    AccountListTableComponent,
+    ImperviousGisTableComponent
   ],
   imports: [
     BrowserModule,
