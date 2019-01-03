@@ -18,6 +18,13 @@ export class ImperviousComponent implements OnInit {
   impervious: Impervious[] = [];
   account: Account = null;
   apportionedTo:Feature[] = [];
+  selectedIndex:number = 0;
+  indexChanged(event) {
+    if (this.account && event === 1) {
+      this.stormwater.gisScanSelected.next(this.account.RealEstateId);
+      this.selectedIndex = event;
+    }
+  }
   ngOnInit() {
     this.stormwater.impervious.subscribe(impervious => {
       this.impervious = impervious;
@@ -33,6 +40,10 @@ export class ImperviousComponent implements OnInit {
             }
         });
       }      
+      
+      if (this.selectedIndex === 1) {
+        this.stormwater.gisScanSelected.next(this.account.RealEstateId);
+      }
     });    
 
 

@@ -47,7 +47,7 @@ export class SearchtabComponent implements OnInit {
   }
 
   accountSelected($event) {
-    debugger
+    
     if ($event.option.value.FullStreetName) {
       this.stormwater.streetName.next($event.option.value.FullStreetName);
     } else if ($event.option.value.AccountId) {

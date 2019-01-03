@@ -6,7 +6,11 @@
 
     </mat-expansion-panel-header>
 
-    <app-impervious-table></app-impervious-table>
+    <mat-tab-group [selectedIndex]="selectedIndex"
+    (selectedIndexChange)="indexChanged($event)" id="tabGroup">
+        <mat-tab label="Impervious"><app-impervious-table></app-impervious-table></mat-tab>
+        <mat-tab label="GIS Scan"><app-impervious-gis-table></app-impervious-gis-table></mat-tab>
+    </mat-tab-group>    
     <mat-action-row>
       <button *ngIf="apportionedTo.length > 0" mat-button (click)="apportionedToClicked()">Apportioned To</button>    
       <button *ngIf="impervious.length > 0" mat-button (click)="updateClicked()">Update</button>

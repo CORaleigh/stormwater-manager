@@ -333,8 +333,11 @@ export class MapComponent implements OnInit {
       this.parcels.queryRelatedFeatures(query).then( result => {
         if (result[feature.attributes.OBJECTID]) {
           let account:Account = result[feature.attributes.OBJECTID].features[0].attributes as Account; 
-          this.router.navigate(['/account/' + account.AccountId])
-          this.stormwater.account.next(account);
+          this.router.navigate(['/account/' + account.AccountId]);
+          if (this.stormwater.account.getValue().OBJECTID != account.OBJECTID) {
+            this.stormwater.account.next(account);
+          }
+          
           this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
         }  
       });
@@ -426,8 +429,12 @@ export class MapComponent implements OnInit {
       queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
         if (result.features) {
           if (result.features.length === 1) {
-            let account = result.features[0].attributes
-            this.stormwater.account.next(account);
+            let account = result.features[0].attributes;
+            if (!this.stormwater.account.getValue()) {
+                this.stormwater.account.next(account);
+              
+            }
+
             this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
             this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
           } else {
@@ -594,6 +601,39 @@ export class MapComponent implements OnInit {
       });
     }
 
+  });
+  this.stormwater.gisScanSelected.subscribe(reid => {
+    if (this._mapView) {
+      loadModules([
+        'esri/geometry/geometryEngine'])
+          .then(([geometryEngine]) =>  {
+            let impLyr = this._mapView.map.layers.find(l => {
+              return l.title === 'Impervious Areas';
+            }) as esri.FeatureLayer;
+
+            impLyr.queryFeatures({
+               where: "RealEstateId = '" + reid + "'",
+               returnGeometry: true, 
+               outFields:['*']
+              }).then(result => {
+              if (result) {
+                let data =[];
+
+                  let features = result.features;
+
+                  let area:number = null;
+                  features.forEach(f => {
+                    //area = geometryEngine.planarArea(f.geometry, 'square-feet');
+                    area = f.attributes['Shape.STArea()'];
+                    data.push({area:area, category:f.attributes.CATEGORY, updated:f.attributes.UPDATE_DATE});
+                    
+                  });
+                this.stormwater.gisscan.next(data);
+
+              }
+            });        });      
+
+          }
   });
   }
 }
