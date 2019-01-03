@@ -19,6 +19,7 @@ export class BillingService {
 
     let promise = new Promise<BillingInfo>((resolve, reject) => {
       if (account.PremiseId) {
+        
         let info = new BillingInfo();
         info.services = [];
         this.getBillingInfo(account.PremiseId.toString()).subscribe(result => {
@@ -36,6 +37,11 @@ export class BillingService {
                       info.services = result.Results as BillService[];
                       resolve(info);
                     });
+                  });
+                } else {
+                  this.getBillingServices(info.premId).subscribe(result => {
+                    info.services = result.Results as BillService[];
+                    resolve(info);
                   });
                 }
               });

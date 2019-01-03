@@ -12,16 +12,17 @@ export class BillingServiceTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   dataSource: BillingServiceTableDataSource;
-
+  
   @Input('services') 
   set services(services:BillService[]) {
+    window.setTimeout(() => {this.dataSource = new BillingServiceTableDataSource(services);}, 100)
     
-    this.dataSource = new BillingServiceTableDataSource(services);
   };
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['spId', 'spTyp', 'spStatus', 'spSrcStatus', 'installed'];
 
   ngOnInit() {
+
     this.dataSource = new BillingServiceTableDataSource([]);
   }
 }

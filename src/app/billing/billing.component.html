@@ -45,29 +45,31 @@
             <div class="row">
               Bill ID
             </div>
-            <div class="row" *ngIf="billingInfo.lastBill">
-                {{billingInfo.lastBill.billId}}
+            <div class="row">
+                <span *ngIf="billingInfo.lastBill">{{billingInfo.lastBill.billId}}</span>
+                <span *ngIf="!billingInfo.lastBill">N/A</span>
             </div>        
         </div>           
         <div class="col">
             <div class="row">
               Bill Date
-            </div>
-            <div class="row" *ngIf="billingInfo.lastBill">
-                {{billingInfo.lastBill.completed}}
-            </div>        
+            </div>  
+            <div class="row">
+                <span *ngIf="billingInfo.lastBill">{{billingInfo.lastBill.completed | date}}</span>
+                <span *ngIf="!billingInfo.lastBill">N/A</span>
+            </div>                   
         </div>             
       </div>
       <mat-divider></mat-divider>
-
       <div class="row" *ngIf="billingInfo">
           <div class="col">
               <div class="row">
                 Bill Amount
               </div>
-              <div class="row" *ngIf="billingInfo.lastStormwaterBill">
-                  {{billingInfo.lastStormwaterBill.total | currency: 'USD':'symbol':'1.0-0'}}
-              </div>        
+              <div class="row">
+                <span *ngIf="billingInfo.lastStormwaterBill">{{billingInfo.lastStormwaterBill.total | currency: 'USD'}}</span>
+                <span *ngIf="!billingInfo.lastStormwaterBill">N/A</span>
+            </div>                  
           </div>     
           <div class="col">
               <div class="row">
@@ -83,5 +85,4 @@
           </div>                        
       </div>
     <app-billing-service-table *ngIf="billingInfo" [services]="billingInfo.services"></app-billing-service-table>
-
   </mat-expansion-panel>
