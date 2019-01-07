@@ -15,10 +15,12 @@ export class AccountsComponent implements OnInit {
 
   constructor(private stormwater:StormwaterService, public dialog: MatDialog) { }
   account:Account;
+  accounts:Account[] = [];
   parcel:Parcel;
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
       this.account = account;
+      this.accounts = this.stormwater.accounts.getValue();
     });
     this.stormwater.parcel.subscribe(parcel => {
       
@@ -28,6 +30,11 @@ export class AccountsComponent implements OnInit {
 
   getDomain(code, field, id):string {
     return this.stormwater.checkDomain(id, field, null, code);
+  }
+
+  statusChanged(event) {
+    console.log(event);
+    this.stormwater.account.next(event.value);
   }
 
   update() {

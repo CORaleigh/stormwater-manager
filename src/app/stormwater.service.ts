@@ -23,6 +23,7 @@ const httpOptions = {headers: new HttpHeaders({
 export class StormwaterService {
   constructor(private http:HttpClient) {}
   account:BehaviorSubject<Account> = new BehaviorSubject<Account>(null);
+  accounts:BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
   impervious:BehaviorSubject<Impervious[]> = new BehaviorSubject<Impervious[]>([]);
   apportionments:BehaviorSubject<Apportionment[]> = new BehaviorSubject<Apportionment[]>([]);
   loggedIn:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);

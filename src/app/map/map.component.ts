@@ -330,9 +330,18 @@ export class MapComponent implements OnInit {
       query.objectIds = [feature.attributes.OBJECTID];
       query.outFields = ['*'];
 
+
       this.parcels.queryRelatedFeatures(query).then( result => {
         if (result[feature.attributes.OBJECTID]) {
-          let account:Account = result[feature.attributes.OBJECTID].features[0].attributes as Account; 
+          let accounts:Account[] = [];
+          result[feature.attributes.OBJECTID].features.forEach(f => {
+            accounts.push(f.attributes as Account);
+          });
+          accounts.sort((a,b) => (a.Status > b.Status) ? 1 : ((b.Status > a.Status) ? -1 : 0)); 
+
+          this.stormwater.accounts.next(accounts);
+          
+          let account:Account = accounts[0]; 
           this.router.navigate(['/account/' + account.AccountId]);
           if (this.stormwater.account.getValue().OBJECTID != account.OBJECTID) {
             this.stormwater.account.next(account);
@@ -428,7 +437,8 @@ export class MapComponent implements OnInit {
       let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
       queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
         if (result.features) {
-          if (result.features.length === 1) {
+          if (result.features.length > 0 ) {
+            
             let account = result.features[0].attributes;
             if (!this.stormwater.account.getValue()) {
                 this.stormwater.account.next(account);
@@ -533,8 +543,16 @@ export class MapComponent implements OnInit {
     });
 
     this.stormwater.account.subscribe(account => {
+      if (account) {
+        loadModules([
+          'esri/tasks/QueryTask',
+          'esri/request', ])
+            .then(([QueryTask, request]) =>  {
+              this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView);
+              this.router.navigate(['/account/' + account.AccountId]);
 
-
+          });
+      }
     });
     this.stormwater.streetName.subscribe(streetName => {
       if (streetName) {

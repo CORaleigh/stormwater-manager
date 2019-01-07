@@ -5,6 +5,15 @@
       </mat-panel-title>
 
     </mat-expansion-panel-header>
+    <div class="row" *ngIf="accounts.length > 1">
+    <mat-form-field class="full-width">
+        <mat-select placeholder="Status" (selectionChange)="statusChanged($event)" [(value)]="account">
+          <mat-option *ngFor="let acc of accounts" [value]="acc">
+            {{ acc.Status }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     <div class="row">
       <div class="col">
         <div class="row">
