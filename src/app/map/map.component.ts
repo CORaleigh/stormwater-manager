@@ -133,8 +133,12 @@ export class MapComponent implements OnInit {
         if (this.route.routeConfig) {
           if (this.route.routeConfig.path === 'account/:id') {
             this.route.params.subscribe(params => {
+
               if (params.id) {
-                this.getByAccountId(params.id, 'AccountId', QueryTask, esriRequest, this._mapView);
+                if (params.id != this._lastAccountId) {
+                  this._lastAccountId = params.id;
+                  this.getByAccountId(params.id, 'AccountId', QueryTask, esriRequest, this._mapView);
+                }
               }
             });
           }      
@@ -437,7 +441,7 @@ export class MapComponent implements OnInit {
       let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
       queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
         if (result.features) {
-          debugger
+
           if (result.features.length < 2) {
             
             let account = result.features[0].attributes;
@@ -550,6 +554,7 @@ export class MapComponent implements OnInit {
           'esri/tasks/QueryTask',
           'esri/request', ])
             .then(([QueryTask, request]) =>  {
+              this._lastAccountId = account.AccountId;
               this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView);
               this.router.navigate(['/account/' + account.AccountId]);
 
