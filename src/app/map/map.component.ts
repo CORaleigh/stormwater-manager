@@ -43,6 +43,7 @@ export class MapComponent implements OnInit {
   private _parcelView:esri.FeatureLayerView;
   private _highlight:any;
   private _parcelGraphics:esri.GraphicsLayer;
+  private _selectedParcel:esri.Graphic;
   private _lastAccountId:number = null;
   constructor(public stormwater: StormwaterService, private billing:BillingService, private route: ActivatedRoute, private router:Router) { }
   async authenicate() {
@@ -189,11 +190,25 @@ export class MapComponent implements OnInit {
   
     mapView.whenLayerView(addresses).then(layer => {
       let l = layer.layer as esri.FeatureLayer;
-  
+
+      mapView.popup.watch('selectedFeature', (e) => {
+        if (e) {
+          if (e.sourceLayer) {
+            if (e.sourceLayer.title === 'Address Points') {
+              if (this._selectedParcel) {
+                let pt:esri.Point = e.geometry;
+                let poly:esri.Polygon = this._selectedParcel.geometry as esri.Polygon;
+                  e.sourceLayer.popupTemplate.actions.items[0].visible = poly.contains(pt)
+              }
+            }
+          }
+        }
+      })
       let button: esri.ActionButton = new ActionButton({
         title: 'Assign CSA ID',
         id: 'assign-csaid',
-        className: 'esri-icon-checkbox-checked'
+        className: 'esri-icon-checkbox-checked',
+        visible: false
       });         
       l.popupTemplate.actions = new Collection();
       l.popupTemplate.actions.add(button);  
@@ -502,6 +517,7 @@ export class MapComponent implements OnInit {
     //@ts-ignore
     feature.symbol = symbol;
     this._parcelGraphics.add(feature);
+    this._selectedParcel = feature;
   }
 
   queryRelatedParcels(oids:number[], features:any[]) {
