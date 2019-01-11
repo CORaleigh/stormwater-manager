@@ -437,7 +437,8 @@ export class MapComponent implements OnInit {
       let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
       queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
         if (result.features) {
-          if (result.features.length > 0 ) {
+          debugger
+          if (result.features.length < 2) {
             
             let account = result.features[0].attributes;
             if (!this.stormwater.account.getValue()) {
@@ -449,10 +450,11 @@ export class MapComponent implements OnInit {
             this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
           } else {
             let oids = [];
+            
             result.features.forEach(feature => {
               oids.push(feature.attributes.OBJECTID);
             })
-            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 0, QueryTask, oids).then(parcelResult => {
+            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 1, QueryTask, oids).then(parcelResult => {
               let data = [];
               result.features.forEach(f => {
                 if (parcelResult[f.attributes.OBJECTID]) {

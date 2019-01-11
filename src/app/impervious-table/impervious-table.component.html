@@ -35,12 +35,14 @@
         <div class="example-element-detail"
             [@detailExpand]="row === expandedRow ? 'expanded' : 'collapsed'">
           <div class="example-element-diagram">
+            <div class="example-element-name" *ngIf="row.PermitNumber">Permit #: {{row.PermitNumber}}</div>    
             <div class="example-element-position">Building: {{row.Building | number}} ft<sup>2</sup> </div>
             <div class="example-element-position">Road: {{row.RoadTrailImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-position">Parking: {{row.ParkingImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-weight">Recreation: {{row.RecreationImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-position">Miscellaneous: {{row.MiscImpervious | number}} ft<sup>2</sup> </div>
-            <div class="example-element-name">Permitted: {{row.PermittedImpervious | number}} ft<sup>2</sup> </div>            
+            <div class="example-element-name">Permitted: {{row.PermittedImpervious | number}} ft<sup>2</sup> </div>    
+
           </div>
         </div>
       </td>
