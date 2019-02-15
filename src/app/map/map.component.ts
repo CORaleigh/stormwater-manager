@@ -14,7 +14,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
-import { getMatFormFieldPlaceholderConflictError } from '@angular/material';
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -130,7 +129,10 @@ export class MapComponent implements OnInit {
         this.configBasemapGallery(BasemapGallery, Expand, this._mapView);        
         this.setupSearch(this._mapView, Search, FeatureLayerSearchSource, RelationshipQuery, QueryTask, esriRequest);
         this.configPopupActions(this._mapView, ActionButton, Collection, RelationshipQuery, QueryTask, esriRequest);
+        this._mapView.on('hold', e => {
+          this.getPropertyByGeometry(this._mapView, e.mapPoint, RelationshipQuery, QueryTask, esriRequest);
 
+        });
         if (this.route.routeConfig) {
           if (this.route.routeConfig.path === 'account/:id') {
             this.route.params.subscribe(params => {
@@ -320,21 +322,26 @@ export class MapComponent implements OnInit {
         this.stormwater.accountList.next([]);
         this.stormwater.accountListSelected.next(null);
       } else {
-        
-        this.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], geometry: event.result.feature.geometry, outSpatialReference: mapView.spatialReference}).then(result => {
-          if (result.features) {
-            if (result.features.length > 0) {
-              let parcel:Parcel = result.features[0].attributes as Parcel;
-              this.stormwater.parcel.next(parcel);                    
-              this.getAccount(RelationshipQuery, result.features[0], QueryTask, esriRequest);
-              let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-              mapView.goTo(parcelExtent);
-              this.highlightSingleParcel(result.features[0]);
-            }
-          }
-        });      }
+        this.getPropertyByGeometry(this._mapView, event.result.feature.geometry, RelationshipQuery, QueryTask, esriRequest);
+      }
     });
   }
+
+  getPropertyByGeometry(mapView:esri.MapView, geometry:esri.Geometry, RelationshipQuery:esri.RelationshipQuery, QueryTask:esri.QueryTask, esriRequest:esri.request) {
+    this.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], geometry, outSpatialReference: mapView.spatialReference}).then(result => {
+      if (result.features) {
+        if (result.features.length > 0) {
+          let parcel:Parcel = result.features[0].attributes as Parcel;
+          this.stormwater.parcel.next(parcel);                    
+          this.getAccount(RelationshipQuery, result.features[0], QueryTask, esriRequest);
+          let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
+          mapView.goTo(parcelExtent,{duration: 2500});
+          this.highlightSingleParcel(result.features[0]);
+        }
+      }
+    });    
+  }
+
   getAccount(RelationshipQuery:any, feature: esri.Graphic, QueryTask: any, esriRequest: any) { 
     //@ts-ignore
     let relationship = this.parcels.relationships.find((r:esri.Relationship) => {
@@ -438,7 +445,7 @@ export class MapComponent implements OnInit {
                     let parcel:Parcel = result.features[0].attributes as Parcel;
                     this.stormwater.parcel.next(parcel);                    
                     let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-                    mapView.goTo(parcelExtent);
+                    mapView.goTo(parcelExtent,{duration: 2500});
                     this.highlightSingleParcel(result.features[0]);
                   }
                 }
@@ -500,7 +507,7 @@ export class MapComponent implements OnInit {
         });
         let result = geometryEngine.union(geoms);
         let extent = result.extent.clone().expand(2);
-        mapView.goTo(extent);
+        mapView.goTo(extent,{duration: 2500});
     });
   }
 
