@@ -7,7 +7,7 @@ import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_DIALOG_DATA} from '@angular/material';
 export const MY_FORMATS = {
   parse: {
-    dateInput: 'x',
+    dateInput: 'MM/DD/YYYY'
   },
   display: {
     dateInput: 'MM/DD/YYYY',

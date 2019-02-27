@@ -8,7 +8,7 @@ import { Credit } from '../credit';
 import { StormwaterService } from '../stormwater.service';
 export const MY_FORMATS = {
   parse: {
-    dateInput: 'x',
+    dateInput: 'MM/DD/YYYY'
   },
   display: {
     dateInput: 'MM/DD/YYYY',
@@ -38,21 +38,22 @@ export class CreditFormComponent implements OnInit {
       Validators.required, Validators.min(0), Validators.max(100)])
     ],
     UpstreamCode: [null, Validators.required],
-    OnSiteCode: [null, Validators.required],
-    ApprovalDate: [null, Validators.required],
-    InceptionDate: [null, Validators.required]
+    OnSiteCode: [null, Validators.required]
   });
   @Input() credit: Credit;
   @Input() mode: string;
   @Output() submitted = new EventEmitter<Credit>();
 
 
-  inceptionDate = new FormControl(moment());
-  approvalDate = new FormControl(moment());
+  inceptionDate = new FormControl(new Date());
+  approvalDate = new FormControl(new Date());
  
   oCodes:any = null;
   uCodes:any = null;
   constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
+  dateChanged(event) {
+    console.log(event);
+  }
   ngOnInit() {
     if (this.credit) {
       this.oCodes = this.stormwater.getDomain(3, 'OnSiteCode');    
@@ -63,9 +64,8 @@ export class CreditFormComponent implements OnInit {
       this.form.get('NpdesPercentage').setValue(this.credit.NpdesPercentage);
       this.form.get('UpstreamCode').setValue(this.credit.UpstreamCode);
       this.form.get('OnSiteCode').setValue(this.credit.OnSiteCode);
-
-      this.form.get('ApprovalDate').setValue(this.credit.ApprovalDate);
-      this.form.get('InceptionDate').setValue(this.credit.InceptionDate);
+      this.approvalDate.setValue(new Date(this.credit.ApprovalDate));
+      this.inceptionDate.setValue(new Date(this.credit.InceptionDate));
       
 
 

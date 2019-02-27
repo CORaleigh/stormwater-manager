@@ -11,7 +11,7 @@ import { BillingService } from '../billing-service';
 import { StormwaterService } from '../stormwater.service';
 export const MY_FORMATS = {
   parse: {
-    dateInput: 'x',
+    dateInput: 'MM/DD/YYYY'
   },
   display: {
     dateInput: 'MM/DD/YYYY',

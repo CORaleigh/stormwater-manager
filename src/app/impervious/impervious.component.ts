@@ -70,11 +70,12 @@ export class ImperviousComponent implements OnInit {
     data.Status = 'P';
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Impervious', impervious: data}});
     ref.afterClosed().subscribe((data:Impervious) => {
+      data.TotalImpervious = data.Building + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
+
       let feature = new Feature(data, null);
       this.stormwater.applyEdits(3, [feature], null, null).subscribe(result => {
         if(result.addResults) {
           if (result.addResults[0].success) {
-            data.TotalImpervious = data.Building + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
             this.impervious.push(data);
             this.stormwater.impervious.next(this.impervious);
           }
