@@ -45,8 +45,8 @@ export class CreditFormComponent implements OnInit {
   @Output() submitted = new EventEmitter<Credit>();
 
 
-  inceptionDate = new FormControl(new Date());
-  approvalDate = new FormControl(new Date());
+  inceptionDate = new FormControl(moment());
+  approvalDate = new FormControl(moment());
  
   oCodes:any = null;
   uCodes:any = null;
@@ -56,16 +56,18 @@ export class CreditFormComponent implements OnInit {
   }
   ngOnInit() {
     if (this.credit) {
-      this.oCodes = this.stormwater.getDomain(3, 'OnSiteCode');    
-      this.uCodes = this.stormwater.getDomain(3, 'UpstreamCode');    
+      this.oCodes = this.stormwater.getDomain(4, 'OnSiteCode');    
+      this.uCodes = this.stormwater.getDomain(4, 'UpstreamCode');    
 
       this.form.get('ControlledSurface').setValue(this.credit.ControlledSurface);
       this.form.get('ControlledAcreage').setValue(this.credit.ControlledAcreage);
       this.form.get('NpdesPercentage').setValue(this.credit.NpdesPercentage);
       this.form.get('UpstreamCode').setValue(this.credit.UpstreamCode);
       this.form.get('OnSiteCode').setValue(this.credit.OnSiteCode);
-      this.approvalDate.setValue(new Date(this.credit.ApprovalDate));
-      this.inceptionDate.setValue(new Date(this.credit.InceptionDate));
+    //  this.approvalDate.setValue(new Date(this.credit.ApprovalDate));
+    this.approvalDate.setValue(moment(new Date(this.credit.ApprovalDate)));
+     // this.inceptionDate.setValue(new Date(this.credit.InceptionDate));
+     this.inceptionDate.setValue(moment(new Date(this.credit.InceptionDate)));
       
 
 

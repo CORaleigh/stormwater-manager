@@ -11,6 +11,31 @@
         </div>
       </div>
       <div class="row">
+        <div class="col">
+          <mat-form-field class="full-width">
+            <mat-select placeholder="Use Class" formControlName="useclass">
+              <mat-option *ngFor="let useclass of useclasses" [value]="useclass.code">
+                {{ useclass.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"> 
+          <mat-form-field class="full-width">
+            <input matInput #PremiseId placeholder="Premise ID" type="number" formControlName="premiseid">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col"> 
+          <mat-form-field class="full-width">
+            <input matInput #csaid placeholder="CSA ID" type="number" formControlName="csaid">
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
           <div class="col">     
             <button mat-raised-button color="primary" type="submit">Submit</button>
           </div>          

@@ -10,22 +10,34 @@ import { Account } from '../account';
 })
 export class AccountFormComponent implements OnInit {
   form = this.fb.group({
-    status: [null, Validators.required]
+    status: [null, Validators.required],
+    useclass: [null, Validators.required],
+    premiseid: [],
+    csaid: []
   });
   @Output() submitted = new EventEmitter<Account>();
   statuses:any[];
+  useclasses:any[];
   account:Account;
 
   constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
       this.account = account;
-      this.statuses = this.stormwater.getDomain(1, 'Status');
+      this.statuses = this.stormwater.getDomain(2, 'Status');
       this.form.get('status').setValue(account.Status);
+      this.useclasses = this.stormwater.getDomain(2, 'UseClass');
+      this.form.get('useclass').setValue(account.UseClass);     
+      this.form.get('premiseid').setValue(account.PremiseId); 
+      this.form.get('csaid').setValue(account.CSA_ID); 
+
     });
   }
   onSubmit() {
     this.account.Status = this.form.get('status').value;
+    this.account.UseClass = this.form.get('useclass').value;
+    this.account.PremiseId = this.form.get('premiseid').value;
+    this.account.CSA_ID = this.form.get('csaid').value;    
     this.submitted.emit(this.account);
   }
 }
