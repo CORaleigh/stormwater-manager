@@ -610,7 +610,11 @@ export class MapComponent implements OnInit {
       } else if (selection.csaId) {
         field = 'CSA_ID';
         value = selection.csaId;
+      } else if (selection.status) {
+        field = 'Status';
+        value = selection.status;
       }
+
       loadModules([
         'esri/tasks/QueryTask',
         'esri/request', ])
