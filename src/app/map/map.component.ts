@@ -374,7 +374,9 @@ export class MapComponent implements OnInit {
           }
           
           this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-        }  
+        }  else {
+          this.stormwater.account.next(null);
+        }
       });
     }
   }
@@ -474,13 +476,13 @@ export class MapComponent implements OnInit {
 
             this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
             this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
-          } else {
+          } else if (result.features.length > 1) {
             let oids = [];
             
             result.features.forEach(feature => {
               oids.push(feature.attributes.OBJECTID);
             })
-            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 1, QueryTask, oids).then(parcelResult => {
+            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 0, QueryTask, oids).then(parcelResult => {
               let data = [];
               result.features.forEach(f => {
                 if (parcelResult[f.attributes.OBJECTID]) {
@@ -490,6 +492,9 @@ export class MapComponent implements OnInit {
               });
               this.stormwater.accountList.next(data);
             });
+          } else {
+            this.stormwater.account.next(null);
+            this.stormwater.accountList.next([]);
           }
   
         }
@@ -582,6 +587,13 @@ export class MapComponent implements OnInit {
               this.router.navigate(['/account/' + account.AccountId]);
 
           });
+      } else {
+        this.stormwater.impervious.next([]);
+        this.stormwater.apportionments.next([]);
+        this.stormwater.credits.next([]);
+        this.stormwater.logs.next([]);
+        this.stormwater.journals.next([]);
+        
       }
     });
     this.stormwater.streetName.subscribe(streetName => {
