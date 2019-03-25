@@ -52,7 +52,9 @@ export class CreditsComponent implements OnInit {
             credits.push(this.credit);
             this.stormwater.credits.next(credits);
           }
-        }        
+        }     
+        
+        this.stormwater.accountListSelected.next(account);   
       });
     });
   }

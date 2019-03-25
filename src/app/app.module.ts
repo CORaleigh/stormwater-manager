@@ -25,7 +25,7 @@ import { LogsComponent } from './logs/logs.component';
 import { LogsTableComponent } from './logs-table/logs-table.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { ImperviousUpdateFormComponent } from './impervious-update-form/impervious-update-form.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DeleteComponent } from './delete/delete.component';
 import { JournalFormComponent } from './journal-form/journal-form.component';
@@ -100,6 +100,7 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
     MatRadioModule,
     MatCardModule,
     ReactiveFormsModule,
+    FormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
     HttpClientModule,

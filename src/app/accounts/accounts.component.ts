@@ -19,6 +19,7 @@ export class AccountsComponent implements OnInit {
   parcel:Parcel;
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
+      
       this.account = account;
       this.accounts = this.stormwater.accounts.getValue();
     });
@@ -44,6 +45,7 @@ export class AccountsComponent implements OnInit {
         if (result.updateResults.length > 0) {
           if (result.updateResults[0].success) {
             this.stormwater.account.next(account);
+            this.stormwater.accountListSelected.next(account);
           }
         }
       });
@@ -51,7 +53,7 @@ export class AccountsComponent implements OnInit {
   }
 
   sendToCCB() {
-    this.account.CCBUpdateFlag = 'Y';
+    //this.account.CCBUpdateFlag = 'Y';
     this.stormwater.applyEdits(2, null, [new Feature(this.account)], null).subscribe(result => {
       if (result.updateResults.length > 0) {
         if (result.updateResults[0].success) {

@@ -23,7 +23,6 @@ export class CreditsTableComponent implements OnInit {
       if(credits.length > 0) {
         let credit = credits[0];
         let attributes = [
-          {field: 'Controlled Acreage', value: credit.ControlledAcreage ? credit.ControlledAcreage : 0, type: 'acres'},
           {field: 'Controlled Surface', value: credit.ControlledSurface ? credit.ControlledSurface: 0, type: 'area'},
           {field: 'NPDES MS4 Permit /GI/LID/Other (Percentage not to exceed 50%)', value: credit.NpdesPercentage ? credit.NpdesPercentage : 0, type:'percent'},
           {field: 'On Site Credits', value: this.stormwater.checkDomain(3,'OnSiteCode', null, credit.OnSiteCode)},

@@ -140,7 +140,7 @@ export class MapComponent implements OnInit {
               if (params.id) {
                 if (params.id != this._lastAccountId) {
                   this._lastAccountId = params.id;
-                  this.getByAccountId(params.id, 'AccountId', QueryTask, esriRequest, this._mapView);
+                  this.getByAccountId(params.id, 'AccountId', QueryTask, esriRequest, this._mapView, true);
                 }
               }
             });
@@ -225,6 +225,7 @@ export class MapComponent implements OnInit {
               this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
                 if (result.updateResults.length > 0) {
                   this.stormwater.account.next(account);
+                  this.stormwater.accountListSelected.next(account);
                 }
               });
             }
@@ -313,17 +314,28 @@ export class MapComponent implements OnInit {
 
     search.sources.push(this.getSource(addresses, FeatureLayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
     mapView.ui.add(search, {position: 'top-left', index: 0});
+
+    search.goToOverride = (view:esri.MapView, params:any) => {
+      this.highlightSingleParcel(params.target.target);
+      let target = params.target.target.geometry;
+      if (params.target.target.geometry.extent) {
+        target = params.target.target.geometry.extent.clone().expand(2);      
+      }
+      params.options.duration = 1500;
+      params.options.easing = 'ease-in';
+      return view.goTo(target, params.options);
+    };
     search.on('select-result', event => {
 
       if (event.source.name != 'Address Point') {
         this.getAccount(RelationshipQuery, event.result.feature, QueryTask, esriRequest);
-        this.highlightSingleParcel(event.result.feature)
-        this._highlight.remove();
         this.stormwater.accountList.next([]);
         this.stormwater.accountListSelected.next(null);
+
       } else {
         this.getPropertyByGeometry(this._mapView, event.result.feature.geometry, RelationshipQuery, QueryTask, esriRequest);
       }
+      this._search.clear();
     });
   }
 
@@ -335,7 +347,8 @@ export class MapComponent implements OnInit {
           this.stormwater.parcel.next(parcel);                    
           this.getAccount(RelationshipQuery, result.features[0], QueryTask, esriRequest);
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-          mapView.goTo(parcelExtent,{duration: 2500});
+          
+         mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
           this.highlightSingleParcel(result.features[0]);
         }
       }
@@ -447,7 +460,8 @@ export class MapComponent implements OnInit {
                     let parcel:Parcel = result.features[0].attributes as Parcel;
                     this.stormwater.parcel.next(parcel);                    
                     let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-                    mapView.goTo(parcelExtent,{duration: 2500});
+                  
+                    mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
                     this.highlightSingleParcel(result.features[0]);
                   }
                 }
@@ -459,7 +473,7 @@ export class MapComponent implements OnInit {
     });
   }
 
-  getByAccountId(id: any[], field:string, QueryTask: any, esriRequest: any, mapView: esri.MapView) {
+  getByAccountId(id: any[], field:string, QueryTask: any, esriRequest: any, mapView: esri.MapView, zoom:boolean) {
     if (this.parcels) {
 
       let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
@@ -469,13 +483,16 @@ export class MapComponent implements OnInit {
           if (result.features.length < 2) {
             
             let account = result.features[0].attributes;
-            if (!this.stormwater.account.getValue()) {
+           // if (!this.stormwater.account.getValue()) {
                 this.stormwater.account.next(account);
               
-            }
+          //  }
 
             this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-            this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
+            if (zoom) {
+              this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
+
+            }
           } else if (result.features.length > 1) {
             let oids = [];
             
@@ -512,7 +529,8 @@ export class MapComponent implements OnInit {
         });
         let result = geometryEngine.union(geoms);
         let extent = result.extent.clone().expand(2);
-        mapView.goTo(extent,{duration: 2500});
+        
+        mapView.goTo(extent,{duration: 1500, easing:'ease-in'});
     });
   }
 
@@ -528,6 +546,7 @@ export class MapComponent implements OnInit {
     };
     //@ts-ignore
     feature.symbol = symbol;
+
     this._parcelGraphics.add(feature);
     this._selectedParcel = feature;
   }
@@ -547,9 +566,10 @@ export class MapComponent implements OnInit {
     });          
     if (this._highlight) {
       this._highlight.remove();
+    
     }
     this._highlight = this._parcelView.highlight(features);
-    this.zoomToParcels(features, this._mapView);
+  //  this.zoomToParcels(features, this._mapView);
   }
 
   ngOnInit() {
@@ -583,7 +603,7 @@ export class MapComponent implements OnInit {
           'esri/request', ])
             .then(([QueryTask, request]) =>  {
               this._lastAccountId = account.AccountId;
-              this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView);
+              //this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView);
               this.router.navigate(['/account/' + account.AccountId]);
 
           });
@@ -631,7 +651,7 @@ export class MapComponent implements OnInit {
         'esri/tasks/QueryTask',
         'esri/request', ])
           .then(([QueryTask, request]) =>  {
-            this.getByAccountId([value], field, QueryTask, request, this._mapView);
+            this.getByAccountId([value], field, QueryTask, request, this._mapView, true);
         });
     }
 });
@@ -647,7 +667,7 @@ export class MapComponent implements OnInit {
             
             ids.push(account.attributes.AccountId)
           });
-          this.getByAccountId(ids, 'AccountId', QueryTask, request, this._mapView);
+          this.getByAccountId(ids, 'AccountId', QueryTask, request, this._mapView, true);
 
 
       });
@@ -661,7 +681,7 @@ export class MapComponent implements OnInit {
       'esri/tasks/QueryTask',
       'esri/request', ])
         .then(([QueryTask, request]) =>  {
-          this.getByAccountId([row.AccountId], 'AccountId', QueryTask, request, this._mapView);
+          this.getByAccountId([row.AccountId], 'AccountId', QueryTask, request, this._mapView, false);
       });
     }
 

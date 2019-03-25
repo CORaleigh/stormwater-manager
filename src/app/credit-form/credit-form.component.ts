@@ -60,8 +60,7 @@ export class CreditFormComponent implements OnInit {
       this.uCodes = this.stormwater.getDomain(4, 'UpstreamCode');    
 
       this.form.get('ControlledSurface').setValue(this.credit.ControlledSurface);
-      this.form.get('ControlledAcreage').setValue(this.credit.ControlledAcreage);
-      this.form.get('NpdesPercentage').setValue(this.credit.NpdesPercentage);
+      this.form.get('NpdesPercentage').setValue(this.credit.NpdesPercentage * 100);
       this.form.get('UpstreamCode').setValue(this.credit.UpstreamCode);
       this.form.get('OnSiteCode').setValue(this.credit.OnSiteCode);
     //  this.approvalDate.setValue(new Date(this.credit.ApprovalDate));
@@ -75,8 +74,7 @@ export class CreditFormComponent implements OnInit {
   }
   onSubmit() {
     this.credit.ControlledSurface = this.form.get('ControlledSurface').value;
-    this.credit.ControlledAcreage = this.form.get('ControlledAcreage').value;
-    this.credit.NpdesPercentage = this.form.get('NpdesPercentage').value;
+    this.credit.NpdesPercentage = this.form.get('NpdesPercentage').value/100;
     this.credit.UpstreamCode = this.form.get('UpstreamCode').value;
     this.credit.OnSiteCode = this.form.get('OnSiteCode').value;
     this.credit.ApprovalDate = this.approvalDate.value.unix() * 1000;

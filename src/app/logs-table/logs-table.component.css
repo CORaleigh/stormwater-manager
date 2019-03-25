@@ -9,6 +9,7 @@
 .mat-column-created_date{
   flex: 0 0 33% !important;
   min-width: 70px !important;
+  max-width: 100px !important;
 }
 
 .mat-column-Entry{
