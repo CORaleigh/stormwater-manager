@@ -129,7 +129,7 @@ export class ApportionmentUpdateFormComponent  {
 
    // this.apportionment.ApprovalUser = this.stormwater.credentials.getValue();
   
-    this._apportionment.PremiseId = this.ccbAccount.premId.toString();
+    this._apportionment.PremiseId = this.ccbAccount.premiseId.toString();
     }    
     if (this._account.ApportionmentCode === 'WEIGHTED') {
       this._apportionment.Parcent = this.form.get('Parcent').value;

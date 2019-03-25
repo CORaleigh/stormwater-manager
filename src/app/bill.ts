@@ -1,7 +1,8 @@
 export class Bill {
     accountId: string;
     billId: string;
-    completed: string;
-    total: number;
-
+    completionDt: string;
+    currentAmt: number;
+    totalAmt: number;
+    saTypeCd: string;
 }

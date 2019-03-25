@@ -1,8 +1,8 @@
 export class BillService {
-    spId: string;
-    spTyp: string;
-    spStatus: string;
-    spSrcStatus: string;
-    installed: string;
-
+    servicePointId: string;
+    spTypeCd: string;
+    spStatusFlag: string;
+    spSourceStatusFlag: string;
+    installDate: string;
+    premiseId: string;
 }

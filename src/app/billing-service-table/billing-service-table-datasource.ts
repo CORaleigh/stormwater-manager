@@ -5,11 +5,12 @@ import { Observable, of as observableOf, merge } from 'rxjs';
 
 // TODO: Replace this with your own data model type
 export interface BillingServiceTableItem {
-  spId: string;
-  spTyp: string;
-  spStatus: string;
-  spSrcStatus: string;
-  installed: string;
+  servicePointId: string;
+  spTypeCd: string;
+  spStatusFlag: string;
+  spSourceStatusFlag: string;
+  installDate: string;
+  premiseId: string;
 }
 
 

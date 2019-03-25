@@ -3,11 +3,13 @@ import { StormwaterBill } from "./stormwater-bill";
 import { BillService } from "./bill-service";
 
 export class BillingInfo {
-    premId: string;
+    premiseId: string;
     address: string;
-    acctId: string;
+    accountId: string;
     entityName: string;
-    status: string;
+    saStatusFlag: string;
+    saTypeCd: string;
+    serviceAgreementId: string;
     lastBill: Bill;
     lastStormwaterBill: StormwaterBill;
     services: BillService[];

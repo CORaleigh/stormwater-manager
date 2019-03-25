@@ -19,7 +19,7 @@ export class BillingServiceTableComponent implements OnInit {
     
   };
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['spId', 'spTyp', 'spStatus', 'spSrcStatus', 'installed'];
+  displayedColumns = ['servicePointId', 'spTypeCd', 'spStatusFlag', 'spSourceStatusFlag', 'installDate'];
 
   ngOnInit() {
 

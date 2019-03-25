@@ -11,7 +11,7 @@
           Account ID
         </div>
         <div class="row">
-            {{billingInfo.acctId}}
+            {{billingInfo.accountId}}
         </div>        
       </div>
       <div class="col">
@@ -19,7 +19,7 @@
             Premise ID
           </div>
           <div class="row">
-              {{billingInfo.premId}}
+              {{billingInfo.premiseId}}
           </div>        
       </div>           
       <div class="col">
@@ -55,7 +55,7 @@
               Bill Date
             </div>  
             <div class="row">
-                <span *ngIf="billingInfo.lastBill">{{billingInfo.lastBill.completed | date}}</span>
+                <span *ngIf="billingInfo.lastBill">{{billingInfo.lastBill.completionDt | date}}</span>
                 <span *ngIf="!billingInfo.lastBill">N/A</span>
             </div>                   
         </div>             
@@ -67,7 +67,7 @@
                 Bill Amount
               </div>
               <div class="row">
-                <span *ngIf="billingInfo.lastStormwaterBill">{{billingInfo.lastStormwaterBill.total | currency: 'USD'}}</span>
+                <span *ngIf="billingInfo.lastStormwaterBill">{{billingInfo.lastStormwaterBill.totalAmt | currency: 'USD'}}</span>
                 <span *ngIf="!billingInfo.lastStormwaterBill">N/A</span>
             </div>                  
           </div>     

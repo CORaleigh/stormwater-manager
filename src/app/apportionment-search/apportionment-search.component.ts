@@ -37,9 +37,9 @@ export class ApportionmentSearchComponent implements OnInit {
 
   accountSelected(event) {
     this.selectedValue = event.option.viewValue;
-    this.billing.getBillingInfo(event.option.value.prem_id).subscribe(data => {
-      if (data.Results.length > 0) {
-        this.ccbAccount = data.Results[0];
+    this.billing.getBillingInfo(event.option.value.premiseId).subscribe(data => {
+      if (data.length > 0) {
+        this.ccbAccount = data[0];
         
         this.ccbAccountSelected.emit(this.ccbAccount);
       }
@@ -62,11 +62,29 @@ export class ApportionmentSearchComponent implements OnInit {
     this.searchGroups[1].values=[];
     this.searchGroups[2].values=[];        
     this.addressChanges = this.billing.searchCcbAccounts('address', event.target.value).subscribe(result => {
-      this.searchGroups[0].values = result.Results;
+      if (result) {
+        result.forEach(r => {
+          //@ts-ignore
+          this.searchGroups[0].values.push({value: r.address, premiseId: r.premiseId, address: r.address});
+        });
+      }
       this.accountChanges = this.billing.searchCcbAccounts('account', event.target.value).subscribe(result => {
-        this.searchGroups[1].values = result.Results;
+        if (result) {
+          result.forEach(r => {
+            if (r.premiseId.length) {
+              //@ts-ignore
+              this.searchGroups[1].values.push({value: r.accountId, premiseId: r.premiseId, address: r.address});
+            }
+          });        
+        }
+          
         this.premiseChanges = this.billing.searchCcbAccounts('premise', event.target.value).subscribe(result => {
-          this.searchGroups[2].values = result.Results;
+          if (result) {
+            result.forEach(r => {
+            //@ts-ignore
+              this.searchGroups[2].values.push({value: r.premiseId, premiseId: r.premiseId, address: r.address});
+            });     
+          }
         });
       });
     })
