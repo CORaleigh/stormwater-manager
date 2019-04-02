@@ -11,7 +11,7 @@ import { BillService } from './bill-service';
   providedIn: 'root'
 })
 export class BillingService {
-  baseUrl: string = 'http://rhsoatstapp2:8182/RaleighAPI/ccb/';
+  baseUrl: string = 'https://cityconnecttest.raleighnc.gov/RaleighAPI/ccb/';
   constructor(private http:HttpClient) {
   }  
   
