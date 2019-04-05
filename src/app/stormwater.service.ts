@@ -12,7 +12,6 @@ import { HttpParams, HttpHeaders } from '@angular/common/http';
 import { LayerInfo } from './data-element';
 import { FieldInfo, Layer, Field, Domain } from './field-info';
 import { Parcel } from './parcel';
-const url:string = 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/';
 const httpOptions = {headers: new HttpHeaders({
   'Content-Type': 'application/x-www-form-urlencoded'
 })};
@@ -22,6 +21,8 @@ const httpOptions = {headers: new HttpHeaders({
 
 export class StormwaterService {
   constructor(private http:HttpClient) {}
+  url:string = 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/';
+
   account:BehaviorSubject<Account> = new BehaviorSubject<Account>(null);
   accounts:BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
   impervious:BehaviorSubject<Impervious[]> = new BehaviorSubject<Impervious[]>([]);
@@ -51,7 +52,7 @@ export class StormwaterService {
     .set('f', 'json')
     .set('token', this.credentials.getValue().token);
     
-    return this.http.post<any>(url + id + '/applyEdits', params, httpOptions);
+    return this.http.post<any>(this.url + id + '/applyEdits', params, httpOptions);
   }
 
   getByObjectId(id:number, oid:number): Observable<any> {
@@ -62,7 +63,7 @@ export class StormwaterService {
     .set('f', 'json')
     .set('token', this.credentials.getValue().token);
     
-    return this.http.post<any>(url + id + '/query', params, httpOptions);    
+    return this.http.post<any>(this.url + id + '/query', params, httpOptions);    
   }
 
   checkApportioned(id:number, premiseId:string): Observable<any> {
@@ -73,23 +74,23 @@ export class StormwaterService {
     .set('f', 'json')
     .set('token', this.credentials.getValue().token);
     
-    return this.http.post<any>(url + id + '/query', params, httpOptions);    
+    return this.http.post<any>(this.url + id + '/query', params, httpOptions);    
   }
   searchByStreet(input:string):Observable<any> { 
     let token:string = this.credentials.getValue().token;
-    let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/0/query?f=json&outFields=FullStreetName&returnDistinctValues=true&returnGeometry=false&orderByFields=FullStreetName&&token="+ token + "&where=FullStreetName like '" + input.toUpperCase() +"%25'";
+    let url = this.url + "/0/query?f=json&outFields=FullStreetName&returnDistinctValues=true&returnGeometry=false&orderByFields=FullStreetName&&token="+ token + "&where=FullStreetName like '" + input.toUpperCase() +"%25'";
     return this.http.get<any>(url);
   }
   searchAccounts(input:string, field:string):Observable<any> { 
     let token:string = this.credentials.getValue().token;
-    let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2/query?f=json&outFields="+field+"&returnDistinctValues=true&returnGeometry=false&orderByFields="+field+"&token="+ token + "&where="+field+" like '" + input.toUpperCase() +"%25'";
+    let url = this.url + "/2/query?f=json&outFields="+field+"&returnDistinctValues=true&returnGeometry=false&orderByFields="+field+"&token="+ token + "&where="+field+" like '" + input.toUpperCase() +"%25'";
     return this.http.get<any>(url);
   }
 
 
 
   getDataElements(token:string):Observable<any> { 
-    let url = "https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/queryDataElements?f=json&layers=*&token="+ token;
+    let url = this.url + "/queryDataElements?f=json&layers=*&token="+ token;
     return this.http.get<any>(url);
   }
 

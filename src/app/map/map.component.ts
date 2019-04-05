@@ -81,11 +81,11 @@ export class MapComponent implements OnInit {
 
   async initializeMap() {
     try {
-      const [WebMap, MapView, Search, FeatureLayerSearchSource, RelationshipQuery, FeatureLayer, QueryTask, esriRequest, GroupLayer, Expand, LayerList, ActionButton, Collection, GraphicsLayer, BasemapGallery, config] = await loadModules([
+      const [WebMap, MapView, Search, LayerSearchSource, RelationshipQuery, FeatureLayer, QueryTask, esriRequest, GroupLayer, Expand, LayerList, ActionButton, Collection, GraphicsLayer, BasemapGallery, config] = await loadModules([
         'esri/WebMap',
         'esri/views/MapView',
         'esri/widgets/Search',
-        'esri/widgets/Search/FeatureLayerSearchSource',
+        'esri/widgets/Search/LayerSearchSource',
         'esri/tasks/support/RelationshipQuery',
         'esri/layers/FeatureLayer',
         'esri/tasks/QueryTask',
@@ -127,7 +127,7 @@ export class MapComponent implements OnInit {
         this._mapView.map.add(this._parcelGraphics);
         this.configLayerList(LayerList, GroupLayer, Expand, this._mapView);
         this.configBasemapGallery(BasemapGallery, Expand, this._mapView);        
-        this.setupSearch(this._mapView, Search, FeatureLayerSearchSource, RelationshipQuery, QueryTask, esriRequest);
+        this.setupSearch(this._mapView, Search, LayerSearchSource, RelationshipQuery, QueryTask, esriRequest);
         this.configPopupActions(this._mapView, ActionButton, Collection, RelationshipQuery, QueryTask, esriRequest);
         this._mapView.on('hold', e => {
           this.getPropertyByGeometry(this._mapView, e.mapPoint, RelationshipQuery, QueryTask, esriRequest);
@@ -273,9 +273,9 @@ export class MapComponent implements OnInit {
     });
   }
 
-  getSource (layer: esri.Layer, FeatureLayerSearchSource: any, displayField: string, name: string, where: string, placeholder: string): esri.FeatureLayerSearchSource {
-    let source: esri.FeatureLayerSearchSource = new FeatureLayerSearchSource({
-      featureLayer: layer,
+  getSource (layer: esri.Layer, LayerSearchSource: any, displayField: string, name: string, where: string, placeholder: string): esri.LayerSearchSource {
+    let source: esri.LayerSearchSource = new LayerSearchSource({
+      layer: layer,
       searchFields: [displayField],
       displayField: displayField,
       exactMatch: false,
@@ -294,7 +294,7 @@ export class MapComponent implements OnInit {
     return source;
   }
   parcels:esri.FeatureLayer = null;
-  setupSearch (mapView:esri.MapView, Search: any, FeatureLayerSearchSource: any, RelationshipQuery: any, QueryTask: any, esriRequest: any) {
+  setupSearch (mapView:esri.MapView, Search: any, LayerSearchSource: any, RelationshipQuery: any, QueryTask: any, esriRequest: any) {
     this.parcels = mapView.map.layers.find(l => {
       return l.title === 'Parcels';
     }) as esri.FeatureLayer;
@@ -308,11 +308,11 @@ export class MapComponent implements OnInit {
   
     let search: esri.widgetsSearch = new Search({view: mapView, includeDefaultSources: false, resultGraphicEnabled: false});
     this._search = search;
-    search.sources.push(this.getSource(this.parcels, FeatureLayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
-    search.sources.push(this.getSource(this.parcels, FeatureLayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
-    search.sources.push(this.getSource(this.parcels, FeatureLayerSearchSource, 'PinNum', 'PIN', "Account = 'A'", "Search by PIN"));
+    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
+    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
+    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'PinNum', 'PIN', "Account = 'A'", "Search by PIN"));
 
-    search.sources.push(this.getSource(addresses, FeatureLayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
+    search.sources.push(this.getSource(addresses, LayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
     mapView.ui.add(search, {position: 'top-left', index: 0});
 
     search.goToOverride = (view:esri.MapView, params:any) => {
