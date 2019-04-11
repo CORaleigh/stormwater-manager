@@ -19,7 +19,6 @@ export class AccountsComponent implements OnInit {
   parcel:Parcel;
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
-      
       this.account = account;
       this.accounts = this.stormwater.accounts.getValue();
     });
