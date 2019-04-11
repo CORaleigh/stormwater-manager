@@ -9,7 +9,7 @@
     <!-- created_date Column -->
     <ng-container matColumnDef="created_date">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-      <td mat-cell *matCellDef="let row">{{row.created_date | date: 'medium'}}</td>
+      <td mat-cell *matCellDef="let row">{{row.created_date |  date: 'medium' : 'GMT'}}</td>
     </ng-container>
     <!-- LogEntry Column -->
     <ng-container matColumnDef="LogEntry">
