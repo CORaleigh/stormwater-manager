@@ -122,6 +122,7 @@ export class ApportionmentUpdateFormComponent  {
     this._apportionment.AccountId = this._account.AccountId;
     this._apportionment.SfeuType = this._account.UseClass;
     this._apportionment.Address = this.ccbAccount.address;
+    this._apportionment.CSA_ID = this.ccbAccount.csaId;
 
       this._apportionment.ApprovalDate = moment().unix() * 1000;
       this._apportionment.ExpirationDate = moment().add(10, 'years').unix() * 1000;

@@ -55,7 +55,7 @@
               Bill Date
             </div>  
             <div class="row">
-                <span *ngIf="billingInfo.lastBill">{{billingInfo.lastBill.completionDt | date}}</span>
+                <span *ngIf="billingInfo.lastBill">{{billingInfo.lastBill.completionDt}}</span>
                 <span *ngIf="!billingInfo.lastBill">N/A</span>
             </div>                   
         </div>             
@@ -72,11 +72,13 @@
             </div>                  
           </div>     
           <div class="col">
-              <div class="row">
-              </div>
-              <div class="row">
-              </div>        
-          </div>    
+            <div class="row">
+              CSAID
+            </div>
+            <div class="row">
+                {{billingInfo.csaId}}
+            </div>        
+        </div>   
           <div class="col">
               <div class="row">
               </div>

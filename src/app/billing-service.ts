@@ -23,6 +23,7 @@ export class BillingService {
         let info = new BillingInfo();
         info.services = [];
         this.getBillingInfo(account.PremiseId.toString()).subscribe(result => {
+          debugger
           if (result) {
             if (result.length > 0) {
               info = result[0] as BillingInfo;
@@ -62,15 +63,15 @@ export class BillingService {
 
   getBillingInfo(premise:string):Observable<any> {
     //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20Information?f=json&premise='+premise
-    let url = this.baseUrl + 'getPremiseAccounts';
-    let body:any = {
-      "CM-GetPremiseAccounts": {
-        "premiseId": premise,
-        "serviceType": "ST"
-      }
-    } 
-    debugger
-    return this.http.post<any>(url, body);    
+   //let url = this.baseUrl + 'getPremiseAccounts';
+    // let body:any = {
+    //   "CM-GetPremiseAccounts": {
+    //     "premiseId": premise,
+    //     "serviceType": "ST"
+    //   }
+    // } 
+    let url = 'https://giststetllv1.ci.raleigh.nc.us:3002/api/accounts/'+premise;
+    return this.http.get<any>(url,{headers: {'Content-Type': 'application/json'}});//, body);    
   }
   getLastBill(account:string):Observable<any> {
     //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20Last%20Bill?f=json&account='+account;
