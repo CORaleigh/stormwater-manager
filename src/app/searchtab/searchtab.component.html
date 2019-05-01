@@ -1,4 +1,4 @@
-<form [formGroup]="searchForm">
+<!-- <form [formGroup]="searchForm">
 <mat-form-field class="example-full-width">
     <input (input)="inputChanged($event)" matInput placeholder="Street name, account ID, premise ID or CSA ID"  formControlName="searchGroup" [formControl]="control" [matAutocomplete]="searchGroup">
     <mat-autocomplete #searchGroup="matAutocomplete" (optionSelected)="accountSelected($event)" [displayWith]="displayFn">
@@ -15,5 +15,5 @@
 </mat-form-field>  
 <button mat-raised-button color="primary" (click)="listPending()">List Pending Accounts</button>
 
-</form>  
+</form>   -->
 <app-account-list-table></app-account-list-table>

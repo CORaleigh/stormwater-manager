@@ -23,7 +23,7 @@ export class BillingService {
         let info = new BillingInfo();
         info.services = [];
         this.getBillingInfo(account.PremiseId.toString()).subscribe(result => {
-          debugger
+          
           if (result) {
             if (result.length > 0) {
               info = result[0] as BillingInfo;

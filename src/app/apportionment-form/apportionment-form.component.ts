@@ -95,7 +95,7 @@ export class ApportionmentFormComponent implements OnInit {
         apportionment.Impervious = apportionment.Parcent * account.BillableImpervious;
         updates.push(new Feature(apportionment));
       });
-      debugger
+      
       this.stormwater.apportionments.next(this.apportionments);
       this.stormwater.applyEdits(5, [], updates, []).subscribe(result => {
 
