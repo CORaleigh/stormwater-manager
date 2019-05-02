@@ -40,6 +40,9 @@ export class ApportionmentUpdateFormComponent  {
   private _account = null;
   private _apportionment = null;
 
+  types = ['ST','WA','WW','WM', 'WA', 'WR'];
+  count = 0;
+
   @Input() ccbAccount:any;
   @Input() mode: string;
   @Input('stepper') 
@@ -53,22 +56,19 @@ export class ApportionmentUpdateFormComponent  {
       }    
     })
   };
+
+
+
   @Input('apportionment') 
   set apportionment(apportionment:Apportionment) {
     this._apportionment = apportionment;
     if (apportionment) {
       this.form.get('Parcent').setValue(this._apportionment.Parcent);
       this.expirationDate.setValue(moment(this._apportionment.ExpirationDate));   
-      this.billing.getBillingInfo(apportionment.PremiseId).subscribe(result => {
-        this.ccbAccount = result.Results[0];
-        this.ccbAccountSelected.emit(this.ccbAccount);
-
-      });
+      this.getBilling(apportionment.PremiseId, this.types[this.count]);
       let account = this.stormwater.account.getValue();
       this.setRemainingPercent(account, apportionment);      
     }
-
-
   }
   @Input('account') 
   set account(account: Account) {
@@ -92,6 +92,25 @@ export class ApportionmentUpdateFormComponent  {
   });
 
   constructor(private fb: FormBuilder, private billing:BillingService, private stormwater:StormwaterService) {}
+
+  getBilling(premiseId, type) {
+    if (this.count < this.types.length) {
+      this.billing.getBillingInfo(premiseId, type).subscribe(data => {
+        if (data.length > 0) {
+          this.ccbAccount = data[0];
+          this.ccbAccountSelected.emit(this.ccbAccount);
+          this.count = 0;
+        } else {
+          this.count += 1;
+          this.getBilling(premiseId, this.types[this.count])
+        }
+
+    });
+    } else {
+      this.count = 0;
+    }
+}
+ 
 
   setRemainingPercent(account:Account, apportionment:Apportionment) {
     if (account.ApportionmentCode === 'WEIGHTED') {

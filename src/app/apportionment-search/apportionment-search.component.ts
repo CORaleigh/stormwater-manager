@@ -31,19 +31,34 @@ export class ApportionmentSearchComponent implements OnInit {
   @Output() ccbAccountSelected:EventEmitter<any> = new EventEmitter();
   ccbAccount:any;
   selectedValue:string = "";
-  
+  types = ['ST','WA','WW','WM', 'WA', 'WR'];
+  count = 0;
   ngOnInit() {
   }
 
+  getBilling(event, type) {
+      if (this.count < this.types.length) {
+        this.billing.getBillingInfo(event.option.value.premiseId, type).subscribe(data => {
+          if (data.length > 0) {
+            this.ccbAccount = data[0];
+            this.ccbAccountSelected.emit(this.ccbAccount);
+            this.count = 0;
+          } else {
+            this.count += 1;
+            this.getBilling(event, this.types[this.count])
+          }
+  
+      });
+      } else {
+        this.count = 0;
+      }
+  }
+   
+
   accountSelected(event) {
     this.selectedValue = event.option.viewValue;
-    this.billing.getBillingInfo(event.option.value.premiseId).subscribe(data => {
-      if (data.length > 0) {
-        this.ccbAccount = data[0];
-        
-        this.ccbAccountSelected.emit(this.ccbAccount);
-      }
-    });
+    this.getBilling(event, this.types[this.count]);
+
   }
   displayFn(user?: any): string | undefined {
     return user ? user.value : undefined;

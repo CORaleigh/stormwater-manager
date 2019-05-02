@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div class="mat-elevation-z8 table-container">
   <table mat-table class="full-width-table" [dataSource]="dataSource" matSort matSortActive="SiteAddress" matSortDirection="asc" aria-label="Elements">
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
@@ -23,7 +23,7 @@
     </ng-container>
     <!-- AccountId Column -->
     <ng-container matColumnDef="AccountId">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Account Id</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Account ID</th>
       <td mat-cell *matCellDef="let row">{{row.AccountId}}</td>
     </ng-container>
     <!-- Status Column -->
@@ -38,14 +38,15 @@
     </ng-container>
     <!-- ApportionmentUnits Column -->
     <ng-container matColumnDef="ApportionmentUnits">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Apportionment Units</th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Apportion Units</th>
       <td mat-cell *matCellDef="let row">{{row.ApportionmentUnits}}</td>
     </ng-container>            
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row);rowClicked(row);"></tr>
   </table>
 
   <mat-paginator #paginator
+      class="mat-paginator-sticky" 
       [length]="dataSource.data.length"
       [pageIndex]="0"
       [pageSize]="50"

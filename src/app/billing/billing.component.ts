@@ -14,10 +14,14 @@ export class BillingComponent implements OnInit {
   billingInfo:BillingInfo;
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
-      this.billingInfo = null;
-      this.billing.getBillingData(account).then(info => {
-        this.billingInfo = info;
-      })
+      if (account) {
+        this.billingInfo = null;
+        this.billing.getBillingData(account).then(info => {
+          
+          this.billingInfo = info;
+        })
+      }
+
     });
   }
 

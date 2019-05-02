@@ -1,5 +1,64 @@
 .full-width-table {
   width: 100%;
-  text-align: center;
+  z-index: 10000;
+}
+.mat-paginator-sticky {
+  bottom: 0px;
+  position: sticky;
+  z-index: 10;
 }
 
+/* .table-container {
+  overflow-x: hidden;
+} */
+.table-container{
+  width: 100%;
+  height: calc(100% - 56px);
+  overflow-x: hidden;
+  z-index: 10000;
+  -webkit-overflow-scrolling: touch !important;
+  overflow-y: auto !important;
+  }
+.mat-column-SiteAddress {
+  max-width: 100px;
+  margin:2px;
+
+}
+.mat-column-RealEstateId {
+  max-width: 90px;
+  margin:2px;
+  text-align: center
+}
+
+.mat-column-AccountId {
+  max-width: 70px;
+  margin:2px;
+  text-align: center
+}
+
+.mat-column-Status {
+  max-width: 50px;
+  margin:2px;
+  text-align: center
+}
+
+.mat-column-TotalImpervious {
+  max-width: 80px;
+  margin:2px;
+  text-align: center
+
+}
+.mat-column-ApportionmentUnits {
+  max-width: 50px;
+  margin:2px;
+  text-align: center
+}
+
+
+
+
+.mat-cell {
+  word-break: break-word;
+  padding: 2px;
+
+}

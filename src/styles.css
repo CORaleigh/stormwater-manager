@@ -9,3 +9,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
   }
   .mat-accordion .mat-expansion-panel:first-of-type {    border-radius: 0 !important;
   }
+
+
+  .mat-drawer-inner-container {
+    overflow: hidden !important;
+  }

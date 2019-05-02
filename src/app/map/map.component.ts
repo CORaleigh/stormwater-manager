@@ -352,7 +352,7 @@ export class MapComponent implements OnInit {
       layer: new FeatureLayer({
       url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
       searchFields: ["AccountId"],
-      displayField: "Account ID",
+      displayField: "AccountId",
       exactMatch: false,
       outFields: ["*"],
       name: "AccountId",
@@ -368,7 +368,7 @@ export class MapComponent implements OnInit {
       layer: new FeatureLayer({
       url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
       searchFields: ["PremiseId"],
-      displayField: "Premise ID",
+      displayField: "PremiseId",
       exactMatch: false,
       outFields: ["*"],
       name: "PremiseId",
@@ -477,7 +477,7 @@ export class MapComponent implements OnInit {
           let account:Account = accounts[0]; 
           this.router.navigate(['/account/' + account.AccountId]);
           if (this.stormwater.account.getValue().OBJECTID != account.OBJECTID) {
-            this.stormwater.account.next(account);
+          //  this.stormwater.account.next(account);
           }
           
           this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
@@ -649,7 +649,10 @@ export class MapComponent implements OnInit {
 
   queryRelatedParcels(oids:number[], features:any[]) {
     let data = [];
-    this.parcels.queryRelatedFeatures({relationshipId: 0, returnGeometry: true, objectIds: oids, outFields: ['*']}).then(relatedResults => {
+    let relationship = this.parcels.relationships.find((r:esri.Relationship) => {
+      return r.name === 'Account';
+    });    
+    this.parcels.queryRelatedFeatures({relationshipId: relationship.id, returnGeometry: true, objectIds: oids, outFields: ['*']}).then(relatedResults => {
       features.forEach(feature => {
         
         if (relatedResults[feature.attributes.OBJECTID]) {
@@ -720,6 +723,7 @@ export class MapComponent implements OnInit {
       }
     });
     this.stormwater.streetName.subscribe(streetName => {
+      debugger
       if (streetName) {
               let data = [];
               this.parcels.queryFeatures({where: "FullStreetName = '" + streetName + "'", returnGeometry: true, outFields: ['*'], outSpatialReference: this._mapView.spatialReference }).then(result => {

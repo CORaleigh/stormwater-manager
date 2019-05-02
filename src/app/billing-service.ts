@@ -14,7 +14,32 @@ export class BillingService {
   baseUrl: string = 'https://cityconnecttest.raleighnc.gov/RaleighAPI/ccb/';
   constructor(private http:HttpClient) {
   }  
-  
+
+  types = ['ST','WA','WW','WM', 'WA', 'WR'];
+  count = 0;
+
+
+public getBilling(premise:string, type: string):Promise<BillingInfo> {
+
+  let promise = new Promise<BillingInfo>((resolve, reject) => {
+
+    if (this.count < this.types.length) {
+      this.getBillingInfo(premise, type).subscribe(data => {
+        if (data.length > 0) {
+          this.count = 0;
+          resolve(data[0]);
+        } else {
+          this.count += 1;
+          this.getBilling(premise, this.types[this.count])
+        }
+
+    });
+    } else {
+      this.count = 0;
+    }
+  });
+  return promise;
+}
     public getBillingData(account:Account):Promise<BillingInfo> {
 
     let promise = new Promise<BillingInfo>((resolve, reject) => {
@@ -22,11 +47,12 @@ export class BillingService {
         
         let info = new BillingInfo();
         info.services = [];
-        this.getBillingInfo(account.PremiseId.toString()).subscribe(result => {
+        this.count = 0;
+        this.getBilling(account.PremiseId.toString(), this.types[this.count]).then(result => {
           
           if (result) {
-            if (result.length > 0) {
-              info = result[0] as BillingInfo;
+           // if (result.length > 0) {
+              info = result as BillingInfo;
               this.getLastBill(info.accountId).subscribe(result => {
                 if (result.length > 0) {
                   info.lastBill = result[0] as Bill;
@@ -46,9 +72,9 @@ export class BillingService {
                   });
                 }
               });
-            } else {
-              resolve(info);
-            }
+          //  } else {
+          //    resolve(info);
+         //   }
           }else {
             resolve(info);
           }
@@ -61,20 +87,20 @@ export class BillingService {
     return promise;
   }
 
-  getBillingInfo(premise:string):Observable<any> {
-    //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20Information?f=json&premise='+premise
-   //let url = this.baseUrl + 'getPremiseAccounts';
-    // let body:any = {
-    //   "CM-GetPremiseAccounts": {
-    //     "premiseId": premise,
-    //     "serviceType": "ST"
-    //   }
-    // } 
-    let url = 'https://giststetllv1.ci.raleigh.nc.us:3002/api/accounts/'+premise;
-    return this.http.get<any>(url,{headers: {'Content-Type': 'application/json'}});//, body);    
+
+  
+
+  getBillingInfo(premise:string, serviceType: string):Observable<any> {
+   let url = this.baseUrl + 'getPremiseAccounts';
+    let body:any = {
+      "CM-GetPremiseAccounts": {
+        "premiseId": premise,
+        "serviceType": serviceType
+      }
+    } 
+    return this.http.post<any>(url, body);    
   }
   getLastBill(account:string):Observable<any> {
-    //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20Last%20Bill?f=json&account='+account;
     let url = this.baseUrl + 'getLastBillByAccount';
     let body:any = {
       "CM-GetLastBillByAccount": {
@@ -86,7 +112,6 @@ export class BillingService {
     return this.http.post<any>(url, body);    
   }
   getLastSwBill(premise:string, billid: string):Observable<any> {
-    //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20Last%20Stormwater%20Bill?f=json&premise='+premise + '&billId='+billid;
     let url = this.baseUrl + 'getBillingByPremise';
     let body:any = {
       "CM-GetBillingByPremise": {
@@ -99,7 +124,6 @@ export class BillingService {
     return this.http.post<any>(url, body);    
   }
   getBillingServices(premise:string):Observable<any> {
-    //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20Services?f=json&account='+account;
     let url = this.baseUrl + 'getPremiseSPs';
     let body:any = {
       "CM-GetPremiseSPs": {
@@ -111,7 +135,6 @@ export class BillingService {
   }
 
   searchCcbAccounts(type:string, input:string):Observable<any> {
-    //let url = 'https://gis.raleighnc.gov/arcgis/rest/services/Stormwater/ImperviousSurface/MapServer/exts/StormwaterSOE/CCB%20AutoComplete?f=json&type='+type+'&input='+input;
     let url = this.baseUrl + 'getPremiseInformation';
     let address = "";
     let premise = "";
