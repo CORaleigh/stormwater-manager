@@ -723,7 +723,6 @@ export class MapComponent implements OnInit {
       }
     });
     this.stormwater.streetName.subscribe(streetName => {
-      debugger
       if (streetName) {
               let data = [];
               this.parcels.queryFeatures({where: "FullStreetName = '" + streetName + "'", returnGeometry: true, outFields: ['*'], outSpatialReference: this._mapView.spatialReference }).then(result => {

@@ -7,14 +7,14 @@
     </mat-expansion-panel-header>
     <div class="row" *ngIf="accounts.length > 1">
       <mat-form-field class="full-width">
-          <mat-select placeholder="Status" (selectionChange)="statusChanged($event)" [(value)]="account">
+          <mat-select  placeholder="Status" (selectionChange)="statusChanged($event)" [(ngModel)]="selectedAccount">
             <mat-option *ngFor="let acc of accounts" [value]="acc">
               {{getDomain(acc.Status, 'Status', 2)}}
             </mat-option>
           </mat-select>
         </mat-form-field>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="account">
       <div class="col">
         <div class="row">
           Account ID
@@ -42,7 +42,7 @@
     </div>
     <mat-divider></mat-divider>
 
-    <div class="row">
+    <div class="row" *ngIf="account">
         <div class="col">
           <div class="row">
             Status
@@ -69,7 +69,7 @@
       </div>   
       <mat-divider></mat-divider>
 
-      <div class="row">
+      <div class="row" *ngIf="account">
           <div class="col">
             <div class="row">
               Billing Tier
@@ -124,7 +124,7 @@
             </div>     
           </div>             
     <!-- <app-account-table></app-account-table> -->
-    <mat-action-row>
+    <mat-action-row *ngIf="account">
       <button mat-button (click)="sendToCCB()" *ngIf="account.CCBUpdateFlag != 'Y'">Send To CCB</button>
       <button mat-button (click)="update()">Update</button>
     </mat-action-row>

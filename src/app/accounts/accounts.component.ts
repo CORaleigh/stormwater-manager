@@ -17,10 +17,15 @@ export class AccountsComponent implements OnInit {
   account:Account;
   accounts:Account[] = [];
   parcel:Parcel;
+  selectedAccount:Account;
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
-      this.account = account;
-      this.accounts = this.stormwater.accounts.getValue();
+      if (account) {
+        this.accounts = this.stormwater.accounts.getValue();
+        this.account = account;
+        this.selectedAccount = this.accounts[0];
+      }
+
     });
     this.stormwater.parcel.subscribe(parcel => {
       
@@ -34,6 +39,7 @@ export class AccountsComponent implements OnInit {
 
   statusChanged(event) {
     console.log(event);
+    
     this.stormwater.account.next(event.value);
   }
 
