@@ -594,7 +594,7 @@ export class MapComponent implements OnInit {
             result.features.forEach(feature => {
               oids.push(feature.attributes.OBJECTID);
             })
-            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 0, QueryTask, oids).then(parcelResult => {
+            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 1, QueryTask, oids).then(parcelResult => {
               let data = [];
               result.features.forEach(f => {
                 if (parcelResult[f.attributes.OBJECTID]) {
