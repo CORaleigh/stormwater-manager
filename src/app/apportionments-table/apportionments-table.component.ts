@@ -16,7 +16,7 @@ export class ApportionmentsTableComponent implements OnInit {
   dataSource: ApportionmentsTableDataSource;
   constructor(private stormwater:StormwaterService) {}
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns =  ['OBJECTID', 'PremiseId', 'Address', 'Parcent', 'Sfeu', 'Impervious'];
+  displayedColumns =  ['OBJECTID', 'PremiseId', 'Address', 'PercentApportioned', 'Sfeu', 'Impervious'];
   rowClicked(row) {
     this.apportionmentSelected.emit(row);
   }

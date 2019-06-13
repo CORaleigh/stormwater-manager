@@ -29,7 +29,7 @@ export class AccountFormComponent implements OnInit {
       this.useclasses = this.stormwater.getDomain(2, 'UseClass');
       this.form.get('useclass').setValue(account.UseClass);     
       this.form.get('premiseid').setValue(account.PremiseId); 
-      this.form.get('csaid').setValue(account.CSA_ID); 
+      this.form.get('csaid').setValue(account.CsaId); 
 
     });
   }
@@ -37,7 +37,7 @@ export class AccountFormComponent implements OnInit {
     this.account.Status = this.form.get('status').value;
     this.account.UseClass = this.form.get('useclass').value;
     this.account.PremiseId = this.form.get('premiseid').value;
-    this.account.CSA_ID = this.form.get('csaid').value;    
+    this.account.CsaId = this.form.get('csaid').value;    
     this.submitted.emit(this.account);
   }
 }

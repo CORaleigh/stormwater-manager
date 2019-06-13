@@ -8,7 +8,7 @@ export interface ApportionmentsTableItem {
   OBJECTID: number,
   PremiseId: string,
   Address: string,
-  Parcent: number,
+  PercentApportioned: number,
   Sfeu: number,
   Impervious: number
 }
@@ -78,7 +78,7 @@ export class ApportionmentsTableDataSource extends DataSource<ApportionmentsTabl
         case 'OBJECTID': return compare(a.OBJECTID, b.OBJECTID, isAsc);
         case 'PremiseId': return compare(a.PremiseId, b.PremiseId, isAsc);
         case 'Address': return compare(a.Address, b.Address, isAsc);
-        case 'Parcent': return compare(a.Parcent, b.Parcent, isAsc);
+        case 'PercentApportioned': return compare(a.PercentApportioned, b.PercentApportioned, isAsc);
         case 'Sfeu': return compare(a.Sfeu, b.Sfeu, isAsc);
         case 'Impervious': return compare(a.Impervious, b.Impervious, isAsc);
 

@@ -50,13 +50,13 @@ export class ApportionmentDialogComponent implements OnInit {
   submitted(apportionment) {
     let updates = [];
     this.apportionment = apportionment;
-    apportionment.Impervious = this.account.BillableImpervious * apportionment.Parcent;
-    apportionment.Sfeu = this.account.Sfeu * apportionment.Parcent;
+    apportionment.Impervious = Math.round(this.account.BillableImpervious * apportionment.PercentApportioned);
+    //apportionment.Sfeu = this.account.Sfeu * apportionment.PercentApportioned;
     if (this.account.ApportionmentCode === 'EQUAL'){
       this.apportionments.forEach(apportionment => {
-        apportionment.Parcent = (100 / this.account.ApportionmentUnits) / 100;
-          apportionment.Impervious = this.account.BillableImpervious * apportionment.Parcent;
-          apportionment.Sfeu = this.account.Sfeu * apportionment.Parcent;
+        apportionment.PercentApportioned = (100 / this.account.ApportionmentUnits) / 100;
+          apportionment.Impervious = Math.round(this.account.BillableImpervious * apportionment.PercentApportioned);
+          //apportionment.Sfeu = this.account.Sfeu * apportionment.PercentApportioned;
         updates.push(new Feature(apportionment));
       });
     }

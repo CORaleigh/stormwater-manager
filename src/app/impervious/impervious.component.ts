@@ -60,7 +60,7 @@ export class ImperviousComponent implements OnInit {
     });
     if (i.length > 0) {
       let record = i[0];
-      data = new Impervious(record.AccountId, record.TotalImpervious, record.Building,record.MiscImpervious,record.OtherImpervious, record.RecreationImpervious, record.RoadTrailImpervious, record.ParkingImpervious, record.PermittedImpervious, record.MethodUsed, record.MethodDate, record.EffectiveDate, record.Status, record.ImperviousId, record.created_user, record.created_date, record.last_edited_user, record.last_edited_date, record.OBJECTID, record.GlobalId);
+      data = new Impervious(record.AccountId, record.TotalImpervious, record.BuildingImpervious,record.MiscImpervious,record.OtherImpervious, record.RecreationImpervious, record.RoadTrailImpervious, record.ParkingImpervious, record.PermittedImpervious, record.MethodUsed, record.MethodDate, record.EffectiveDate, record.Status, record.ImperviousId, record.created_user, record.created_date, record.last_edited_user, record.last_edited_date, record.OBJECTID, record.GlobalId);
     
     }
     if (!data) {
@@ -70,7 +70,7 @@ export class ImperviousComponent implements OnInit {
     data.Status = 'P';
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Impervious', impervious: data}});
     ref.afterClosed().subscribe((data:Impervious) => {
-      data.TotalImpervious = data.Building + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
+      data.TotalImpervious = data.BuildingImpervious + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
 
       let feature = new Feature(data, null);
       this.stormwater.applyEdits(3, [feature], null, null).subscribe(result => {

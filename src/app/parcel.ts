@@ -1,7 +1,7 @@
 export class Parcel {
     OBJECTID: number;
     GlobalID: string;
-    PinNum: string;
+    PinNumber: string;
     Owner: string;
     SiteAddress: string;
     FullStreetName: string;
@@ -18,7 +18,7 @@ export class Parcel {
     constructor(
         OBJECTID: number,
         GlobalID: string,
-        PinNum: string,
+        PinNumber: string,
         Owner: string,
         SiteAddress: string,
         FullStreetName: string,
@@ -34,7 +34,7 @@ export class Parcel {
         last_edited_date: number) {
             this.OBJECTID = OBJECTID;
             this.GlobalID = GlobalID;
-            this.PinNum = PinNum;
+            this.PinNumber = PinNumber;
             this.Owner = Owner;
             this.SiteAddress = SiteAddress;
             this.FullStreetName = FullStreetName;

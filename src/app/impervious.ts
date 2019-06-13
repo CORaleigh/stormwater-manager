@@ -4,7 +4,7 @@ export class Impervious {
     AccountId: number;
     ImperviousId: number;
     TotalImpervious: number;
-    Building: number;
+    BuildingImpervious: number;
     MiscImpervious: number;
     OtherImpervious: number;
     RecreationImpervious: number;
@@ -22,7 +22,7 @@ export class Impervious {
     constructor(
         AccountId?: number,
         TotalImpervious?: number,
-        Building?: number,
+        BuildingImpervious?: number,
         MiscImpervious?: number,
         OtherImpervious?: number,
         RecreationImpervious?: number,
@@ -46,7 +46,7 @@ export class Impervious {
         this.AccountId = AccountId;
         this.ImperviousId = ImperviousId;
         this.TotalImpervious = TotalImpervious;
-        this.Building = Building;
+        this.BuildingImpervious = BuildingImpervious;
         this.MiscImpervious = MiscImpervious;
         this.OtherImpervious = OtherImpervious;
         this.RecreationImpervious = RecreationImpervious;

@@ -29,10 +29,15 @@ export class ApportionmentsComponent implements OnInit {
 
   apportionmentSelected(apportionment) {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Apportion', mode:'update', apportionment:apportionment}});
-
+    ref.afterClosed().subscribe((data:any) => {
+      this.stormwater.accountListSelected.next(this.account);   
+    });
   }
   apportion() {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Apportion', mode:'add', apportionment: null}});
+    ref.afterClosed().subscribe((data:any) => {
+      this.stormwater.accountListSelected.next(this.account);   
+    });
 
   }
 

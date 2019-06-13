@@ -2,7 +2,7 @@ export class Account {
     OBJECTID: number;
     GlobalID: string;
     AccountId: number;
-    CSA_ID: number;
+    CsaId: number;
     TotalImpervious: number;
     TotalImperviousPrevious: number;
     CreditedImpervious: number;
@@ -16,7 +16,6 @@ export class Account {
     Sfeu: number;
     SfeuPrevious: number;
     ApportionmentCode: string;
-    SfeuType: string;
     PremiseId: number;
     PinNumber: string;
     BillingTier: number;
@@ -31,7 +30,7 @@ export class Account {
         OBJECTID: number,
         GlobalID: string,
         AccountId: number,
-        CSA_ID: number,
+        CsaId: number,
         TotalImpervious: number,
         CreditedImpervious: number,
         BillableImpervious: number,
@@ -42,7 +41,6 @@ export class Account {
         Sfeu: number,
         SfeuPrevious: number,
         ApportionmentCode: string,
-        SfeuType: string,
         PremiseId: number,
         PinNumber: string,
         BilingTier:number,
@@ -58,7 +56,7 @@ export class Account {
         this.OBJECTID = OBJECTID;
         this.GlobalID = GlobalID;
         this.AccountId = AccountId;
-        this.CSA_ID = CSA_ID;
+        this.CsaId = CsaId;
         this.TotalImpervious = Number.isNaN(TotalImpervious) ? null : TotalImpervious;
         this.CreditedImpervious = Number.isNaN(CreditedImpervious) ? null : CreditedImpervious;
         this.BillableImpervious = Number.isNaN(BillableImpervious) ? null : BillableImpervious;
@@ -69,7 +67,6 @@ export class Account {
         this.Sfeu = Number.isNaN(Sfeu) ? null : Sfeu;
         this.SfeuPrevious = Number.isNaN(SfeuPrevious) ? null : SfeuPrevious;
         this.ApportionmentCode = ApportionmentCode;
-        this.SfeuType = SfeuType;
         this.PremiseId = PremiseId;
         this.PinNumber = PinNumber;
         this.BillingTier = BilingTier;

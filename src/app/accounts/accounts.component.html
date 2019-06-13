@@ -28,7 +28,7 @@
             CSA ID
           </div>
           <div class="row">
-              {{account.CSA_ID}}
+              {{account.CsaId}}
           </div>        
       </div>           
       <div class="col">
@@ -64,7 +64,8 @@
               Use Class
             </div>
             <div class="row">
-                {{getDomain(account.UseClass, 'UseClass', 2)}}            </div>        
+                {{getDomain(account.UseClass, 'UseClass', 2)}}
+            </div>        
         </div>     
       </div>   
       <mat-divider></mat-divider>
@@ -111,7 +112,7 @@
                   PIN #
                 </div>
                 <div class="row">
-                    {{parcel.PinNum}}
+                    {{parcel.PinNumber}}
                 </div>        
             </div>           
             <div class="col" *ngIf="parcel">

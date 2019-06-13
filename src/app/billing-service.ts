@@ -25,12 +25,14 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
 
     if (this.count < this.types.length) {
       this.getBillingInfo(premise, type).subscribe(data => {
-        if (data.length > 0) {
-          this.count = 0;
-          resolve(data[0]);
-        } else {
-          this.count += 1;
-          this.getBilling(premise, this.types[this.count])
+        if (data) {          
+          if (data.length > 0) {
+            this.count = 0;
+            resolve(data[0]);
+          } else {
+            this.count += 1;
+            this.getBilling(premise, this.types[this.count])
+          }
         }
 
     });
@@ -91,6 +93,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
   
 
   getBillingInfo(premise:string, serviceType: string):Observable<any> {
+    
    let url = this.baseUrl + 'getPremiseAccounts';
     let body:any = {
       "CM-GetPremiseAccounts": {

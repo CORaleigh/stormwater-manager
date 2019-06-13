@@ -5,11 +5,10 @@ export class Apportionment {
     ExpirationDate: number;
     ApprovalDate: number;
     ApprovalUser: string;
-    Parcent: number;
+    PercentApportioned: number;
     Address: string;
     Impervious: number;
     Sfeu: number;
-    SfeuType: string;
     PremiseId: string;
     created_user: string;
     created_date: number;

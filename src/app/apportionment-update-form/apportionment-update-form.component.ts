@@ -51,7 +51,7 @@ export class ApportionmentUpdateFormComponent  {
       let account = this.stormwater.account.getValue();
       this.setRemainingPercent(account, null);
       if (!this._apportionment) {
-        this.form.get('Parcent').setValue(0);
+        this.form.get('PercentApportioned').setValue(0);
         this.expirationDate.setValue(moment().add(10, 'years'));   
       }    
     })
@@ -63,7 +63,7 @@ export class ApportionmentUpdateFormComponent  {
   set apportionment(apportionment:Apportionment) {
     this._apportionment = apportionment;
     if (apportionment) {
-      this.form.get('Parcent').setValue(this._apportionment.Parcent);
+      this.form.get('PercentApportioned').setValue(this._apportionment.PercentApportioned);
       this.expirationDate.setValue(moment(this._apportionment.ExpirationDate));   
       this.getBilling(apportionment.PremiseId, this.types[this.count]);
       let account = this.stormwater.account.getValue();
@@ -74,9 +74,9 @@ export class ApportionmentUpdateFormComponent  {
   set account(account: Account) {
     this._account = account;
     if (account.ApportionmentCode === 'EQUAL') {
-      this.form.get('Parcent').disable();
+      this.form.get('PercentApportioned').disable();
     } else {
-      this.form.get('Parcent').enable();
+      this.form.get('PercentApportioned').enable();
     }
   }
   @Output() ccbAccountSelected = new EventEmitter<any>();
@@ -84,7 +84,7 @@ export class ApportionmentUpdateFormComponent  {
   @Output() deleted = new EventEmitter<Apportionment>();
 
   form = this.fb.group({
-    Parcent: [null, Validators.compose([
+    PercentApportioned: [null, Validators.compose([
       Validators.required, Validators.min(0), Validators.max(1)])
     ],
     ExpirationDate: [null, null]
@@ -119,29 +119,31 @@ export class ApportionmentUpdateFormComponent  {
       apportionments.forEach(a => {
         if (apportionment) {
           if (a.OBJECTID != apportionment.OBJECTID) {
-            remaining -= a.Parcent;
+            remaining -= a.PercentApportioned;
           }
         } else {
-          remaining -= a.Parcent;
+          remaining -= a.PercentApportioned;
         }
 
       });
       
-      this.form.get('Parcent').setValidators(Validators.max(remaining));       
+      this.form.get('PercentApportioned').setValidators(Validators.max(remaining));       
 
     }
   }
 
   checkInvalid() {
-    return this.expirationDate.invalid || this.form.get('Parcent').invalid;
+    return this.expirationDate.invalid || this.form.get('PercentApportioned').invalid;
   }
   onSubmit() {
     if (this.mode === 'add') {
     this._apportionment = new Apportionment();
     this._apportionment.AccountId = this._account.AccountId;
-    this._apportionment.SfeuType = this._account.UseClass;
     this._apportionment.Address = this.ccbAccount.address;
-    this._apportionment.CSA_ID = this.ccbAccount.csaId;
+    if (this.ccbAccount.csaId === 'NONE') {
+      this.ccbAccount.csaId = null;
+    }
+    this._apportionment.CsaId = this.ccbAccount.csaId;
 
       this._apportionment.ApprovalDate = moment().unix() * 1000;
       this._apportionment.ExpirationDate = moment().add(10, 'years').unix() * 1000;
@@ -152,9 +154,9 @@ export class ApportionmentUpdateFormComponent  {
     this._apportionment.PremiseId = this.ccbAccount.premiseId.toString();
     }    
     if (this._account.ApportionmentCode === 'WEIGHTED') {
-      this._apportionment.Parcent = this.form.get('Parcent').value;
+      this._apportionment.PercentApportioned = this.form.get('PercentApportioned').value;
     } else if (this._account.ApportionmentCode === 'EQUAL') {
-      this._apportionment.Parcent = (100 / this._account.ApportionmentUnits)/100;
+      this._apportionment.PercentApportioned = (100 / this._account.ApportionmentUnits)/100;
     }
     this.submitted.emit(this._apportionment);
   }

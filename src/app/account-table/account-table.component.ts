@@ -23,7 +23,7 @@ export class AccountTableComponent implements OnInit {
       if (account) {
         let attributes = [
           {field: 'Account ID', value: account.AccountId},
-          {field: 'CSA ID', value: account.CSA_ID},          
+          {field: 'CSA ID', value: account.CsaId},          
           {field: 'Premise ID', value: account.PremiseId},       
           {field: 'Status', value: account.Status},     
           {field: 'SFEU', value: account.Sfeu},

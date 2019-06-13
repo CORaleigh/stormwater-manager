@@ -30,7 +30,7 @@ export class ImperviousUpdateFormComponent implements OnInit {
   @Output() submitted = new EventEmitter<Impervious>();
 
   form = this.fb.group({
-    Building: [null, Validators.required],
+    BuildingImpervious: [null, Validators.required],
     ParkingImpervious: [null, Validators.required],
     RoadTrailImpervious: [null, Validators.required],
     RecreationImpervious: [null, Validators.required],
@@ -47,7 +47,7 @@ export class ImperviousUpdateFormComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
   ngOnInit() {
     if (this.impervious) {
-      this.form.get('Building').setValue(this.impervious.Building);
+      this.form.get('BuildingImpervious').setValue(this.impervious.BuildingImpervious);
       this.form.get('ParkingImpervious').setValue(this.impervious.ParkingImpervious);
       this.form.get('RoadTrailImpervious').setValue(this.impervious.RoadTrailImpervious);
       this.form.get('RecreationImpervious').setValue(this.impervious.RecreationImpervious);
@@ -57,7 +57,7 @@ export class ImperviousUpdateFormComponent implements OnInit {
     }
   }
   onSubmit() {
-    this.impervious.Building = this.form.get('Building').value;
+    this.impervious.BuildingImpervious = this.form.get('BuildingImpervious').value;
     this.impervious.ParkingImpervious = this.form.get('ParkingImpervious').value;
     this.impervious.RoadTrailImpervious = this.form.get('RoadTrailImpervious').value;
     this.impervious.RecreationImpervious = this.form.get('RecreationImpervious').value;

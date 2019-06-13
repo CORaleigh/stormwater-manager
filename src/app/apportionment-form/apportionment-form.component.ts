@@ -90,15 +90,16 @@ export class ApportionmentFormComponent implements OnInit {
     if (account.ApportionmentCode === 'EQUAL') {
       let updates = [];
       this.apportionments.forEach(apportionment => {
-        apportionment.Parcent = (100/account.ApportionmentUnits)/100;
-        apportionment.Sfeu = apportionment.Parcent * account.Sfeu;
-        apportionment.Impervious = apportionment.Parcent * account.BillableImpervious;
+        apportionment.PercentApportioned = (100/account.ApportionmentUnits)/100;
+        //apportionment.Sfeu = apportionment.PercentApportioned * account.Sfeu;
+        apportionment.Impervious = Math.round(apportionment.PercentApportioned * account.BillableImpervious);
         updates.push(new Feature(apportionment));
       });
-      
       this.stormwater.apportionments.next(this.apportionments);
-      this.stormwater.applyEdits(5, [], updates, []).subscribe(result => {
 
+      
+      this.stormwater.applyEdits(5, [], updates, []).subscribe(result => {
+        this.stormwater.accountListSelected.next(account);
       });
     }
   }

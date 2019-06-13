@@ -216,9 +216,9 @@ export class MapComponent implements OnInit {
           if (mapView.popup.selectedFeature.attributes.CSAID) {
             let account = this.stormwater.account.getValue()
             let newCsa = mapView.popup.selectedFeature.attributes.CSAID;
-            let oldCsa = account.CSA_ID;
+            let oldCsa = account.CsaId;
             if (newCsa != oldCsa) {
-              account.CSA_ID = newCsa;
+              account.CsaId = newCsa;
               this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
                 if (result.updateResults.length > 0) {
                   this.stormwater.account.next(account);
@@ -346,7 +346,7 @@ export class MapComponent implements OnInit {
     this._search = search;
     search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
     search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
-    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'PinNum', 'PIN', "Account = 'A'", "Search by PIN"));
+    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
     //@ts-ignore
     search.sources.push({
       layer: new FeatureLayer({
@@ -383,11 +383,11 @@ export class MapComponent implements OnInit {
     search.sources.push({
       layer: new FeatureLayer({
       url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
-      searchFields: ["CSA_ID"],
-      displayField: "CSA_ID",
+      searchFields: ["CsaId"],
+      displayField: "CsaId",
       exactMatch: false,
       outFields: ["*"],
-      name: "CSA_ID",
+      name: "CsaId",
       placeholder: "Search by CSA ID",
       maxResults: 6,
       maxSuggestions: 6,
@@ -419,16 +419,14 @@ export class MapComponent implements OnInit {
     };
     search.on('select-result', event => {
 
-      if (event.source.name != 'Address Point' && event.source.name != 'AccountId') {
+      if (event.source.name != 'Address Point' ) {
         this.getAccount(RelationshipQuery, event.result.feature, QueryTask, esriRequest);
         this.clearResultsList();
         this.stormwater.accountListSelected.next(null);
 
       } else if (event.source.name === 'Address Point'){
         this.getPropertyByGeometry(this._mapView, event.result.feature.geometry, RelationshipQuery, QueryTask, esriRequest);
-      } else if (event.source.name === 'AccountId') {
-        
-      }
+      } 
       this._search.clear();
     });
   }
@@ -480,7 +478,7 @@ export class MapComponent implements OnInit {
           //  this.stormwater.account.next(account);
           }
           
-          this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+         // this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
         }  else {
           this.stormwater.account.next(null);
         }
@@ -708,9 +706,15 @@ export class MapComponent implements OnInit {
           'esri/tasks/QueryTask',
           'esri/request', ])
             .then(([QueryTask, request]) =>  {
-              this._lastAccountId = account.AccountId;
-              //this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView);
-              this.router.navigate(['/account/' + account.AccountId]);
+              
+              if (this._lastAccountId != account.AccountId) {
+                this._lastAccountId = account.AccountId;
+                this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView, true);
+                this.router.navigate(['/account/' + account.AccountId]);
+
+              }
+
+
 
           });
       } else {
@@ -746,7 +750,7 @@ export class MapComponent implements OnInit {
         field = 'PremiseId';
         value = selection.premiseId;
       } else if (selection.csaId) {
-        field = 'CSA_ID';
+        field = 'CsaId';
         value = selection.csaId;
       } else if (selection.status) {
         field = 'Status';
@@ -757,7 +761,10 @@ export class MapComponent implements OnInit {
         'esri/tasks/QueryTask',
         'esri/request', ])
           .then(([QueryTask, request]) =>  {
-            this.getByAccountId([value], field, QueryTask, request, this._mapView, true);
+            if (this._lastAccountId != value) {
+              this._lastAccountId = value;
+              this.getByAccountId([value], field, QueryTask, request, this._mapView, true);
+            }
         });
     }
 });
