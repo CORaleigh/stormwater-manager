@@ -31,14 +31,11 @@ export class CreditFormComponent implements OnInit {
     ControlledSurface: [null, Validators.compose([
       Validators.required, Validators.min(0)])
     ],
-    ControlledAcreage: [null, Validators.compose([
-      Validators.required, Validators.min(0)])
-    ],
     NpdesPercentage: [null, Validators.compose([
-      Validators.required, Validators.min(0), Validators.max(100)])
+      Validators.required, Validators.min(0), Validators.max(50)])
     ],
-    UpstreamCode: [null, Validators.required],
-    OnSiteCode: [null, Validators.required]
+    UpstreamPercentage: [null, Validators.required],
+    OnsitePercentage: [null, Validators.required]
   });
   @Input() credit: Credit;
   @Input() mode: string;
@@ -56,13 +53,13 @@ export class CreditFormComponent implements OnInit {
   }
   ngOnInit() {
     if (this.credit) {
-      this.oCodes = this.stormwater.getDomain(4, 'OnSiteCode');    
-      this.uCodes = this.stormwater.getDomain(4, 'UpstreamCode');    
+      this.oCodes = this.stormwater.getDomain(4, 'OnsitePercentage');    
+      this.uCodes = this.stormwater.getDomain(4, 'UpstreamPercentage');    
 
       this.form.get('ControlledSurface').setValue(this.credit.ControlledSurface);
       this.form.get('NpdesPercentage').setValue(this.credit.NpdesPercentage * 100);
-      this.form.get('UpstreamCode').setValue(this.credit.UpstreamCode);
-      this.form.get('OnSiteCode').setValue(this.credit.OnSiteCode);
+      this.form.get('UpstreamPercentage').setValue(this.credit.UpstreamPercentage);
+      this.form.get('OnsitePercentage').setValue(this.credit.OnsitePercentage);
     //  this.approvalDate.setValue(new Date(this.credit.ApprovalDate));
     this.approvalDate.setValue(moment(new Date(this.credit.ApprovalDate)));
      // this.inceptionDate.setValue(new Date(this.credit.InceptionDate));
@@ -75,8 +72,8 @@ export class CreditFormComponent implements OnInit {
   onSubmit() {
     this.credit.ControlledSurface = this.form.get('ControlledSurface').value;
     this.credit.NpdesPercentage = this.form.get('NpdesPercentage').value/100;
-    this.credit.UpstreamCode = this.form.get('UpstreamCode').value;
-    this.credit.OnSiteCode = this.form.get('OnSiteCode').value;
+    this.credit.UpstreamPercentage = this.form.get('UpstreamPercentage').value;
+    this.credit.OnsitePercentage = this.form.get('OnsitePercentage').value;
     this.credit.ApprovalDate = this.approvalDate.value.unix() * 1000;
     this.credit.InceptionDate = this.inceptionDate.value.unix() * 1000;
     this.submitted.emit(this.credit);

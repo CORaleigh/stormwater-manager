@@ -7,8 +7,8 @@ export class Credit {
     ExpirationDate: number;
     ApprovalDate: number;
     Comment: string;
-    OnSiteCode: string;
-    UpstreamCode: string;
+    OnsitePercentage: number;
+    UpstreamPercentage: number;
     NpdesPercentage: number;
     ControlledAcreage: number;
     ControlledSurface: number;
@@ -21,8 +21,8 @@ export class Credit {
         ExpirationDate: number,
         ApprovalDate: number,
         Comment: string,
-        OnSiteCode: string,
-        UpstreamCode: string,
+        OnsitePercentage: number,
+        UpstreamPercentage: number,
         NpdesPercentage: number,
         ControlledAcreage: number,
         ControlledSurface: number,
@@ -41,8 +41,8 @@ export class Credit {
             this.ExpirationDate = ExpirationDate;
             this.ApprovalDate = ApprovalDate;
             this.Comment = Comment;
-            this.OnSiteCode = OnSiteCode;
-            this.UpstreamCode = UpstreamCode;
+            this.OnsitePercentage = OnsitePercentage;
+            this.UpstreamPercentage = UpstreamPercentage;
             this.NpdesPercentage = NpdesPercentage;
             this.ControlledAcreage = ControlledAcreage;
             this.ControlledSurface = ControlledSurface;

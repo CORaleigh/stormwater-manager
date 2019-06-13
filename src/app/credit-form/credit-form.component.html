@@ -10,25 +10,25 @@
         <div class="row">
             <div class="col">
                 <mat-form-field class="full-width">
-                  <mat-select placeholder="Upstream Code" formControlName="UpstreamCode">
+                  <mat-select placeholder="Upstream Code" formControlName="UpstreamPercentage">
                     <mat-option *ngFor="let uCode of uCodes" [value]="uCode.code">
                       {{ uCode.name }}
                     </mat-option>
                   </mat-select>
-                  <mat-error *ngIf="form.controls['UpstreamCode'].hasError('required')">
-                      Upstream Code is <strong>required</strong>
+                  <mat-error *ngIf="form.controls['UpstreamPercentage'].hasError('required')">
+                      Upstream Percentage is <strong>required</strong>
                   </mat-error>
                 </mat-form-field>
               </div>          
               <div class="col">
                   <mat-form-field class="full-width">
-                    <mat-select placeholder="On Site Code" formControlName="OnSiteCode">
+                    <mat-select placeholder="On Site Code" formControlName="OnsitePercentage">
                       <mat-option *ngFor="let oCode of oCodes" [value]="oCode.code">
                         {{ oCode.name }}
                       </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="form.controls['OnSiteCode'].hasError('required')">
-                        Onsite Code is <strong>required</strong>
+                    <mat-error *ngIf="form.controls['OnsitePercentage'].hasError('required')">
+                        Onsite Percentage is <strong>required</strong>
                     </mat-error>
                   </mat-form-field>
                 </div>                    
@@ -36,7 +36,16 @@
         <div class="row">
             <div class="col">
               <mat-form-field class="full-width">
-                <input matInput #NpdesPercentage placeholder="NPDES Percentage" type="number" formControlName="NpdesPercentage">
+                <input matInput #NpdesPercentage placeholder="NPDES Percentage" type="number" formControlName="NpdesPercentage" min="0" max="50">
+                <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('required')">
+                  NPDES Percentage is <strong>required</strong>
+                </mat-error>  
+                <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('min')">
+                  NPDES Percentage cannot be less than 0
+                </mat-error>           
+                <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('max')">
+                  NPDES Percentage cannot exceed 50
+                </mat-error>                                        
               </mat-form-field>
             </div>
           </div>
@@ -58,7 +67,7 @@
             </div>      
             <div class="row">
                 <div class="col">     
-                  <button mat-raised-button color="primary" type="submit">Submit</button>
+                  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
                 </div>          
               </div>   
 </form>

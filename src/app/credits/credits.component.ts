@@ -5,6 +5,7 @@ import { Credit } from '../credit';
 import * as moment from 'moment';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-credits',
@@ -20,6 +21,25 @@ export class CreditsComponent implements OnInit {
     this.stormwater.credits.subscribe(credits => this.credits = credits);
   }
 
+  delete() {
+    let confirm = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'This will delete the credit for this account, would you like to continue?'}});
+    confirm.afterClosed().subscribe((confirmed:boolean) => {
+      debugger
+      if (confirmed) {
+        let deletes = [this.credits[0].OBJECTID];
+
+        this.stormwater.applyEdits(4, null, null, deletes).subscribe(result => {
+          this.stormwater.credits.next([]);
+          debugger
+          this.stormwater.account.getValue().CreditedImpervious = 0;
+          this.stormwater.account.getValue().BillableImpervious = this.stormwater.account.getValue().TotalImpervious - 0;          
+          this.stormwater.applyEdits(2, null, [{attributes: this.stormwater.account.getValue()} as __esri.Graphic]).subscribe(result => {
+            this.stormwater.account.next(this.stormwater.account.getValue());
+          });
+        });
+      }
+    });
+  }
 
   update() {
     let credits = this.stormwater.credits.getValue();
@@ -28,7 +48,7 @@ export class CreditsComponent implements OnInit {
     if (credits.length > 0) {
       this.credit = credits[0];
     } else {
-      this.credit = new Credit(account.AccountId, moment().unix() * 1000, moment('2030-07-01').unix() * 1000 , moment().unix() * 1000, '', 'NONE', 'NONE', 0, 0, 0);
+      this.credit = new Credit(account.AccountId, moment().unix() * 1000, moment('2030-07-01').unix() * 1000 , moment().unix() * 1000, '', 0, 0, 0, 0, 0);
     }
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Credit', credit: this.credit}});
     ref.afterClosed().subscribe((data:Credit) => {

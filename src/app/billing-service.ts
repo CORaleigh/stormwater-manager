@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BillingInfo } from './billing-info';
 import { StormwaterBill } from './stormwater-bill';
 import { Account } from './account';
 import { Bill } from './bill';
 import { BillService } from './bill-service';
+const options = {
+  headers: new HttpHeaders({
+    'Content-Type':  'text/plain'
+  })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -101,7 +106,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
         "serviceType": serviceType
       }
     } 
-    return this.http.post<any>(url, body);    
+    return this.http.post<any>(url, body, options);    
   }
   getLastBill(account:string):Observable<any> {
     let url = this.baseUrl + 'getLastBillByAccount';
@@ -112,7 +117,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
       }
     } 
     
-    return this.http.post<any>(url, body);    
+    return this.http.post<any>(url, body, options);    
   }
   getLastSwBill(premise:string, billid: string):Observable<any> {
     let url = this.baseUrl + 'getBillingByPremise';
@@ -134,7 +139,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
       }
     } 
     
-    return this.http.post<any>(url, body);    
+    return this.http.post<any>(url, body, options);    
   }
 
   searchCcbAccounts(type:string, input:string):Observable<any> {
@@ -159,6 +164,6 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
       }
     } 
     
-    return this.http.post<any>(url, body);      
+    return this.http.post<any>(url, body, options);      
   }  
 }

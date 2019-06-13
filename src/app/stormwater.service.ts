@@ -129,7 +129,6 @@ export class StormwaterService {
 
 
   public checkDomain(layerId, fieldName, value?, code?): string {
-    
     let layers = this.fieldInfo.layers.filter(layer => {return layerId === layer.layerId});
     let returnValue = '';
     if (value) {
@@ -149,9 +148,9 @@ export class StormwaterService {
                 return value === cv.name || code === cv.code;
               });
               if (codedvalue.length > 0) {
-                if (value) {
+                if (value != null) {
                   returnValue = codedvalue[0].code;
-                } else if (code) {
+                } else if (code != null) {
                   returnValue = codedvalue[0].name;
                 }
                 

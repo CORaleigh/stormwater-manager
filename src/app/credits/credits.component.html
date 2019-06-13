@@ -8,6 +8,7 @@
 
     <app-credits-table></app-credits-table>
     <mat-action-row>
+      <button mat-button (click)="delete()" *ngIf="credits.length > 0">Delete</button>
       <button mat-button (click)="update()">Update</button>
     </mat-action-row>
   </mat-expansion-panel>
