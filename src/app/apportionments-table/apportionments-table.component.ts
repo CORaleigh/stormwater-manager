@@ -10,8 +10,8 @@ import { Apportionment } from '../apportionment';
   styleUrls: ['./apportionments-table.component.css'],
 })
 export class ApportionmentsTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
   @Output() apportionmentSelected: EventEmitter<Apportionment> = new EventEmitter();
   dataSource: ApportionmentsTableDataSource;
   constructor(private stormwater:StormwaterService) {}

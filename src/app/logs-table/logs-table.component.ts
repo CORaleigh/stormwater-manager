@@ -9,8 +9,8 @@ import { StormwaterService } from '../stormwater.service';
   styleUrls: ['./logs-table.component.css'],
 })
 export class LogsTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
   dataSource: LogsTableDataSource;
   constructor(private stormwater:StormwaterService){}
 

@@ -30,7 +30,7 @@ export class ApportionmentDialogComponent implements OnInit {
   }
   account:Account;
   ccbAccount:any;
-  @ViewChild('stepper') stepper:MatStepper;
+  @ViewChild('stepper', null) stepper:MatStepper;
   @Input() mode: string;
   @Input() apportionment: Apportionment;
   @Output() close: EventEmitter<any> = new EventEmitter();

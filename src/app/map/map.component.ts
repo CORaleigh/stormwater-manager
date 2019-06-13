@@ -29,7 +29,7 @@ import { Feature } from '../feature';
 export class MapComponent implements OnInit {
 
   @Output() mapLoaded = new EventEmitter<boolean>();
-  @ViewChild('mapViewNode') private mapViewEl: ElementRef;
+  @ViewChild('mapViewNode', null) private mapViewEl: ElementRef;
 
 
 

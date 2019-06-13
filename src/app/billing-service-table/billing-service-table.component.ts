@@ -9,8 +9,8 @@ import { BillService } from '../bill-service';
   styleUrls: ['./billing-service-table.component.css'],
 })
 export class BillingServiceTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
   dataSource: BillingServiceTableDataSource;
   
   @Input('services') 

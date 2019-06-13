@@ -10,8 +10,8 @@ import { SelectionModel } from '@angular/cdk/collections';
   styleUrls: ['./account-list-table.component.css'],
 })
 export class AccountListTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
   constructor(private stormwater:StormwaterService){};
   dataSource: AccountListTableDataSource;
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

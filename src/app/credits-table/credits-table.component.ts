@@ -9,8 +9,8 @@ import { StormwaterService } from '../stormwater.service';
   styleUrls: ['./credits-table.component.css'],
 })
 export class CreditsTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator,null) paginator: MatPaginator;
+  @ViewChild(MatSort,null) sort: MatSort;
   dataSource: CreditsTableDataSource;
   constructor(public stormwater:StormwaterService){}
 

@@ -9,9 +9,9 @@ import { StormwaterService } from '../stormwater.service';
   styleUrls: ['./account-table.component.css'],
 })
 export class AccountTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatTable) table: MatTable<any>;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
+  @ViewChild(MatTable, null) table: MatTable<any>;
   dataSource: AccountTableDataSource;
   constructor(public stormwater:StormwaterService){}
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

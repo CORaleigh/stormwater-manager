@@ -18,8 +18,8 @@ import { Impervious } from '../impervious';
   ],  
 })
 export class ImperviousTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
   dataSource: ImperviousTableDataSource;
   constructor(private stormwater:StormwaterService) {}
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */

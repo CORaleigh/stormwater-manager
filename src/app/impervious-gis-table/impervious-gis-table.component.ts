@@ -9,8 +9,8 @@ import { StormwaterService } from '../stormwater.service';
   styleUrls: ['./impervious-gis-table.component.css'],
 })
 export class ImperviousGisTableComponent implements OnInit {
-  @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator, null) paginator: MatPaginator;
+  @ViewChild(MatSort, null) sort: MatSort;
   dataSource: ImperviousGisTableDataSource;
   total:number = 0;
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
