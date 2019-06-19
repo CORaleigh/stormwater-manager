@@ -1,17 +1,4 @@
-/*
-  Copyright 2018 Esri
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
-
-import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import { Account } from '../account';
@@ -20,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Parcel } from '../parcel';
 import { BillingService } from '../billing-service';
 import { Feature } from '../feature';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-map',
@@ -27,12 +15,8 @@ import { Feature } from '../feature';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild('mapViewNode', null) private mapViewEl: ElementRef;
-
-
-
   private _id: string = 'd8309610f598424b9889d62775b6330c';
   private _portalUrl: string = 'https://mapstest.raleighnc.gov/portal'
   private _esriId:esri.IdentityManager = null;
@@ -44,14 +28,13 @@ export class MapComponent implements OnInit {
   private _parcelGraphics:esri.GraphicsLayer;
   private _selectedParcel:esri.Graphic;
   private _lastAccountId:number = null;
-  constructor(public stormwater: StormwaterService, private billing:BillingService, private route: ActivatedRoute, private router:Router) { }
+  private _parcels:esri.FeatureLayer = null;  
+  constructor(public stormwater: StormwaterService, private billing:BillingService, private route: ActivatedRoute, private router:Router, private location:Location) { }
   async authenicate() {
     try {
-      const [Portal, OAuthInfo, esriId, PortalQueryParams] = await loadModules([
-        "esri/portal/Portal",
+      const [OAuthInfo, esriId] = await loadModules([
         "esri/identity/OAuthInfo",
-        "esri/identity/IdentityManager",
-        "esri/portal/PortalQueryParams"
+        "esri/identity/IdentityManager"
       ]);
       
       this._info = new OAuthInfo({
@@ -74,73 +57,53 @@ export class MapComponent implements OnInit {
     });
   }
   
-
   getCredential() {
     this._esriId.getCredential(this._info.portalUrl + '/sharing');
   }
 
   async initializeMap() {
     try {
-      const [WebMap, MapView, Search, LayerSearchSource, RelationshipQuery, FeatureLayer, QueryTask, esriRequest, GroupLayer, Expand, LayerList, ActionButton, Collection, GraphicsLayer, BasemapGallery, config] = await loadModules([
+      const [WebMap, MapView, GraphicsLayer, config] = await loadModules([
         'esri/WebMap',
         'esri/views/MapView',
-        'esri/widgets/Search',
-        'esri/widgets/Search/LayerSearchSource',
-        'esri/tasks/support/RelationshipQuery',
-        'esri/layers/FeatureLayer',
-        'esri/tasks/QueryTask',
-        'esri/request', 
-        'esri/layers/GroupLayer',
-        'esri/widgets/Expand',
-        'esri/widgets/LayerList',
-        'esri/support/actions/ActionButton',
-        'esri/core/Collection',
         'esri/layers/GraphicsLayer',
-        'esri/widgets/BasemapGallery',
         'esri/config'
       ]);
-
       config.portalUrl = this._portalUrl;
-
-      // Set type of map
       const mapProperties: esri.WebMapProperties = {
         portalItem: { 
           id: this._id
         }
       };
-
       const map: esri.Map = new WebMap(mapProperties);
-
-      // Set type of map view
       const mapViewProperties: esri.MapViewProperties = {
         container: this.mapViewEl.nativeElement,
         map: map
       };
 
       this._mapView = new MapView(mapViewProperties);
-
-      // All resources in the MapView and the map have loaded.
-      // Now execute additional processes
-      this._mapView.when(() => {
+      this._mapView.when((mapView) => {
         this.mapLoaded.emit(true);
-        this._parcelGraphics = new GraphicsLayer();
+        this._parcelGraphics = new GraphicsLayer({listMode: 'hide'});
         this._mapView.map.add(this._parcelGraphics);
-        this.configLayerList(LayerList, GroupLayer, Expand, this._mapView);
-        this.configBasemapGallery(BasemapGallery, Expand, this._mapView);        
-        this.setupSearch(this._mapView, Search, LayerSearchSource, RelationshipQuery, QueryTask, esriRequest, FeatureLayer);
-        this.configPopupActions(this._mapView, ActionButton, Collection, RelationshipQuery, QueryTask, esriRequest);
+        this._parcels = mapView.map.layers.find(l => {
+          return l.title === 'Parcels';
+        }) as esri.FeatureLayer;        
+        this.configLayerList(this._mapView);
+        this.configBasemapGallery(this._mapView);        
+        this.setupSearch(this._mapView);
+        this.configPopupActions(this._mapView);
         this._mapView.on('hold', e => {
-          this.getPropertyByGeometry(this._mapView, e.mapPoint, RelationshipQuery, QueryTask, esriRequest);
+          this.getPropertyByGeometry(this._mapView, e.mapPoint);
 
         });
         if (this.route.routeConfig) {
           if (this.route.routeConfig.path === 'account/:id') {
             this.route.params.subscribe(params => {
-
               if (params.id) {
                 if (params.id != this._lastAccountId) {
                   this._lastAccountId = params.id;
-                  this.getByAccountId(params.id, 'AccountId', QueryTask, esriRequest, this._mapView, true);
+                  this.getByAccountId(params.id, 'AccountId', this._mapView, true);
                 }
               }
             });
@@ -150,104 +113,120 @@ export class MapComponent implements OnInit {
     } catch (error) {
       console.log('We have an error: ' + error);
     }
-
   }
 
-  configPopupActions(mapView: esri.MapView, ActionButton: any, Collection: any, RelationshipQuery:any, QueryTask: any, esriRequest: any) {
-    let parcels = mapView.map.layers.find(l => {
-      return l.title === 'Parcels';
-    }) as esri.FeatureLayer;    
-
-    mapView.whenLayerView(parcels).then(layer => {
-      let l = layer.layer as esri.FeatureLayer;
-  
-        let button: esri.ActionButton = new ActionButton({
-          title: 'Select',
-          id: 'select-parcel',
-          className: 'esri-icon-checkbox-checked'
-        });        
-        
-        l.popupTemplate.actions = new Collection();
-        l.popupTemplate.actions.add(button);
-        mapView.popup.on("trigger-action", event => {
-          if(event.action.id === "select-parcel"){
-            this.getAccount(RelationshipQuery, mapView.popup.selectedFeature, QueryTask, esriRequest);
-            this._search.clear();
-            this.clearResultsList();
-            this.stormwater.accountListSelected.next(null);
-          }
-        });        
+  configPopupActions(mapView: esri.MapView) {
+    loadModules([    
+      'esri/support/actions/ActionButton',
+      'esri/core/Collection'
+    ])
+    .then(([ActionButton, Collection]) => {
+      let parcels = mapView.map.layers.find(l => {
+        return l.title === 'Parcels';
+      }) as esri.FeatureLayer;    
+      mapView.whenLayerView(parcels).then(layer => {
+        let l = layer.layer as esri.FeatureLayer;
+          let button: esri.ActionButton = new ActionButton({
+            title: 'Select',
+            id: 'select-parcel',
+            className: 'esri-icon-checkbox-checked'
+          });        
+          l.popupTemplate.actions = new Collection();
+          l.popupTemplate.actions.add(button);
+          mapView.popup.on("trigger-action", event => {
+            if(event.action.id === "select-parcel"){
+              this.getAccount(mapView.popup.selectedFeature);
+              this._search.clear();
+              this.clearResultsList();
+              this.stormwater.accountListSelected.next(null);
+            }
+          });        
+      });
+      this.configAddressActions(mapView);
     });
-    this.configAddressActions(mapView, ActionButton, Collection);
-
   }
 
-  configAddressActions(mapView:esri.MapView, ActionButton: any, Collection:any) {
-    let addresses = mapView.map.layers.find(l => {
-      return l.title === 'Address Points';
-    }) as esri.FeatureLayer;      
-  
-    mapView.whenLayerView(addresses).then(layer => {
-      let l = layer.layer as esri.FeatureLayer;
-
-      mapView.popup.watch('selectedFeature', (e) => {
-        if (e) {
-          if (e.sourceLayer) {
-            if (e.sourceLayer.title === 'Address Points') {
-              if (this._selectedParcel) {
-                let pt:esri.Point = e.geometry;
-                let poly:esri.Polygon = this._selectedParcel.geometry as esri.Polygon;
-                  e.sourceLayer.popupTemplate.actions.items[0].visible = poly.contains(pt)
+  configAddressActions(mapView:esri.MapView) {
+    loadModules([    
+      'esri/support/actions/ActionButton',
+      'esri/core/Collection'])
+      .then(([ActionButton, Collection]) => {
+        let addresses = mapView.map.layers.find(l => {
+          return l.title === 'Address Points';
+        }) as esri.FeatureLayer;      
+      
+        mapView.whenLayerView(addresses).then(layer => {
+          let l = layer.layer as esri.FeatureLayer;
+          mapView.popup.watch('selectedFeature', (e) => {
+            if (e) {
+              if (e.sourceLayer) {
+                if (e.sourceLayer.title === 'Address Points') {
+                  if (this._selectedParcel) {
+                    let pt:esri.Point = e.geometry;
+                    let poly:esri.Polygon = this._selectedParcel.geometry as esri.Polygon;
+                      e.sourceLayer.popupTemplate.actions.items[0].visible = poly.contains(pt)
+                  }
+                }
               }
             }
-          }
-        }
-      })
-      let button: esri.ActionButton = new ActionButton({
-        title: 'Assign CSA ID',
-        id: 'assign-csaid',
-        className: 'esri-icon-checkbox-checked',
-        visible: false
-      });         
-      l.popupTemplate.actions = new Collection();
-      l.popupTemplate.actions.add(button);  
-      mapView.popup.on("trigger-action", event => {
-        if(event.action.id === "assign-csaid"){
-          if (mapView.popup.selectedFeature.attributes.CSAID) {
-            let account = this.stormwater.account.getValue()
-            let newCsa = mapView.popup.selectedFeature.attributes.CSAID;
-            let oldCsa = account.CsaId;
-            if (newCsa != oldCsa) {
-              account.CsaId = newCsa;
-              this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
-                if (result.updateResults.length > 0) {
-                  this.stormwater.account.next(account);
-                  this.stormwater.accountListSelected.next(account);
+          })
+          let button: esri.ActionButton = new ActionButton({
+            title: 'Assign CSA ID',
+            id: 'assign-csaid',
+            className: 'esri-icon-checkbox-checked',
+            visible: false
+          });         
+          l.popupTemplate.actions = new Collection();
+          l.popupTemplate.actions.add(button);  
+          mapView.popup.on("trigger-action", event => {
+            if(event.action.id === "assign-csaid"){
+              if (mapView.popup.selectedFeature.attributes.CSAID) {
+                let account = this.stormwater.account.getValue()
+                let newCsa = mapView.popup.selectedFeature.attributes.CSAID;
+                let oldCsa = account.CsaId;
+                if (newCsa != oldCsa) {
+                  account.CsaId = newCsa;
+                  this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
+                    if (result.updateResults.length > 0) {
+                      this.stormwater.account.next(account);
+                      this.stormwater.accountListSelected.next(account);
+                    }
+                  });
                 }
-              });
+              }
             }
-          }
-        }
-      });    
-
-    });    
+          });    
+        });             
+    });
   }
 
-  configLayerList(LayerList: any, GroupLayer: any, Expand: any, mapView: esri.MapView) {
-    // let imperviousGrp:esri.GroupLayer = new GroupLayer();
-    // imperviousGrp.title = 'Impervious Surface';
-    // imperviousGrp.visible = false;
-    // imperviousGrp.layers.addMany(this.getImperviousLayers(mapView));
-    // mapView.map.layers.add(imperviousGrp, 2);
-    let list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
-    let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-layers', view: mapView, content: list.container});
-    mapView.ui.add(expand, 'top-right');
+  async configLayerList(mapView: esri.MapView) {
+    try {
+      const [LayerList, Expand] = await loadModules([
+        "esri/widgets/LayerList",
+        "esri/widgets/Expand"
+      ]);
+      let list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
+      let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-layers', view: mapView, content: list.container});
+      mapView.ui.add(expand, 'top-right');
+    } catch (error) {
+      console.log('We have an error: ' + error);
+    }        
   }
 
-  configBasemapGallery(BasemapGallery:any, Expand: any, mapView: esri.MapView) {
-    let gallery: esri.BasemapGallery = new BasemapGallery({view: mapView, container: document.createElement('div')});
-    let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-basemap', view: mapView, content: gallery.container});
-    mapView.ui.add(expand, 'top-right');
+  async configBasemapGallery(mapView: esri.MapView) {
+    try {
+      const [BasemapGallery, Expand] = await loadModules([
+        "esri/widgets/BasemapGallery",
+        "esri/widgets/Expand"
+      ]);
+      let gallery: esri.BasemapGallery = new BasemapGallery({view: mapView, container: document.createElement('div')});
+      let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-basemap', view: mapView, content: gallery.container});
+      mapView.ui.add(expand, 'top-right');
+
+    } catch (error) {
+      console.log('We have an error: ' + error);
+    }        
   }
 
   getImperviousLayers(mapView: esri.MapView): esri.Collection<esri.Layer>{
@@ -262,11 +241,9 @@ export class MapComponent implements OnInit {
         } else {
           return false;
         }
-
       } else {
         return false;
       }
-       
     });
   }
 
@@ -290,215 +267,210 @@ export class MapComponent implements OnInit {
     });
     return source;
   }
-  parcels:esri.FeatureLayer = null;
 
   addStreetSource(search:esri.widgetsSearch) {
     loadModules([    
       'esri/widgets/Search/SearchSource'])
-        .then(([SearchSource]) => {
-          let source = new SearchSource({
-            name: 'Street name',
-            placeholder: 'Search by street name',
-            displayField: 'FullStreetName',
-            getSuggestions: params => {
-              
-              return this.parcels.queryFeatures({returnDistinctValues: true, where: "FullStreetName like '%" + params.suggestTerm.toUpperCase() + "%'", outFields: ["FullStreetName"], returnGeometry: false, orderByFields: ["FullStreetName"]})
-              .then(
-                results => {
-                  return results.features.map(function(feature) {
-                    return {
-                      key: "FullStreetName",
-                      text: feature.attributes.FullStreetName,
-                      sourceIndex: params.sourceIndex
-                    };
-                  }
-                );
-              });
-            },
-            getResults: params => {
-              this.stormwater.streetName.next(params.suggestResult.text)
-            }
-              
+    .then(([SearchSource]) => {
+      let source = new SearchSource({
+        name: 'Street name',
+        placeholder: 'Search by street name',
+        displayField: 'FullStreetName',
+        getSuggestions: params => {
+          return this._parcels.queryFeatures({returnDistinctValues: true, where: "FullStreetName like '%" + params.suggestTerm.toUpperCase() + "%'", outFields: ["FullStreetName"], returnGeometry: false, orderByFields: ["FullStreetName"]})
+          .then(
+            results => {
+              return results.features.map(function(feature) {
+                return {
+                  key: "FullStreetName",
+                  text: feature.attributes.FullStreetName,
+                  sourceIndex: params.sourceIndex
+                };
+              }
+            );
           });
-          search.sources.push(source);
-        });
-      
-  }
-
-  setupSearch (mapView:esri.MapView, Search: any, LayerSearchSource: any, RelationshipQuery: any, QueryTask: any, esriRequest: any, FeatureLayer: any) {
-    this.parcels = mapView.map.layers.find(l => {
-      return l.title === 'Parcels';
-    }) as esri.FeatureLayer;
-    //@ts-ignore
-    let accounts = mapView.map.tables.find(l => {
-      return l.title === 'Stormwater_Management - Account';
-    }) as esri.FeatureLayer;
-    
-    mapView.whenLayerView(this.parcels).then(layerView => {
-      this._parcelView = layerView as esri.FeatureLayerView;
-    });
-    
-    let addresses = mapView.map.layers.find(l => {
-      return l.title === 'Address Points';
-    }) as esri.FeatureLayer;
-  
-    let search: esri.widgetsSearch = new Search({view: mapView, includeDefaultSources: false, resultGraphicEnabled: false});
-    this._search = search;
-    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
-    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
-    search.sources.push(this.getSource(this.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
-    //@ts-ignore
-    search.sources.push({
-      layer: new FeatureLayer({
-      url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
-      searchFields: ["AccountId"],
-      displayField: "AccountId",
-      exactMatch: false,
-      outFields: ["*"],
-      name: "AccountId",
-      placeholder: "Search by Account ID",
-      maxResults: 6,
-      maxSuggestions: 6,
-      suggestionsEnabled: true,
-      minSuggestCharacters: 3
-    });
-    //@ts-ignore
-
-    search.sources.push({
-      layer: new FeatureLayer({
-      url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
-      searchFields: ["PremiseId"],
-      displayField: "PremiseId",
-      exactMatch: false,
-      outFields: ["*"],
-      name: "PremiseId",
-      placeholder: "Search by Premise ID",
-      maxResults: 6,
-      maxSuggestions: 6,
-      suggestionsEnabled: true,
-      minSuggestCharacters: 3
-    });    
-    //@ts-ignore
-
-    search.sources.push({
-      layer: new FeatureLayer({
-      url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
-      searchFields: ["CsaId"],
-      displayField: "CsaId",
-      exactMatch: false,
-      outFields: ["*"],
-      name: "CsaId",
-      placeholder: "Search by CSA ID",
-      maxResults: 6,
-      maxSuggestions: 6,
-      suggestionsEnabled: true,
-      minSuggestCharacters: 3
-    });       
-    this.addStreetSource(search); 
-    search.sources.push(this.getSource(addresses, LayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
-    mapView.ui.add(search, {position: 'top-left', index: 0});
-
-    search.goToOverride = (view:esri.MapView, params:any) => {
-      if (params.target.target.layer.title.indexOf('Stormwater Management - ') > -1) {
-        this.stormwater.account.next(params.target.target.attributes as Account);
-        this.clearResultsList();
-        this.getParcel(this.parcels.url,esriRequest, QueryTask, params.target.target.attributes.OBJECTID, view);
-        this._search.clear();
-
-      } else {
-        this.highlightSingleParcel(params.target.target);
-        let target = params.target.target.geometry;
-        if (params.target.target.geometry.extent) {
-          target = params.target.target.geometry.extent.clone().expand(2);      
+        },
+        getResults: params => {
+          this.stormwater.streetName.next(params.suggestResult.text)
         }
-        params.options.duration = 1500;
-        params.options.easing = 'ease-in';
-        return view.goTo(target, params.options);        
-      }
- 
-    };
-    search.on('select-result', event => {
-
-      if (event.source.name != 'Address Point' ) {
-        this.getAccount(RelationshipQuery, event.result.feature, QueryTask, esriRequest);
-        this.clearResultsList();
-        this.stormwater.accountListSelected.next(null);
-
-      } else if (event.source.name === 'Address Point'){
-        this.getPropertyByGeometry(this._mapView, event.result.feature.geometry, RelationshipQuery, QueryTask, esriRequest);
-      } 
-      this._search.clear();
+      });
+      search.sources.push(source);
     });
   }
 
-  getPropertyByGeometry(mapView:esri.MapView, geometry:esri.Geometry, RelationshipQuery:esri.RelationshipQuery, QueryTask:esri.QueryTask, esriRequest:esri.request) {
-    this.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], geometry, outSpatialReference: mapView.spatialReference}).then(result => {
+  async setupSearch (mapView:esri.MapView) {
+    try {
+      const [Search, LayerSearchSource, QueryTask, esriRequest, FeatureLayer] = await loadModules([
+        'esri/widgets/Search',
+        'esri/widgets/Search/LayerSearchSource',
+        'esri/tasks/QueryTask',
+        'esri/request',
+        'esri/layers/FeatureLayer'
+
+      ]);
+      //@ts-ignore
+      let accounts = mapView.map.tables.find(l => {
+        return l.title === 'Stormwater_Management - Account';
+      }) as esri.FeatureLayer;
+      mapView.whenLayerView(this._parcels).then(layerView => {
+        this._parcelView = layerView as esri.FeatureLayerView;
+      });
+      let addresses = mapView.map.layers.find(l => {
+        return l.title === 'Address Points';
+      }) as esri.FeatureLayer;
+      let search: esri.widgetsSearch = new Search({view: mapView, includeDefaultSources: false, resultGraphicEnabled: false});
+      this._search = search;
+      search.sources.push(this.getSource(this._parcels, LayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
+      search.sources.push(this.getSource(this._parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
+      search.sources.push(this.getSource(this._parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
+      //@ts-ignore
+      search.sources.push({
+        layer: new FeatureLayer({
+        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
+        searchFields: ["AccountId"],
+        displayField: "AccountId",
+        exactMatch: false,
+        outFields: ["*"],
+        name: "AccountId",
+        placeholder: "Search by Account ID",
+        maxResults: 6,
+        maxSuggestions: 6,
+        suggestionsEnabled: true,
+        minSuggestCharacters: 3
+      });
+      //@ts-ignore
+      search.sources.push({
+        layer: new FeatureLayer({
+        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
+        searchFields: ["PremiseId"],
+        displayField: "PremiseId",
+        exactMatch: false,
+        outFields: ["*"],
+        name: "PremiseId",
+        placeholder: "Search by Premise ID",
+        maxResults: 6,
+        maxSuggestions: 6,
+        suggestionsEnabled: true,
+        minSuggestCharacters: 3
+      });    
+      //@ts-ignore
+      search.sources.push({
+        layer: new FeatureLayer({
+        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
+        searchFields: ["CsaId"],
+        displayField: "CsaId",
+        exactMatch: false,
+        outFields: ["*"],
+        name: "CsaId",
+        placeholder: "Search by CSA ID",
+        maxResults: 6,
+        maxSuggestions: 6,
+        suggestionsEnabled: true,
+        minSuggestCharacters: 3
+      });       
+      this.addStreetSource(search); 
+      search.sources.push(this.getSource(addresses, LayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
+      mapView.ui.add(search, {position: 'top-left', index: 0});
+      search.goToOverride = (view:esri.MapView, params:any) => {
+        if (params.target.target.layer.title.indexOf('Stormwater Management - ') > -1) {
+          this.stormwater.account.next(params.target.target.attributes as Account);
+          this.clearResultsList();
+          this.getParcel(this._parcels.url,esriRequest, QueryTask, params.target.target.attributes.OBJECTID, view);
+          this._search.clear();
+        } else {
+          this.highlightSingleParcel(params.target.target);
+          let target = params.target.target.geometry;
+          if (params.target.target.geometry.extent) {
+            target = params.target.target.geometry.extent.clone().expand(2);      
+          }
+          params.options.duration = 1500;
+          params.options.easing = 'ease-in';
+          return view.goTo(target, params.options);        
+        }
+      };
+      search.on('select-result', event => {
+        if (event.source.name != 'Address Point' ) {
+          this.getAccount(event.result.feature);
+          this.clearResultsList();
+          this.stormwater.accountListSelected.next(null);
+        } else if (event.source.name === 'Address Point'){
+          this.getPropertyByGeometry(this._mapView, event.result.feature.geometry);
+        } 
+        this._search.clear();
+      });
+    } catch (error) {
+      console.log('We have an error: ' + error);
+    }    
+  }
+
+  getPropertyByGeometry(mapView:esri.MapView, geometry:esri.Geometry) {
+    this._parcels.queryFeatures({returnGeometry: true, outFields: ['*'], geometry, outSpatialReference: mapView.spatialReference}).then(result => {
       if (result.features) {
         if (result.features.length > 0) {
           let parcel:Parcel = result.features[0].attributes as Parcel;
           this.stormwater.parcel.next(parcel);                    
-          this.getAccount(RelationshipQuery, result.features[0], QueryTask, esriRequest);
+          this.getAccount(result.features[0]);
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-          
-         mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
-          this.highlightSingleParcel(result.features[0]);
+          mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
+            this.highlightSingleParcel(result.features[0]);
         }
+      }
+    });            
+  }
+
+  getAccount(feature: esri.Graphic) { 
+    loadModules([    
+      'esri/tasks/support/RelationshipQuery'
+    ])
+      .then(([RelationshipQuery]) => {
+      //@ts-ignore
+      let relationship = this._parcels.relationships.find((r:esri.Relationship) => {
+        return r.name === 'Account';
+      });
+      this.clearResultsList(); 
+      if (relationship) {
+        let query: esri.RelationshipQuery = new RelationshipQuery();
+        query.relationshipId = relationship.id;
+        query.returnGeometry = false;
+        query.objectIds = [feature.attributes.OBJECTID];
+        query.outFields = ['*'];
+        this._parcels.queryRelatedFeatures(query).then( result => {
+          if (result[feature.attributes.OBJECTID]) {
+            let accounts:Account[] = [];
+            result[feature.attributes.OBJECTID].features.forEach(f => {
+              accounts.push(f.attributes as Account);
+            });
+            accounts.sort((a,b) => (a.Status > b.Status) ? 1 : ((b.Status > a.Status) ? -1 : 0)); 
+            this.stormwater.accounts.next(accounts);
+            let account:Account = accounts[0]; 
+            if (!this._lastAccountId) {
+              this.location.go('/account/' + account.AccountId);
+            } else {
+              this.router.navigate(['/account/' + account.AccountId]);
+            }
+            if (this.stormwater.account.getValue().OBJECTID != account.OBJECTID) {
+            //  this.stormwater.account.next(account);
+            }
+          // this.queryTables(this._parcels.url, esriRequest, QueryTask, account.OBJECTID);
+          }  else {
+            this.stormwater.account.next(null);
+          }
+        });
       }
     });    
   }
 
-  getAccount(RelationshipQuery:any, feature: esri.Graphic, QueryTask: any, esriRequest: any) { 
-    //@ts-ignore
-    let relationship = this.parcels.relationships.find((r:esri.Relationship) => {
-      return r.name === 'Account';
-    });
-    
-    this.clearResultsList(); 
-    if (relationship) {
-      let query: esri.RelationshipQuery = new RelationshipQuery();
-      query.relationshipId = relationship.id;
-      query.returnGeometry = false;
-      query.objectIds = [feature.attributes.OBJECTID];
-      query.outFields = ['*'];
-
-
-      this.parcels.queryRelatedFeatures(query).then( result => {
-        if (result[feature.attributes.OBJECTID]) {
-          let accounts:Account[] = [];
-          result[feature.attributes.OBJECTID].features.forEach(f => {
-            accounts.push(f.attributes as Account);
-          });
-          accounts.sort((a,b) => (a.Status > b.Status) ? 1 : ((b.Status > a.Status) ? -1 : 0)); 
-
-          this.stormwater.accounts.next(accounts);
-          
-          let account:Account = accounts[0]; 
-          this.router.navigate(['/account/' + account.AccountId]);
-          if (this.stormwater.account.getValue().OBJECTID != account.OBJECTID) {
-          //  this.stormwater.account.next(account);
-          }
-          
-         // this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-        }  else {
-          this.stormwater.account.next(null);
-        }
-      });
-    }
-  }
-
   queryRelatedTables (url: string, relationship: any, QueryTask: any, objectId: number):Promise<any> {
     let promise = new Promise<any>((resolve, reject) => {
-      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
+      let queryTask: esri.QueryTask = new QueryTask(this._parcels.url + '/2');
       queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['*']}).then(result => {
         resolve(result);
       });
     })
     return promise;
-
   }
 
   queryTables (url: string, esriRequest: any, QueryTask: any, objectId: number) {
-    
     esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleOrigin') {
@@ -507,7 +479,7 @@ export class MapComponent implements OnInit {
             if (result[objectId]) {
               result[objectId].features.forEach(feature => {
                 attributes.push(feature.attributes);
-              });;
+              });
             }
             if (relationship.name.indexOf('ImperviousSurface') > -1) {
               this.stormwater.impervious.next(attributes);
@@ -538,21 +510,20 @@ export class MapComponent implements OnInit {
     })
     return promise;
   }
+
   getParcel(url: string, esriRequest: any, QueryTask: any, objectId: number, mapView: esri.MapView) {
     esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleDestination') {
-          let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
+          let queryTask: esri.QueryTask = new QueryTask(this._parcels.url + '/2');
           queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['OBJECTID'], returnGeometry: false, outSpatialReference: mapView.spatialReference}).then(result => {
             if (result[objectId]) {
-
-              this.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], objectIds: [result[objectId].features[0].attributes.OBJECTID], outSpatialReference: mapView.spatialReference}).then(result => {
+              this._parcels.queryFeatures({returnGeometry: true, outFields: ['*'], objectIds: [result[objectId].features[0].attributes.OBJECTID], outSpatialReference: mapView.spatialReference}).then(result => {
                 if (result.features) {
                   if (result.features.length > 0) {
                     let parcel:Parcel = result.features[0].attributes as Parcel;
                     this.stormwater.parcel.next(parcel);                    
                     let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-                  
                     mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
                     this.highlightSingleParcel(result.features[0]);
                   }
@@ -565,52 +536,48 @@ export class MapComponent implements OnInit {
     });
   }
 
-  getByAccountId(id: any[], field:string, QueryTask: any, esriRequest: any, mapView: esri.MapView, zoom:boolean) {
-    
-    if (this.parcels) {
-
-      let queryTask: esri.QueryTask = new QueryTask(this.parcels.url + '/2');
-      queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
-        if (result.features) {
-
-          if (result.features.length < 2) {
-            
-            let account = result.features[0].attributes;
-           // if (!this.stormwater.account.getValue()) {
-                this.stormwater.account.next(account);
-              
-          //  }
-
-            this.queryTables(this.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-            if (zoom) {
-              this.getParcel(this.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
-
-            }
-          } else if (result.features.length > 1) {
-            let oids = [];
-            
-            result.features.forEach(feature => {
-              oids.push(feature.attributes.OBJECTID);
-            })
-            this.queryParcelsRelatedToAccounts(this.parcels.url+'/2', 1, QueryTask, oids).then(parcelResult => {
-              let data = [];
-              result.features.forEach(f => {
-                if (parcelResult[f.attributes.OBJECTID]) {
-                  let feature = parcelResult[f.attributes.OBJECTID].features[0]
-                  data.push({SiteAddress: feature.attributes.SiteAddress, RealEstateId: feature.attributes.RealEstateId, AccountId: f.attributes.AccountId, Status: f.attributes.Status, TotalImpervious: f.attributes.TotalImpervious, ApportionmentUnits: f.attributes.ApportionmentUnits, geometry: feature.geometry});
-                }
+  getByAccountId(id: any[], field:string, mapView: esri.MapView, zoom:boolean) {
+    loadModules([    
+      'esri/tasks/QueryTask',
+      'esri/request',
+    ])
+    .then(([QueryTask, esriRequest]) => {
+      if (this._parcels) {
+        let queryTask: esri.QueryTask = new QueryTask(this._parcels.url + '/2');
+        queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
+          if (result.features) {
+            if (result.features.length < 2) {
+              let account = result.features[0].attributes;
+             // if (!this.stormwater.account.getValue()) {
+              this.stormwater.account.next(account);
+            //  }
+              this.queryTables(this._parcels.url, esriRequest, QueryTask, account.OBJECTID);
+              if (zoom) {
+                this.getParcel(this._parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
+              }
+            } else if (result.features.length > 1) {
+              let oids = [];
+              result.features.forEach(feature => {
+                oids.push(feature.attributes.OBJECTID);
               });
-              this.stormwater.accountList.next(data);
-
-            });
-          } else {
-            this.stormwater.account.next(null);
-            this.clearResultsList();       
+              this.queryParcelsRelatedToAccounts(this._parcels.url+'/2', 1, QueryTask, oids).then(parcelResult => {
+                let data = [];
+                result.features.forEach(f => {
+                  if (parcelResult[f.attributes.OBJECTID]) {
+                    let feature = parcelResult[f.attributes.OBJECTID].features[0]
+                    data.push({SiteAddress: feature.attributes.SiteAddress, RealEstateId: feature.attributes.RealEstateId, AccountId: f.attributes.AccountId, Status: f.attributes.Status, TotalImpervious: f.attributes.TotalImpervious, ApportionmentUnits: f.attributes.ApportionmentUnits, geometry: feature.geometry});
+                  }
+                });
+                this.stormwater.accountList.next(data);
+              });
+            } else {
+              this.stormwater.account.next(null);
+              this.clearResultsList();       
+            }
           }
-  
-        }
-      });
-    }
+        });
+      }      
+    });    
   }
 
   zoomToParcels(features, mapView) {
@@ -640,19 +607,17 @@ export class MapComponent implements OnInit {
     };
     //@ts-ignore
     feature.symbol = symbol;
-
     this._parcelGraphics.add(feature);
     this._selectedParcel = feature;
   }
 
   queryRelatedParcels(oids:number[], features:any[]) {
     let data = [];
-    let relationship = this.parcels.relationships.find((r:esri.Relationship) => {
+    let relationship = this._parcels.relationships.find((r:esri.Relationship) => {
       return r.name === 'Account';
     });    
-    this.parcels.queryRelatedFeatures({relationshipId: relationship.id, returnGeometry: true, objectIds: oids, outFields: ['*']}).then(relatedResults => {
+    this._parcels.queryRelatedFeatures({relationshipId: relationship.id, returnGeometry: true, objectIds: oids, outFields: ['*']}).then(relatedResults => {
       features.forEach(feature => {
-        
         if (relatedResults[feature.attributes.OBJECTID]) {
           let r = relatedResults[feature.attributes.OBJECTID];
           let f = r.features[0];
@@ -663,7 +628,6 @@ export class MapComponent implements OnInit {
     });          
     if (this._highlight) {
       this._highlight.remove();
-    
     }
     this._highlight = this._parcelView.highlight(features);
     this.zoomToParcels(features, this._mapView);
@@ -695,144 +659,104 @@ export class MapComponent implements OnInit {
         this.stormwater.getDataElements(credentials.token).subscribe(result => {
           this.stormwater.getLayerInfos(result);
         });        
-        
-
       }
     });
-
     this.stormwater.account.subscribe(account => {
       if (account) {
-        loadModules([
-          'esri/tasks/QueryTask',
-          'esri/request', ])
-            .then(([QueryTask, request]) =>  {
-              
-              if (this._lastAccountId != account.AccountId) {
-                this._lastAccountId = account.AccountId;
-                this.getByAccountId([account.AccountId], 'AccountId', QueryTask, request, this._mapView, true);
-                this.router.navigate(['/account/' + account.AccountId]);
-
-              }
-
-
-
-          });
+        if (this._lastAccountId != account.AccountId) {
+          this._lastAccountId = account.AccountId;
+          this.getByAccountId([account.AccountId], 'AccountId', this._mapView, true);
+          if (!this._lastAccountId) {
+            this.location.go('/account/' + account.AccountId);
+          } else {
+            this.router.navigate(['/account/' + account.AccountId]);
+          }
+        }
       } else {
         this.stormwater.impervious.next([]);
         this.stormwater.apportionments.next([]);
         this.stormwater.credits.next([]);
         this.stormwater.logs.next([]);
         this.stormwater.journals.next([]);
-        
       }
     });
     this.stormwater.streetName.subscribe(streetName => {
       if (streetName) {
-              let data = [];
-              this.parcels.queryFeatures({where: "FullStreetName = '" + streetName + "'", returnGeometry: true, outFields: ['*'], outSpatialReference: this._mapView.spatialReference }).then(result => {
-                let oids = [];
-                result.features.forEach(feature => {
-                  oids.push(feature.attributes.OBJECTID);
+        this._parcels.queryFeatures({where: "FullStreetName = '" + streetName + "'", returnGeometry: true, outFields: ['*'], outSpatialReference: this._mapView.spatialReference }).then(result => {
+          let oids = [];
+          result.features.forEach(feature => {
+            oids.push(feature.attributes.OBJECTID);
 
-                });
-                this.queryRelatedParcels(oids, result.features as Feature[]);
-              });
+          });
+          this.queryRelatedParcels(oids, result.features as Feature[]);
+        });
       }
-  });
-  this.stormwater.accountSearch.subscribe(selection => {
-    if (selection) {
-      let field:string = '';
-      let value:any = null;
-      if (selection.accountId) {
-        field = 'AccountId';
-        value = selection.accountId;
-      } else if (selection.premiseId) {
-        field = 'PremiseId';
-        value = selection.premiseId;
-      } else if (selection.csaId) {
-        field = 'CsaId';
-        value = selection.csaId;
-      } else if (selection.status) {
-        field = 'Status';
-        value = selection.status;
+    });
+    this.stormwater.accountSearch.subscribe(selection => {
+      if (selection) {
+        let field:string = '';
+        let value:any = null;
+        if (selection.accountId) {
+          field = 'AccountId';
+          value = selection.accountId;
+        } else if (selection.premiseId) {
+          field = 'PremiseId';
+          value = selection.premiseId;
+        } else if (selection.csaId) {
+          field = 'CsaId';
+          value = selection.csaId;
+        } else if (selection.status) {
+          field = 'Status';
+          value = selection.status;
+        }
+        if (this._lastAccountId != value) {
+          this._lastAccountId = value;
+          this.getByAccountId([value], field, this._mapView, true);
+        }
       }
-
-      loadModules([
+    });
+    this.stormwater.apportionedToClicked.subscribe(features => {
+      if (features.length > 0) {
+        let ids:number[] = [];
+        features.forEach(account => {
+          ids.push(account.attributes.AccountId)
+        });
+        this.getByAccountId(ids, 'AccountId', this._mapView, true);
+      }    
+    });
+    this.stormwater.accountListSelected.subscribe(row => {
+      if (row) {
+        loadModules([
         'esri/tasks/QueryTask',
         'esri/request', ])
           .then(([QueryTask, request]) =>  {
-            if (this._lastAccountId != value) {
-              this._lastAccountId = value;
-              this.getByAccountId([value], field, QueryTask, request, this._mapView, true);
-            }
+            this.getByAccountId([row.AccountId], 'AccountId', this._mapView, true);
         });
-    }
-});
-  this.stormwater.apportionedToClicked.subscribe(features => {
-    if (features.length > 0) {
-
-    loadModules([
-      'esri/tasks/QueryTask',
-      'esri/request', ])
-        .then(([QueryTask, request]) =>  {
-          let ids:number[] = [];
-          features.forEach(account => {
-            
-            ids.push(account.attributes.AccountId)
-          });
-          this.getByAccountId(ids, 'AccountId', QueryTask, request, this._mapView, true);
-
-
-      });
-    }    
-  });
-
-
-  this.stormwater.accountListSelected.subscribe(row => {
-    if (row) {
-      loadModules([
-      'esri/tasks/QueryTask',
-      'esri/request', ])
-        .then(([QueryTask, request]) =>  {
-          this.getByAccountId([row.AccountId], 'AccountId', QueryTask, request, this._mapView, true);
-      });
-    }
-
-  });
-
-
-  this.stormwater.gisScanSelected.subscribe(reid => {
-    if (this._mapView) {
-      loadModules([
-        'esri/geometry/geometryEngine'])
-          .then(([geometryEngine]) =>  {
-            let impLyr = this._mapView.map.layers.find(l => {
-              return l.title === 'Impervious Areas';
-            }) as esri.FeatureLayer;
-
-            impLyr.queryFeatures({
-               where: "RealEstateId = '" + reid + "'",
-               returnGeometry: true, 
-               outFields:['*']
-              }).then(result => {
-              if (result) {
-                let data =[];
-
-                  let features = result.features;
-
-                  let area:number = null;
-                  features.forEach(f => {
-                    //area = geometryEngine.planarArea(f.geometry, 'square-feet');
-                    area = f.attributes['Shape.STArea()'];
-                    data.push({area:area, category:f.attributes.CATEGORY, updated:f.attributes.UPDATE_DATE});
-                    
-                  });
-                this.stormwater.gisscan.next(data);
-
-              }
-            });        });      
-
+      }
+    });
+    this.stormwater.gisScanSelected.subscribe(reid => {
+      if (this._mapView) {
+        let impLyr = this._mapView.map.layers.find(l => {
+          return l.title === 'Impervious Areas';
+        }) as esri.FeatureLayer;
+        impLyr.queryFeatures({
+            where: "RealEstateId = '" + reid + "'",
+            returnGeometry: true, 
+            outFields:['*']
+        }).then(result => {
+          if (result) {
+            let data =[];
+              let features = result.features;
+              let area:number = null;
+              features.forEach(f => {
+                //area = geometryEngine.planarArea(f.geometry, 'square-feet');
+                area = f.attributes['Shape.STArea()'];
+                data.push({area:area, category:f.attributes.CATEGORY, updated:f.attributes.UPDATE_DATE});
+              });
+            this.stormwater.gisscan.next(data);
           }
-  });
+        });           
+      }
+    });
   }
 }

@@ -58,7 +58,7 @@ export class AccountsComponent implements OnInit {
   }
 
   sendToCCB() {
-    //this.account.CCBUpdateFlag = 'Y';
+    this.account.CCBUpdateFlag = 'Y';
     this.stormwater.applyEdits(2, null, [new Feature(this.account)], null).subscribe(result => {
       if (result.updateResults.length > 0) {
         if (result.updateResults[0].success) {
@@ -67,5 +67,4 @@ export class AccountsComponent implements OnInit {
       }
     });
   }
-
 }

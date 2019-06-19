@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Impervious } from '../impervious';
 import { Account } from '../account';
-import { Apportionment } from '../apportionment';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
@@ -13,7 +12,6 @@ import { Feature } from '../feature';
   styleUrls: ['./impervious.component.css']
 })
 export class ImperviousComponent implements OnInit {
-
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }
   impervious: Impervious[] = [];
   account: Account = null;
@@ -35,18 +33,14 @@ export class ImperviousComponent implements OnInit {
       if (this.account.PremiseId) {
         this.stormwater.checkApportioned(5,this.account.PremiseId.toString()).subscribe(result => {
           if (result.features.length > 0) {
-              this.apportionedTo = result.features;
-
-            }
+            this.apportionedTo = result.features;
+          }
         });
       }      
-      
       if (this.selectedIndex === 1) {
         this.stormwater.gisScanSelected.next(this.account.RealEstateId);
       }
     });    
-
-
   }
 
   apportionedToClicked() {
@@ -61,7 +55,6 @@ export class ImperviousComponent implements OnInit {
     if (i.length > 0) {
       let record = i[0];
       data = new Impervious(record.AccountId, record.TotalImpervious, record.BuildingImpervious,record.MiscImpervious,record.OtherImpervious, record.RecreationImpervious, record.RoadTrailImpervious, record.ParkingImpervious, record.PermittedImpervious, record.MethodUsed, record.MethodDate, record.EffectiveDate, record.Status, record.ImperviousId, record.created_user, record.created_date, record.last_edited_user, record.last_edited_date, record.OBJECTID, record.GlobalId);
-    
     }
     if (!data) {
       data = new Impervious(this.account.AccountId, 0,0,0,0,0,0,0,0);
@@ -71,7 +64,6 @@ export class ImperviousComponent implements OnInit {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Impervious', impervious: data}});
     ref.afterClosed().subscribe((data:Impervious) => {
       data.TotalImpervious = data.BuildingImpervious + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
-
       let feature = new Feature(data, null);
       this.stormwater.applyEdits(3, [feature], null, null).subscribe(result => {
         if(result.addResults) {
@@ -82,7 +74,5 @@ export class ImperviousComponent implements OnInit {
         }
       });
     });
-
   }
-
 }

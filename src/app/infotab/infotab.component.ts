@@ -8,7 +8,6 @@ import { Account } from '../account';
   styleUrls: ['./infotab.component.css']
 })
 export class InfotabComponent implements OnInit {
-
   constructor(private stormwater:StormwaterService) { }
   account:Account = null;
   ngOnInit() {
@@ -16,8 +15,6 @@ export class InfotabComponent implements OnInit {
       if (account) {
         this.account = account;
       }
-
     });
   }
-
 }

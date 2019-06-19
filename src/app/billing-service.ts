@@ -24,68 +24,57 @@ export class BillingService {
   count = 0;
 
 
-public getBilling(premise:string, type: string):Promise<BillingInfo> {
-
-  let promise = new Promise<BillingInfo>((resolve, reject) => {
-
-    if (this.count < this.types.length) {
-      this.getBillingInfo(premise, type).subscribe(data => {
-        if (data) {          
-          if (data.length > 0) {
-            this.count = 0;
-            resolve(data[0]);
-          } else {
-            this.count += 1;
-            this.getBilling(premise, this.types[this.count])
-          }
-        }
-
-    });
-    } else {
-      this.count = 0;
-    }
-  });
-  return promise;
-}
-    public getBillingData(account:Account):Promise<BillingInfo> {
-
+  public getBilling(premise:string, type: string):Promise<BillingInfo> {
     let promise = new Promise<BillingInfo>((resolve, reject) => {
-      if (account.PremiseId) {
-        
+      if (this.count < this.types.length) {
+        this.getBillingInfo(premise, type).subscribe(data => {
+          if (data) {          
+            if (data.length > 0) {
+              this.count = 0;
+              resolve(data[0]);
+            } else {
+              this.count += 1;
+              this.getBilling(premise, this.types[this.count])
+            }
+          }
+      });
+      } else {
+        this.count = 0;
+      }
+    });
+    return promise;
+  }
+  public getBillingData(account:Account):Promise<BillingInfo> {
+    let promise = new Promise<BillingInfo>((resolve, reject) => {
+      if (account.PremiseId) {        
         let info = new BillingInfo();
         info.services = [];
         this.count = 0;
         this.getBilling(account.PremiseId.toString(), this.types[this.count]).then(result => {
-          
           if (result) {
-           // if (result.length > 0) {
-              info = result as BillingInfo;
-              this.getLastBill(info.accountId).subscribe(result => {
-                if (result.length > 0) {
-                  info.lastBill = result[0] as Bill;
-                  this.getLastSwBill(account.PremiseId.toString(), info.lastBill.billId).subscribe(result => {
-                    if (result.length > 0) {
-                      info.lastStormwaterBill = result[0] as StormwaterBill;
-                    }
-                    this.getBillingServices(info.premiseId).subscribe(result => {
-                      info.services = result as BillService[];
-                      resolve(info);
-                    });
-                  });
-                } else {
+            info = result as BillingInfo;
+            this.getLastBill(info.accountId).subscribe(result => {
+              if (result.length > 0) {
+                info.lastBill = result[0] as Bill;
+                this.getLastSwBill(account.PremiseId.toString(), info.lastBill.billId).subscribe(result => {
+                  if (result.length > 0) {
+                    info.lastStormwaterBill = result[0] as StormwaterBill;
+                  }
                   this.getBillingServices(info.premiseId).subscribe(result => {
                     info.services = result as BillService[];
                     resolve(info);
                   });
-                }
-              });
-          //  } else {
-          //    resolve(info);
-         //   }
+                });
+              } else {
+                this.getBillingServices(info.premiseId).subscribe(result => {
+                  info.services = result as BillService[];
+                  resolve(info);
+                });
+              }
+            });
           }else {
             resolve(info);
           }
-
         });
       } else {
         resolve(null);
@@ -94,11 +83,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
     return promise;
   }
 
-
-  
-
   getBillingInfo(premise:string, serviceType: string):Observable<any> {
-    
    let url = this.baseUrl + 'getPremiseAccounts';
     let body:any = {
       "CM-GetPremiseAccounts": {
@@ -108,6 +93,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
     } 
     return this.http.post<any>(url, body, options);    
   }
+
   getLastBill(account:string):Observable<any> {
     let url = this.baseUrl + 'getLastBillByAccount';
     let body:any = {
@@ -116,9 +102,9 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
         "serviceType": "ST"
       }
     } 
-    
     return this.http.post<any>(url, body, options);    
   }
+
   getLastSwBill(premise:string, billid: string):Observable<any> {
     let url = this.baseUrl + 'getBillingByPremise';
     let body:any = {
@@ -127,8 +113,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
         "billId": billid,
         "serviceType": "ST"
       }
-    } 
-    
+    }     
     return this.http.post<any>(url, body);    
   }
   getBillingServices(premise:string):Observable<any> {
@@ -137,8 +122,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
       "CM-GetPremiseSPs": {
         "premiseId": premise,
       }
-    } 
-    
+    }     
     return this.http.post<any>(url, body, options);    
   }
 
@@ -162,8 +146,7 @@ public getBilling(premise:string, type: string):Promise<BillingInfo> {
         "accountId": account,
         "address": address
       }
-    } 
-    
+    }     
     return this.http.post<any>(url, body, options);      
   }  
 }

@@ -8,7 +8,6 @@ import { StormwaterService } from '../stormwater.service';
   styleUrls: ['./tabs.component.css']
 })
 export class TabsComponent implements OnInit {
-
   constructor(overlayContainer: OverlayContainer, private stormwater:StormwaterService) {
     overlayContainer.getContainerElement().classList.add('dark-theme');
   }
@@ -17,13 +16,6 @@ export class TabsComponent implements OnInit {
     this.stormwater.account.subscribe(account => {
       if (account) {
         this.selectedIndex = 0;
-
-        // let el = document.getElementById('tabGroup');
-        // if (el) {
-        //   el.scrollIntoView();
-
-        // }
-     
       }
     });
     this.stormwater.accountList.subscribe(result => {
@@ -34,5 +26,4 @@ export class TabsComponent implements OnInit {
       }
     })
   }
-
 }

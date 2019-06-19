@@ -15,16 +15,13 @@ export class NavigationComponent implements OnInit {
     .pipe(
       map(result => result.matches)
     );
-
   constructor(private breakpointObserver: BreakpointObserver, private stormwater:StormwaterService) {}
   logInClicked() {
     this.stormwater.logInClicked.next(true)
   }
-
   logOutClicked() {
     this.stormwater.logOutClicked.next(true)
   }
-
   ngOnInit() {
     this.stormwater.credentials.subscribe(credentials => {
       if (credentials) {

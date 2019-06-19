@@ -5,5 +5,4 @@ export class Feature {
         this.attributes = attributes;
         this.geometry = geometry;
     }
-
 }

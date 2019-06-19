@@ -13,10 +13,7 @@ export class LogsTableComponent implements OnInit {
   @ViewChild(MatSort, null) sort: MatSort;
   dataSource: LogsTableDataSource;
   constructor(private stormwater:StormwaterService){}
-
-  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['created_date', 'created_user', 'LogEntry'];
-
   ngOnInit() {
     this.dataSource = new LogsTableDataSource(this.paginator, this.sort, []);
     this.stormwater.logs.subscribe(logs => {

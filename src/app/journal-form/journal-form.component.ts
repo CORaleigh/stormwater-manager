@@ -17,9 +17,6 @@ export class JournalFormComponent implements OnInit {
       Validators.required, Validators.minLength(1), Validators.maxLength(300)])
     ]
   });
-
- 
-
   constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
   ngOnInit() {
     this.stormwater.account.subscribe(account => {

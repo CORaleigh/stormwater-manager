@@ -13,9 +13,7 @@ export class JournalsTableComponent implements OnInit {
   @ViewChild(MatSort, null) sort: MatSort;
   dataSource: JournalsTableDataSource;
   constructor(private stormwater:StormwaterService){}
-  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['created_user', 'created_date', 'JournalEntry'];
-
   ngOnInit() {
     this.dataSource = new JournalsTableDataSource(this.paginator, this.sort, []);
     this.stormwater.journals.subscribe(journals => {

@@ -27,7 +27,6 @@ import { DialogComponent } from './dialog/dialog.component';
 import { ImperviousUpdateFormComponent } from './impervious-update-form/impervious-update-form.component';
 import { ReactiveFormsModule, FormsModule  } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { DeleteComponent } from './delete/delete.component';
 import { JournalFormComponent } from './journal-form/journal-form.component';
 import { ApportionmentFormComponent } from './apportionment-form/apportionment-form.component';
 import { CreditFormComponent } from './credit-form/credit-form.component';
@@ -64,7 +63,6 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
     LogsTableComponent,
     DialogComponent,
     ImperviousUpdateFormComponent,
-    DeleteComponent,
     JournalFormComponent,
     ApportionmentFormComponent,
     CreditFormComponent,

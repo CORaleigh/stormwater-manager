@@ -5,7 +5,6 @@ import { Credit } from '../credit';
 import * as moment from 'moment';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
-import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-credits',
@@ -20,17 +19,13 @@ export class CreditsComponent implements OnInit {
   ngOnInit() {
     this.stormwater.credits.subscribe(credits => this.credits = credits);
   }
-
   delete() {
     let confirm = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'This will delete the credit for this account, would you like to continue?'}});
     confirm.afterClosed().subscribe((confirmed:boolean) => {
-      debugger
       if (confirmed) {
         let deletes = [this.credits[0].OBJECTID];
-
         this.stormwater.applyEdits(4, null, null, deletes).subscribe(result => {
           this.stormwater.credits.next([]);
-          debugger
           this.stormwater.account.getValue().CreditedImpervious = 0;
           this.stormwater.account.getValue().BillableImpervious = this.stormwater.account.getValue().TotalImpervious - 0;          
           this.stormwater.applyEdits(2, null, [{attributes: this.stormwater.account.getValue()} as __esri.Graphic]).subscribe(result => {
@@ -73,10 +68,8 @@ export class CreditsComponent implements OnInit {
             this.stormwater.credits.next(credits);
           }
         }     
-        
         this.stormwater.accountListSelected.next(account);   
       });
     });
   }
-
 }

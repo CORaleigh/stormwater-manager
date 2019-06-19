@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Journal } from '../journal';
@@ -10,14 +10,8 @@ import { Feature } from '../feature';
   templateUrl: './journals.component.html',
   styleUrls: ['./journals.component.css']
 })
-export class JournalsComponent implements OnInit {
-
+export class JournalsComponent {
   constructor(private dialog: MatDialog, private stormwater:StormwaterService) { }
-  
-  ngOnInit() {
-
-  }
-
   add() {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Add Journal Entry'}, width: '400px'});
     ref.afterClosed().subscribe((data:Journal) => {
@@ -34,7 +28,6 @@ export class JournalsComponent implements OnInit {
                 }
               }
             });
-
           }
         }
       });

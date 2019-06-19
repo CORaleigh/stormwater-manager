@@ -22,7 +22,6 @@ export class ImperviousTableComponent implements OnInit {
   @ViewChild(MatSort, null) sort: MatSort;
   dataSource: ImperviousTableDataSource;
   constructor(private stormwater:StormwaterService) {}
-  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['EffectiveDate', 'TotalImpervious', 'MethodUsed', 'MethodDate', 'Status'];
   expandedRow: Impervious;
   rowClick(row) {
@@ -33,7 +32,6 @@ export class ImperviousTableComponent implements OnInit {
     this.stormwater.impervious.subscribe(impervious => {
       if (impervious.length) {
         this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, impervious);
-
       }
     })
   }

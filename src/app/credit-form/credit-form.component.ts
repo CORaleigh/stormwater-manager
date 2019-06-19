@@ -3,7 +3,7 @@ import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_DIALOG_DATA} from '@angular/material';
+import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material';
 import { Credit } from '../credit';
 import { StormwaterService } from '../stormwater.service';
 export const MY_FORMATS = {
@@ -40,11 +40,8 @@ export class CreditFormComponent implements OnInit {
   @Input() credit: Credit;
   @Input() mode: string;
   @Output() submitted = new EventEmitter<Credit>();
-
-
   inceptionDate = new FormControl(moment());
   approvalDate = new FormControl(moment());
- 
   oCodes:any = null;
   uCodes:any = null;
   constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
@@ -54,19 +51,13 @@ export class CreditFormComponent implements OnInit {
   ngOnInit() {
     if (this.credit) {
       this.oCodes = this.stormwater.getDomain(4, 'OnsitePercentage');    
-      this.uCodes = this.stormwater.getDomain(4, 'UpstreamPercentage');    
-
+      this.uCodes = this.stormwater.getDomain(4, 'UpstreamPercentage');  
       this.form.get('ControlledSurface').setValue(this.credit.ControlledSurface);
       this.form.get('NpdesPercentage').setValue(this.credit.NpdesPercentage * 100);
       this.form.get('UpstreamPercentage').setValue(this.credit.UpstreamPercentage);
       this.form.get('OnsitePercentage').setValue(this.credit.OnsitePercentage);
-    //  this.approvalDate.setValue(new Date(this.credit.ApprovalDate));
-    this.approvalDate.setValue(moment(new Date(this.credit.ApprovalDate)));
-     // this.inceptionDate.setValue(new Date(this.credit.InceptionDate));
-     this.inceptionDate.setValue(moment(new Date(this.credit.InceptionDate)));
-      
-
-
+      this.approvalDate.setValue(moment(new Date(this.credit.ApprovalDate)));
+      this.inceptionDate.setValue(moment(new Date(this.credit.InceptionDate)));
     }
   }
   onSubmit() {

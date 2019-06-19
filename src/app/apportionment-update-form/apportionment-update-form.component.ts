@@ -1,10 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef, DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, ErrorStateMatcher, MatStepper } from '@angular/material';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, ErrorStateMatcher, MatStepper } from '@angular/material';
 
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 import * as moment from 'moment';
-import { BillingInfo } from '../billing-info';
 import { Apportionment } from '../apportionment';
 import { Account } from '../account';
 import { BillingService } from '../billing-service';
@@ -104,13 +103,11 @@ export class ApportionmentUpdateFormComponent  {
           this.count += 1;
           this.getBilling(premiseId, this.types[this.count])
         }
-
-    });
+      });
     } else {
       this.count = 0;
     }
-}
- 
+  }
 
   setRemainingPercent(account:Account, apportionment:Apportionment) {
     if (account.ApportionmentCode === 'WEIGHTED') {
@@ -124,11 +121,8 @@ export class ApportionmentUpdateFormComponent  {
         } else {
           remaining -= a.PercentApportioned;
         }
-
       });
-      
       this.form.get('PercentApportioned').setValidators(Validators.max(remaining));       
-
     }
   }
 
@@ -137,21 +131,16 @@ export class ApportionmentUpdateFormComponent  {
   }
   onSubmit() {
     if (this.mode === 'add') {
-    this._apportionment = new Apportionment();
-    this._apportionment.AccountId = this._account.AccountId;
-    this._apportionment.Address = this.ccbAccount.address;
-    if (this.ccbAccount.csaId === 'NONE') {
-      this.ccbAccount.csaId = null;
-    }
-    this._apportionment.CsaId = this.ccbAccount.csaId;
-
+      this._apportionment = new Apportionment();
+      this._apportionment.AccountId = this._account.AccountId;
+      this._apportionment.Address = this.ccbAccount.address;
+      if (this.ccbAccount.csaId === 'NONE') {
+        this.ccbAccount.csaId = null;
+      }
+      this._apportionment.CsaId = this.ccbAccount.csaId;
       this._apportionment.ApprovalDate = moment().unix() * 1000;
       this._apportionment.ExpirationDate = moment().add(10, 'years').unix() * 1000;
-
-
-   // this.apportionment.ApprovalUser = this.stormwater.credentials.getValue();
-  
-    this._apportionment.PremiseId = this.ccbAccount.premiseId.toString();
+      this._apportionment.PremiseId = this.ccbAccount.premiseId.toString();
     }    
     if (this._account.ApportionmentCode === 'WEIGHTED') {
       this._apportionment.PercentApportioned = this.form.get('PercentApportioned').value;

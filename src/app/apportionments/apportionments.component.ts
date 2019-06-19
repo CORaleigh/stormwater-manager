@@ -38,8 +38,5 @@ export class ApportionmentsComponent implements OnInit {
     ref.afterClosed().subscribe((data:any) => {
       this.stormwater.accountListSelected.next(this.account);   
     });
-
   }
-
-
 }

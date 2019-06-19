@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
 import { Feature } from '../feature';
@@ -25,9 +25,7 @@ export class ApportionmentFormComponent implements OnInit {
     {name: 'Equal', code: 'EQUAL'},
     {name: 'Weighted', code: 'WEIGHTED'}
   ];
-
   constructor(private fb: FormBuilder, private stormwater:StormwaterService, private dialog:MatDialog) {}
-
   ngOnInit() {
     this.stormwater.account.subscribe(account => {
       if (account) {
@@ -41,7 +39,6 @@ export class ApportionmentFormComponent implements OnInit {
       }
     });
   } 
-
   codeChanged(event) {
     let account = this.stormwater.account.getValue();
     account.ApportionmentCode = this.apptForm.get('code').value;
@@ -79,13 +76,11 @@ export class ApportionmentFormComponent implements OnInit {
       
     });
   }
-
   checkCode() {
     if (this.apptForm.get('code').value === 'NA' || !this.apptForm.get('code').value) {
       return true;
     }
   }
-
   updateApportionments(account:Account) {
     if (account.ApportionmentCode === 'EQUAL') {
       let updates = [];
@@ -96,8 +91,6 @@ export class ApportionmentFormComponent implements OnInit {
         updates.push(new Feature(apportionment));
       });
       this.stormwater.apportionments.next(this.apportionments);
-
-      
       this.stormwater.applyEdits(5, [], updates, []).subscribe(result => {
         this.stormwater.accountListSelected.next(account);
       });

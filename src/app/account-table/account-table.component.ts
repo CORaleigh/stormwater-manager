@@ -28,14 +28,9 @@ export class AccountTableComponent implements OnInit {
           {field: 'Status', value: account.Status},     
           {field: 'SFEU', value: account.Sfeu},
           {field: 'Use Class', value: account.UseClass},
-          {field: 'Billing Tier', value: account.BillingTier},          
-          // {field: 'Parcel Address', value: this.parcel.SiteAddress},   
-          // {field: 'Parcel Owner', value: this.parcel.Owner},       
-          // {field: 'REID', value: this.parcel.RealEstateId},
-          // {field: 'PIN #', value: this.parcel.PinNum} 
+          {field: 'Billing Tier', value: account.BillingTier}
         ]
         this.dataSource = new AccountTableDataSource(attributes);
-
       }
     });
   }

@@ -13,10 +13,7 @@ export class CreditsTableComponent implements OnInit {
   @ViewChild(MatSort,null) sort: MatSort;
   dataSource: CreditsTableDataSource;
   constructor(public stormwater:StormwaterService){}
-
-  /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['field', 'value'];
-
   ngOnInit() {
     this.dataSource = new CreditsTableDataSource([]);
     this.stormwater.credits.subscribe(credits => {
@@ -30,8 +27,7 @@ export class CreditsTableComponent implements OnInit {
           {field: 'Inception Date', value: credit.InceptionDate, type: 'date'},
           {field: 'Expires', value: credit.ExpirationDate, type: 'date'},
           {field: 'Approved', value: credit.ApprovalDate, type: 'date'},
-          {field: 'Comments', value: credit.Comment}
-          
+          {field: 'Comments', value: credit.Comment}          
         ];
         this.dataSource = new CreditsTableDataSource(attributes);
       } else {
