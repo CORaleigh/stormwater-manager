@@ -57,6 +57,7 @@
             </div>
             <div class="row">
                 {{account.Sfeu | number: '1.0-1'}}
+                <span *ngIf="account.Sfeu != account.PremiseSfeu && account.PremiseSfeu != null">&nbsp;({{account.PremiseSfeu | number:'1.1-1'}})</span>
             </div>        
         </div>           
         <div class="col">

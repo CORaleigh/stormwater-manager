@@ -26,7 +26,7 @@
     <!-- Sfeu Column -->
     <ng-container matColumnDef="Sfeu">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Sfeu</th>
-      <td mat-cell *matCellDef="let row">{{row.Sfeu | number:'1.1-1'}}</td>
+      <td mat-cell *matCellDef="let row">{{row.Sfeu | number:'1.1-1'}}<span *ngIf="row.Sfeu != row.PremiseSfeu"><br/>({{row.PremiseSfeu | number:'1.1-1'}})</span></td>
     </ng-container>
 
     <!-- Name Column -->

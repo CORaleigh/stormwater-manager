@@ -3,6 +3,7 @@
     flex-direction: row;
     justify-content: center;
     margin: 0.5em;
+    text-align: center;
   }
   
   .col {
