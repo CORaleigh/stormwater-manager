@@ -4,17 +4,16 @@
 
 .mat-column-created_user {
   flex: 0 0 33% !important;
-  min-width: 50px !important;
-  word-break: break-all;
+  min-width: 100px !important;
 }
 
 .mat-column-created_date{
   flex: 0 0 33% !important;
-  min-width: 70px !important;
+  min-width: 100px !important;
   max-width: 100px !important;
 }
 
 .mat-column-JournalEntry{
   flex: 0 0 33% !important;
-  min-width: 100px !important;
+  min-width: 150px !important;
 }

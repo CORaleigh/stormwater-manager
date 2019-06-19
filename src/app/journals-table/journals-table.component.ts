@@ -13,7 +13,7 @@ export class JournalsTableComponent implements OnInit {
   @ViewChild(MatSort, null) sort: MatSort;
   dataSource: JournalsTableDataSource;
   constructor(private stormwater:StormwaterService){}
-  displayedColumns = ['created_user', 'created_date', 'JournalEntry'];
+  displayedColumns = ['created_date', 'created_user',  'JournalEntry'];
   ngOnInit() {
     this.dataSource = new JournalsTableDataSource(this.paginator, this.sort, []);
     this.stormwater.journals.subscribe(journals => {
