@@ -13,7 +13,8 @@
 
 .mat-column-Address {
   flex: 0 0 17% !important;
-  min-width: 100px !important;
+  max-width: 100px !important;
+  word-wrap: break-word;
 }
 
 .mat-column-PercentApportioned {

@@ -62,7 +62,7 @@ export class ApportionmentUpdateFormComponent  {
   set apportionment(apportionment:Apportionment) {
     this._apportionment = apportionment;
     if (apportionment) {
-      this.form.get('PercentApportioned').setValue(this._apportionment.PercentApportioned);
+      this.form.get('PercentApportioned').setValue(this._apportionment.PercentApportioned * 100);
       this.expirationDate.setValue(moment(this._apportionment.ExpirationDate));   
       this.getBilling(apportionment.PremiseId, this.types[this.count]);
       let account = this.stormwater.account.getValue();
@@ -84,7 +84,7 @@ export class ApportionmentUpdateFormComponent  {
 
   form = this.fb.group({
     PercentApportioned: [null, Validators.compose([
-      Validators.required, Validators.min(0), Validators.max(1)])
+      Validators.required, Validators.min(0), Validators.max(100)])
     ],
     ExpirationDate: [null, null]
 
@@ -112,14 +112,14 @@ export class ApportionmentUpdateFormComponent  {
   setRemainingPercent(account:Account, apportionment:Apportionment) {
     if (account.ApportionmentCode === 'WEIGHTED') {
       let apportionments:Apportionment[] = this.stormwater.apportionments.getValue();
-      let remaining = 1;
+      let remaining = 100;
       apportionments.forEach(a => {
         if (apportionment) {
           if (a.OBJECTID != apportionment.OBJECTID) {
-            remaining -= a.PercentApportioned;
+            remaining -= (a.PercentApportioned*100);
           }
         } else {
-          remaining -= a.PercentApportioned;
+          remaining -= (a.PercentApportioned*100);
         }
       });
       this.form.get('PercentApportioned').setValidators(Validators.max(remaining));       
@@ -143,7 +143,7 @@ export class ApportionmentUpdateFormComponent  {
       this._apportionment.PremiseId = this.ccbAccount.premiseId.toString();
     }    
     if (this._account.ApportionmentCode === 'WEIGHTED') {
-      this._apportionment.PercentApportioned = this.form.get('PercentApportioned').value;
+      this._apportionment.PercentApportioned = this.form.get('PercentApportioned').value/100;
     } else if (this._account.ApportionmentCode === 'EQUAL') {
       this._apportionment.PercentApportioned = (100 / this._account.ApportionmentUnits)/100;
     }

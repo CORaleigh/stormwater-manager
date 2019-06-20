@@ -5,7 +5,7 @@
   <app-apportionment-dialog *ngIf="data.title === 'Apportion'" [mode]="data.mode" [apportionment]="data.apportionment" (close)="apportionmentClosed($event)"></app-apportionment-dialog>
   <app-journal-form *ngIf="data.title === 'Add Journal Entry'"  (submitted)="journalSubmitted($event)"></app-journal-form>
   <app-account-form *ngIf="data.title  === 'Update Account'" (submitted)="accountSubmitted($event)"></app-account-form>
-  <app-confirm-dialog *ngIf="data.title  === 'Confirm'" (confirmed)="confirmed($event)" [message]="data.message"></app-confirm-dialog>
+  <app-confirm-dialog *ngIf="data.title  === 'Confirm'" (confirmed)="confirmed($event)" [message]="data.message" [yesno]="data.yesno"></app-confirm-dialog>
 
 </div>
   

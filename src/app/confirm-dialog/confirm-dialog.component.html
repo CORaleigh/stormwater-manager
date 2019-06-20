@@ -1,5 +1,6 @@
 <p>
   {{message}}
 </p>
-<button mat-button (click)="confirmedClicked()">Yes</button>
-<button mat-button (click)="deniedClicked()">No</button>
+<button mat-button (click)="confirmedClicked()" *ngIf="yesno">Yes</button>
+<button mat-button (click)="deniedClicked()" *ngIf="yesno">No</button>
+<button mat-button (click)="confirmedClicked()" *ngIf="!yesno">OK</button>

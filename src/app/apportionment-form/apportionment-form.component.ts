@@ -43,7 +43,7 @@ export class ApportionmentFormComponent implements OnInit {
     let account = this.stormwater.account.getValue();
     account.ApportionmentCode = this.apptForm.get('code').value;
     if (account.ApportionmentCode === 'NA') {
-      let ref = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'Setting apportionment code to NA will delete all apportionments associated with this account.  Would you like to continue?'}});
+      let ref = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'Setting apportionment code to NA will delete all apportionments associated with this account.  Would you like to continue?', yesno: false}});
       ref.afterClosed().subscribe((confirmed:boolean) => {
         if (confirmed) {
           let deletes = [];
@@ -69,12 +69,18 @@ export class ApportionmentFormComponent implements OnInit {
   }
   unitsChanged(event) {
     let account = this.stormwater.account.getValue();
-    account.ApportionmentUnits = this.apptForm.get('units').value;
-    this.stormwater.applyEdits(2, null, [new Feature(account, null)]).subscribe(result => {
-      console.log(result);
-      this.updateApportionments(account);
-      
-    });
+    if (this.apptForm.get('units').value != 0) {
+      if (this.apptForm.get('units').value >= this.apportionments.length) {
+        account.ApportionmentUnits = this.apptForm.get('units').value;
+        this.stormwater.applyEdits(2, null, [new Feature(account, null)]).subscribe(result => {
+          console.log(result);
+          this.updateApportionments(account);
+        });
+      } else {
+        let ref = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'The value entered is less than the number of existing apportionments.', yesno: false}});
+        this.apptForm.get('units').setValue(this.apportionments.length);
+      }
+    }
   }
   checkCode() {
     if (this.apptForm.get('code').value === 'NA' || !this.apptForm.get('code').value) {

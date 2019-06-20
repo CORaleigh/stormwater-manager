@@ -9,6 +9,7 @@ export class ConfirmDialogComponent implements OnInit {
 
   constructor() { }
   @Input() message: string;
+  @Input() yesno: boolean = true;
   @Output() confirmed:EventEmitter<boolean> = new EventEmitter<boolean>();
   ngOnInit() {
   }

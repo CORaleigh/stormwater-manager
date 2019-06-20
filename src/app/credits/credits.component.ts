@@ -20,7 +20,7 @@ export class CreditsComponent implements OnInit {
     this.stormwater.credits.subscribe(credits => this.credits = credits);
   }
   delete() {
-    let confirm = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'This will delete the credit for this account, would you like to continue?'}});
+    let confirm = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'This will delete the credit for this account, would you like to continue?', yesno: true}});
     confirm.afterClosed().subscribe((confirmed:boolean) => {
       if (confirmed) {
         let deletes = [this.credits[0].OBJECTID];
