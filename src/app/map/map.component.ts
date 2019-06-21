@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input } from '@angular/core';
 import { loadModules } from 'esri-loader';
 import esri = __esri;
 import { Account } from '../account';
@@ -8,6 +8,7 @@ import { Parcel } from '../parcel';
 import { BillingService } from '../billing-service';
 import { Feature } from '../feature';
 import { Location } from '@angular/common';
+import { LodsService } from '../lods.service';
 
 @Component({
   selector: 'app-map',
@@ -17,8 +18,8 @@ import { Location } from '@angular/common';
 export class MapComponent implements OnInit {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild('mapViewNode', null) private mapViewEl: ElementRef;
-  private _id: string = 'd8309610f598424b9889d62775b6330c';
-  private _portalUrl: string = 'https://mapstest.raleighnc.gov/portal'
+  private _id: string = '975b331137fd4a65a28c7d7b4cdeec47';
+  private _portalUrl: string = 'https://maps.raleighnc.gov/portal'
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
   private _search:esri.widgetsSearch;
@@ -29,7 +30,8 @@ export class MapComponent implements OnInit {
   private _selectedParcel:esri.Graphic;
   private _lastAccountId:number = null;
   private _parcels:esri.FeatureLayer = null;  
-  constructor(public stormwater: StormwaterService, private billing:BillingService, private route: ActivatedRoute, private router:Router, private location:Location) { }
+  @Input('account') account:Account;
+  constructor(public stormwater: StormwaterService, private billing:BillingService, private route: ActivatedRoute, private router:Router, private location:Location, private lods:LodsService) { }
   async authenicate() {
     try {
       const [OAuthInfo, esriId] = await loadModules([
@@ -38,7 +40,7 @@ export class MapComponent implements OnInit {
       ]);
       
       this._info = new OAuthInfo({
-        appId: 'u8kxa1iiA6kg2Nhc',
+        appId: 'xWoMZTo6ZiZVTwcT',
         portalUrl: this._portalUrl,
         popup: false
       });
@@ -63,11 +65,12 @@ export class MapComponent implements OnInit {
 
   async initializeMap() {
     try {
-      const [WebMap, MapView, GraphicsLayer, config] = await loadModules([
+      const [WebMap, MapView, GraphicsLayer, config,LOD] = await loadModules([
         'esri/WebMap',
         'esri/views/MapView',
         'esri/layers/GraphicsLayer',
-        'esri/config'
+        'esri/config',
+        'esri/layers/support/LOD'
       ]);
       config.portalUrl = this._portalUrl;
       const mapProperties: esri.WebMapProperties = {
@@ -75,13 +78,18 @@ export class MapComponent implements OnInit {
           id: this._id
         }
       };
-      const map: esri.Map = new WebMap(mapProperties);
+      const map: esri.WebMap = new WebMap(mapProperties);
+
       const mapViewProperties: esri.MapViewProperties = {
         container: this.mapViewEl.nativeElement,
-        map: map
+        map: map,
+        constraints: {
+          lods: this.lods.lods
+        }
       };
 
       this._mapView = new MapView(mapViewProperties);
+
       this._mapView.when((mapView) => {
         this.mapLoaded.emit(true);
         this._parcelGraphics = new GraphicsLayer({listMode: 'hide'});
@@ -188,6 +196,7 @@ export class MapComponent implements OnInit {
                   account.CsaId = newCsa;
                   this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
                     if (result.updateResults.length > 0) {
+                      this.account = account;
                       this.stormwater.account.next(account);
                       this.stormwater.accountListSelected.next(account);
                     }
@@ -326,7 +335,7 @@ export class MapComponent implements OnInit {
       //@ts-ignore
       search.sources.push({
         layer: new FeatureLayer({
-        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["AccountId"],
         displayField: "AccountId",
         exactMatch: false,
@@ -341,7 +350,7 @@ export class MapComponent implements OnInit {
       //@ts-ignore
       search.sources.push({
         layer: new FeatureLayer({
-        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["PremiseId"],
         displayField: "PremiseId",
         exactMatch: false,
@@ -356,7 +365,7 @@ export class MapComponent implements OnInit {
       //@ts-ignore
       search.sources.push({
         layer: new FeatureLayer({
-        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["CsaId"],
         displayField: "CsaId",
         exactMatch: false,
@@ -373,6 +382,8 @@ export class MapComponent implements OnInit {
       mapView.ui.add(search, {position: 'top-left', index: 0});
       search.goToOverride = (view:esri.MapView, params:any) => {
         if (params.target.target.layer.title.indexOf('Stormwater Management - ') > -1) {
+          this.account = params.target.target.attributes as Account;
+
           this.stormwater.account.next(params.target.target.attributes as Account);
           this.clearResultsList();
           this.getParcel(this._parcels.url,esriRequest, QueryTask, params.target.target.attributes.OBJECTID, view);
@@ -392,6 +403,7 @@ export class MapComponent implements OnInit {
         if (event.source.name != 'Address Point' ) {
           this.getAccount(event.result.feature);
           this.clearResultsList();
+          this.account = null;
           this.stormwater.accountListSelected.next(null);
         } else if (event.source.name === 'Address Point'){
           this.getPropertyByGeometry(this._mapView, event.result.feature.geometry);
@@ -443,7 +455,10 @@ export class MapComponent implements OnInit {
             accounts.sort((a,b) => (a.Status > b.Status) ? 1 : ((b.Status > a.Status) ? -1 : 0)); 
             this.stormwater.accounts.next(accounts);
             let account:Account = accounts[0]; 
+            this.account = account;
             if (!this._lastAccountId) {
+              this._lastAccountId = account.AccountId;
+              this.getByAccountId([account.AccountId], 'AccountId', this._mapView, true);              
               this.location.go('/account/' + account.AccountId);
             } else {
               this.router.navigate(['/account/' + account.AccountId]);
@@ -560,16 +575,22 @@ export class MapComponent implements OnInit {
               result.features.forEach(feature => {
                 oids.push(feature.attributes.OBJECTID);
               });
-              this.queryParcelsRelatedToAccounts(this._parcels.url+'/2', 1, QueryTask, oids).then(parcelResult => {
-                let data = [];
-                result.features.forEach(f => {
-                  if (parcelResult[f.attributes.OBJECTID]) {
-                    let feature = parcelResult[f.attributes.OBJECTID].features[0]
-                    data.push({SiteAddress: feature.attributes.SiteAddress, RealEstateId: feature.attributes.RealEstateId, AccountId: f.attributes.AccountId, Status: f.attributes.Status, TotalImpervious: f.attributes.TotalImpervious, ApportionmentUnits: f.attributes.ApportionmentUnits, geometry: feature.geometry});
-                  }
+              let relationship = this._parcels.relationships.find((r:esri.Relationship) => {
+                return r.name === 'Account';
+              });    
+              if (relationship) {
+                this.queryParcelsRelatedToAccounts(this._parcels.url+'/2', relationship.id, QueryTask, oids).then(parcelResult => {
+                  let data = [];
+                  result.features.forEach(f => {
+                    if (parcelResult[f.attributes.OBJECTID]) {
+                      let feature = parcelResult[f.attributes.OBJECTID].features[0]
+                      data.push({SiteAddress: feature.attributes.SiteAddress, RealEstateId: feature.attributes.RealEstateId, AccountId: f.attributes.AccountId, Status: f.attributes.Status, TotalImpervious: f.attributes.TotalImpervious, ApportionmentUnits: f.attributes.ApportionmentUnits, geometry: feature.geometry});
+                    }
+                  });
+                  this.stormwater.accountList.next(data);
                 });
-                this.stormwater.accountList.next(data);
-              });
+              }              
+
             } else {
               this.stormwater.account.next(null);
               this.clearResultsList();       
@@ -664,9 +685,9 @@ export class MapComponent implements OnInit {
     this.stormwater.account.subscribe(account => {
       if (account) {
         if (this._lastAccountId != account.AccountId) {
-          this._lastAccountId = account.AccountId;
-          this.getByAccountId([account.AccountId], 'AccountId', this._mapView, true);
           if (!this._lastAccountId) {
+            this._lastAccountId = account.AccountId;
+            this.getByAccountId([account.AccountId], 'AccountId', this._mapView, true);            
             this.location.go('/account/' + account.AccountId);
           } else {
             this.router.navigate(['/account/' + account.AccountId]);

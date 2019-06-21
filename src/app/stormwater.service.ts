@@ -21,7 +21,7 @@ const httpOptions = {headers: new HttpHeaders({
 
 export class StormwaterService {
   constructor(private http:HttpClient) {}
-  url:string = 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/';
+  url:string = 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/';
 
   account:BehaviorSubject<Account> = new BehaviorSubject<Account>(null);
   accounts:BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
