@@ -19,8 +19,8 @@ import { Subscription } from 'rxjs';
 export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild('mapViewNode', null) private mapViewEl: ElementRef;
-  private _id: string = '975b331137fd4a65a28c7d7b4cdeec47';
-  private _portalUrl: string = 'https://maps.raleighnc.gov/portal'
+  private _id: string = 'd8309610f598424b9889d62775b6330c';
+  private _portalUrl: string = 'https://mapstest.raleighnc.gov/portal'
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
   private _search:esri.widgetsSearch;
@@ -339,7 +339,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["AccountId"],
         displayField: "AccountId",
         exactMatch: false,
@@ -354,7 +354,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["PremiseId"],
         displayField: "PremiseId",
         exactMatch: false,
@@ -369,7 +369,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["CsaId"],
         displayField: "CsaId",
         exactMatch: false,
