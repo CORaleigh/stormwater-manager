@@ -12,7 +12,6 @@ import { InfotabComponent } from './infotab/infotab.component';
 import { SearchtabComponent } from './searchtab/searchtab.component';
 import { MapComponent } from './map/map.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { AccountTableComponent } from './account-table/account-table.component';
 import { ImperviousComponent } from './impervious/impervious.component';
 import { ImperviousTableComponent } from './impervious-table/impervious-table.component';
 import { ApportionmentsComponent } from './apportionments/apportionments.component';
@@ -50,7 +49,6 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
     SearchtabComponent,
     MapComponent,
     AccountsComponent,
-    AccountTableComponent,
     ImperviousComponent,
     ImperviousTableComponent,
     ApportionmentsComponent,

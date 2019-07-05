@@ -16,7 +16,7 @@ const options = {
   providedIn: 'root'
 })
 export class BillingService {
-  baseUrl: string = 'https://cityconnecttest.raleighnc.gov/RaleighAPI/ccb/';
+  baseUrl: string = 'https://cityconnect.raleighnc.gov/RaleighAPI/ccb/';
   constructor(private http:HttpClient) {
   }  
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
@@ -6,20 +6,21 @@ import { Feature } from '../feature';
 import { Apportionment } from '../apportionment';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-apportionment-form',
   templateUrl: './apportionment-form.component.html',
   styleUrls: ['./apportionment-form.component.css'],
 })
-export class ApportionmentFormComponent implements OnInit {
+export class ApportionmentFormComponent implements OnInit, OnDestroy {
   apptForm = this.fb.group({
     code: [null, null],
     units: [null, null],
   });
 
   @Input() apportionments:Apportionment[];
-
+  accountSubscription: Subscription;
   codes = [
     {name: 'N/A', code: 'NA'},
     {name: 'Equal', code: 'EQUAL'},
@@ -27,7 +28,7 @@ export class ApportionmentFormComponent implements OnInit {
   ];
   constructor(private fb: FormBuilder, private stormwater:StormwaterService, private dialog:MatDialog) {}
   ngOnInit() {
-    this.stormwater.account.subscribe(account => {
+    this.accountSubscription = this.stormwater.account.subscribe(account => {
       if (account) {
         this.apptForm.get('code').setValue(account.ApportionmentCode);
         this.apptForm.get('units').setValue(account.ApportionmentUnits);
@@ -39,6 +40,13 @@ export class ApportionmentFormComponent implements OnInit {
       }
     });
   } 
+  ngOnDestroy() {
+    if (this.accountSubscription) {
+      this.accountSubscription.unsubscribe();
+      this.accountSubscription = null;
+
+    }  
+  }
   codeChanged(event) {
     let account = this.stormwater.account.getValue();
     account.ApportionmentCode = this.apptForm.get('code').value;

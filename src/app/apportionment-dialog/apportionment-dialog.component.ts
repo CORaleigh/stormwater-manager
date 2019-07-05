@@ -1,10 +1,11 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
 import { MatStepper, MatVerticalStepper } from '@angular/material';
 import { Feature } from '../feature';
 import { Apportionment } from '../apportionment';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-apportionment-dialog',
@@ -13,20 +14,34 @@ import * as moment from 'moment';
   providers: [{provide: MatStepper}], 
 
 })
-export class ApportionmentDialogComponent implements OnInit {
+export class ApportionmentDialogComponent implements OnInit, OnDestroy {
 
   constructor(private stormwater:StormwaterService) { }
   apportionments:Apportionment[] = [];
   remainingPercent:number = 1;
+  accountSubscription: Subscription;
+  apportionmentsSubscription: Subscription;
 
   ngOnInit() {
-    this.stormwater.account.subscribe(account => {
+    this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;
     });
-    this.stormwater.apportionments.subscribe(apportionments => {
+    this.apportionmentsSubscription = this.stormwater.apportionments.subscribe(apportionments => {
       this.apportionments = apportionments;
     });
     
+  }
+  ngOnDestroy() {
+    if (this.accountSubscription) {
+      this.accountSubscription.unsubscribe();
+      this.accountSubscription = null;
+
+    }
+    if (this.apportionmentsSubscription) {
+      this.apportionmentsSubscription.unsubscribe();
+      this.apportionmentsSubscription = null;
+
+    }  
   }
   account:Account;
   ccbAccount:any;

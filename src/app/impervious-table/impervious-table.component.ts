@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { ImperviousTableDataSource } from './impervious-table-datasource';
 import { StormwaterService } from '../stormwater.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { Impervious } from '../impervious';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-impervious-table',
@@ -17,10 +18,12 @@ import { Impervious } from '../impervious';
     ]),
   ],  
 })
-export class ImperviousTableComponent implements OnInit {
+export class ImperviousTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, null) paginator: MatPaginator;
   @ViewChild(MatSort, null) sort: MatSort;
   dataSource: ImperviousTableDataSource;
+  imperviousSubscription:Subscription;
+
   constructor(private stormwater:StormwaterService) {}
   displayedColumns = ['EffectiveDate', 'TotalImpervious', 'MethodUsed', 'MethodDate', 'Status'];
   expandedRow: Impervious;
@@ -29,10 +32,16 @@ export class ImperviousTableComponent implements OnInit {
   }
   ngOnInit() {
     this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, []);
-    this.stormwater.impervious.subscribe(impervious => {
+    this.imperviousSubscription = this.stormwater.impervious.subscribe(impervious => {
       if (impervious.length) {
         this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, impervious);
       }
     })
+  }
+  ngOnDestroy() {
+    if (this.imperviousSubscription) {
+      this.imperviousSubscription.unsubscribe();
+      this.imperviousSubscription = null;
+    }
   }
 }

@@ -15,22 +15,24 @@ export class JournalsComponent {
   add() {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Add Journal Entry'}, width: '400px'});
     ref.afterClosed().subscribe((data:Journal) => {
-      let feature = new Feature(data, null);
-      this.stormwater.applyEdits(6, [feature], null, null).subscribe(result => {
-        if(result.addResults) {
-          if (result.addResults[0].success) {
-            this.stormwater.getByObjectId(5, result.addResults[0].objectId).subscribe(result => {
-              if (result.features) {
-                if (result.features.length > 0) {
-                  let journals: Journal[] = this.stormwater.journals.getValue();
-                  journals.push(result.features[0].attributes);
-                  this.stormwater.journals.next(journals);                  
+      if (data) {
+        let feature = new Feature(data, null);
+        this.stormwater.applyEdits(6, [feature], null, null).subscribe(result => {
+          if(result.addResults) {
+            if (result.addResults[0].success) {
+              this.stormwater.getByObjectId(6, result.addResults[0].objectId).subscribe(result => {
+                if (result.features) {
+                  if (result.features.length > 0) {
+                    let journals: Journal[] = this.stormwater.journals.getValue();
+                    journals.push(result.features[0].attributes);
+                    this.stormwater.journals.next(journals);                  
+                  }
                 }
-              }
-            });
+              });
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 }

@@ -1,22 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { CreditsTableDataSource } from './credits-table-datasource';
 import { StormwaterService } from '../stormwater.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-credits-table',
   templateUrl: './credits-table.component.html',
   styleUrls: ['./credits-table.component.css'],
 })
-export class CreditsTableComponent implements OnInit {
+export class CreditsTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator,null) paginator: MatPaginator;
   @ViewChild(MatSort,null) sort: MatSort;
   dataSource: CreditsTableDataSource;
   constructor(public stormwater:StormwaterService){}
   displayedColumns = ['field', 'value'];
+  creditsSubscription:Subscription;
+
   ngOnInit() {
     this.dataSource = new CreditsTableDataSource([]);
-    this.stormwater.credits.subscribe(credits => {
+    this.creditsSubscription = this.stormwater.credits.subscribe(credits => {
       if(credits.length > 0) {
         let credit = credits[0];
         let attributes = [
@@ -34,5 +37,12 @@ export class CreditsTableComponent implements OnInit {
         this.dataSource = new CreditsTableDataSource([]);
       }
     });
+  }
+  ngOnDestroy() {
+    if (this.creditsSubscription) {
+      this.creditsSubscription.unsubscribe();
+      this.creditsSubscription = null;
+
+    }
   }
 }

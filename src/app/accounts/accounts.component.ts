@@ -1,25 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
 import { Parcel } from '../parcel';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-accounts',
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
-export class AccountsComponent implements OnInit {
+export class AccountsComponent implements OnInit, OnDestroy {
 
   constructor(private stormwater:StormwaterService, public dialog: MatDialog) { }
   account:Account;
   accounts:Account[] = [];
   parcel:Parcel;
   selectedAccount:Account;
+  accountSubscription: Subscription;
+  parcelSubscription: Subscription;
+
   ngOnInit() {
-    this.stormwater.account.subscribe(account => {
+    this.accountSubscription = this.stormwater.account.subscribe(account => {
       if (account) {
         this.accounts = this.stormwater.accounts.getValue();
         this.account = account;
@@ -27,10 +31,23 @@ export class AccountsComponent implements OnInit {
       }
 
     });
-    this.stormwater.parcel.subscribe(parcel => {
+    this.parcelSubscription = this.stormwater.parcel.subscribe(parcel => {
       
       this.parcel = parcel;
     });
+  }
+
+  ngOnDestroy() {
+    if (this.accountSubscription) {
+      this.accountSubscription.unsubscribe();
+      this.accountSubscription = null;
+
+    }
+    if (this.parcelSubscription) {
+      this.parcelSubscription.unsubscribe();
+      this.parcelSubscription = null;
+
+    }  
   }
 
   getDomain(code, field, id):string {
@@ -38,22 +55,22 @@ export class AccountsComponent implements OnInit {
   }
 
   statusChanged(event) {
-    console.log(event);
-    
     this.stormwater.account.next(event.value);
   }
 
   update() {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Account'}});
     ref.afterClosed().subscribe((account:Account) => {
-      this.stormwater.applyEdits(2, null, [new Feature(account)], null).subscribe(result => {
-        if (result.updateResults.length > 0) {
-          if (result.updateResults[0].success) {
-            this.stormwater.account.next(account);
-            this.stormwater.accountListSelected.next(account);
+      if (account) {        
+        this.stormwater.applyEdits(2, null, [new Feature(account)], null).subscribe(result => {
+          if (result.updateResults.length > 0) {
+            if (result.updateResults[0].success) {
+              this.stormwater.account.next(account);
+              this.stormwater.accountListSelected.next(account);
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 

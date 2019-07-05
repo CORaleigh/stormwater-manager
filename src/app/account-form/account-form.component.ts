@@ -1,14 +1,16 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-account-form',
   templateUrl: './account-form.component.html',
   styleUrls: ['./account-form.component.css'],
 })
-export class AccountFormComponent implements OnInit {
+export class AccountFormComponent implements OnInit, OnDestroy {
+  accountSubscription:Subscription;
   form = this.fb.group({
     status: [null, Validators.required],
     useclass: [null, Validators.required],
@@ -22,7 +24,7 @@ export class AccountFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
   ngOnInit() {
-    this.stormwater.account.subscribe(account => {
+    this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;
       this.statuses = this.stormwater.getDomain(2, 'Status');
       this.form.get('status').setValue(account.Status);
@@ -32,6 +34,13 @@ export class AccountFormComponent implements OnInit {
       this.form.get('csaid').setValue(account.CsaId); 
 
     });
+  }
+  ngOnDestroy() {
+    if (this.accountSubscription) {
+      this.accountSubscription.unsubscribe();
+      this.accountSubscription = null;
+
+    }
   }
   onSubmit() {
     this.account.Status = this.form.get('status').value;

@@ -1,22 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Impervious } from '../impervious';
 import { Account } from '../account';
 import { MatDialog } from '@angular/material';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-impervious',
   templateUrl: './impervious.component.html',
   styleUrls: ['./impervious.component.css']
 })
-export class ImperviousComponent implements OnInit {
+export class ImperviousComponent implements OnInit, OnDestroy {
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }
   impervious: Impervious[] = [];
   account: Account = null;
   apportionedTo:Feature[] = [];
   selectedIndex:number = 0;
+  imperviousSubscription:Subscription;
+  accountSubscription:Subscription;
   indexChanged(event) {
     if (this.account && event === 1) {
       this.stormwater.gisScanSelected.next(this.account.RealEstateId);
@@ -24,10 +27,10 @@ export class ImperviousComponent implements OnInit {
     }
   }
   ngOnInit() {
-    this.stormwater.impervious.subscribe(impervious => {
+    this.imperviousSubscription = this.stormwater.impervious.subscribe(impervious => {
       this.impervious = impervious;
     });
-    this.stormwater.account.subscribe(account => {
+    this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;
       this.apportionedTo = [];
       if (this.account.PremiseId) {
@@ -41,6 +44,17 @@ export class ImperviousComponent implements OnInit {
         this.stormwater.gisScanSelected.next(this.account.RealEstateId);
       }
     });    
+  }
+  ngOnDestroy() {
+    if (this.imperviousSubscription) {
+      this.imperviousSubscription.unsubscribe();
+      this.imperviousSubscription = null;
+    }
+    if (this.accountSubscription) {
+      this.accountSubscription.unsubscribe();
+      this.accountSubscription = null;
+
+    }
   }
 
   apportionedToClicked() {
@@ -63,16 +77,18 @@ export class ImperviousComponent implements OnInit {
     data.Status = 'P';
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Impervious', impervious: data}});
     ref.afterClosed().subscribe((data:Impervious) => {
-      data.TotalImpervious = data.BuildingImpervious + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
-      let feature = new Feature(data, null);
-      this.stormwater.applyEdits(3, [feature], null, null).subscribe(result => {
-        if(result.addResults) {
-          if (result.addResults[0].success) {
-            this.impervious.push(data);
-            this.stormwater.impervious.next(this.impervious);
+      if (data) {
+        data.TotalImpervious = data.BuildingImpervious + data.ParkingImpervious + data.RoadTrailImpervious + data.RecreationImpervious + data.MiscImpervious + data.OtherImpervious + data.PermittedImpervious;
+        let feature = new Feature(data, null);
+        this.stormwater.applyEdits(3, [feature], null, null).subscribe(result => {
+          if(result.addResults) {
+            if (result.addResults[0].success) {
+              this.impervious.push(data);
+              this.stormwater.impervious.next(this.impervious);
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 }

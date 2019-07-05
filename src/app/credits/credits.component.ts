@@ -1,23 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { MatDialog } from '@angular/material';
 import { Credit } from '../credit';
 import * as moment from 'moment';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-credits',
   templateUrl: './credits.component.html',
   styleUrls: ['./credits.component.css']
 })
-export class CreditsComponent implements OnInit {
+export class CreditsComponent implements OnInit, OnDestroy {
 
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }
   credit:Credit = null;
   credits:Credit[] = [];
+  creditsSubscription:Subscription;
   ngOnInit() {
-    this.stormwater.credits.subscribe(credits => this.credits = credits);
+    this.creditsSubscription = this.stormwater.credits.subscribe(credits => this.credits = credits);
+  }
+  ngOnDestroy() {
+    if (this.creditsSubscription) {
+      this.creditsSubscription.unsubscribe();
+      this.creditsSubscription = null;
+
+    }
   }
   delete() {
     let confirm = this.dialog.open(DialogComponent, {data: {title: 'Confirm', message:'This will delete the credit for this account, would you like to continue?', yesno: true}});
@@ -29,7 +38,7 @@ export class CreditsComponent implements OnInit {
           this.stormwater.account.getValue().CreditedImpervious = 0;
           this.stormwater.account.getValue().BillableImpervious = this.stormwater.account.getValue().TotalImpervious - 0;          
           this.stormwater.applyEdits(2, null, [{attributes: this.stormwater.account.getValue()} as __esri.Graphic]).subscribe(result => {
-            this.stormwater.account.next(this.stormwater.account.getValue());
+            this.stormwater.accountListSelected.next(this.stormwater.account.getValue()); 
           });
         });
       }
@@ -47,29 +56,31 @@ export class CreditsComponent implements OnInit {
     }
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Credit', credit: this.credit}});
     ref.afterClosed().subscribe((data:Credit) => {
-      let feature = new Feature(data, null);
-      let updates = [];
-      let adds = [];
-      if (feature.attributes.OBJECTID) {
-        updates.push(feature);
-      } else {
-        adds.push(feature);
-      }
-      this.stormwater.applyEdits(4, adds , updates, null).subscribe(result => {
-        if(result.updateResults.length > 0) {
-          if (result.updateResults[0].success) {
-            credits.push(this.credit);
-            this.stormwater.credits.next(credits);
-          }
+      if (data) {
+        let feature = new Feature(data, null);
+        let updates = [];
+        let adds = [];
+        if (feature.attributes.OBJECTID) {
+          updates.push(feature);
+        } else {
+          adds.push(feature);
         }
-        if(result.addResults.length > 0) {
-          if (result.addResults[0].success) {
-            credits.push(this.credit);
-            this.stormwater.credits.next(credits);
+        this.stormwater.applyEdits(4, adds , updates, null).subscribe(result => {
+          if(result.updateResults.length > 0) {
+            if (result.updateResults[0].success) {
+              credits.push(this.credit);
+              this.stormwater.credits.next(credits);
+            }
           }
-        }     
-        this.stormwater.accountListSelected.next(account);   
-      });
+          if(result.addResults.length > 0) {
+            if (result.addResults[0].success) {
+              credits.push(this.credit);
+              this.stormwater.credits.next(credits);
+            }
+          }     
+          this.stormwater.accountListSelected.next(account);   
+        });
+      }
     });
   }
 }

@@ -1,26 +1,37 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { AccountListTableDataSource } from './account-list-table-datasource';
 import { StormwaterService } from '../stormwater.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-account-list-table',
   templateUrl: './account-list-table.component.html',
   styleUrls: ['./account-list-table.component.css'],
 })
-export class AccountListTableComponent implements OnInit {
+
+export class AccountListTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, null) paginator: MatPaginator;
   @ViewChild(MatSort, null) sort: MatSort;
   constructor(private stormwater:StormwaterService){};
   dataSource: AccountListTableDataSource;
   displayedColumns = ['select','SiteAddress', 'RealEstateId', 'AccountId', 'Status', 'TotalImpervious', 'ApportionmentUnits'];
-  selection = new SelectionModel<any>(false, []);    
+  selection = new SelectionModel<any>(false, []);  
+  accountListSubscription: Subscription;
+    
   ngOnInit() {
     this.dataSource = new AccountListTableDataSource(this.paginator, this.sort, []);
-    this.stormwater.accountList.subscribe(data => {
+    this.accountListSubscription = this.stormwater.accountList.subscribe(data => {
       this.dataSource = new AccountListTableDataSource(this.paginator, this.sort, data);
     })
+  }
+  ngOnDestroy() {
+    if (this.accountListSubscription) {
+      this.accountListSubscription.unsubscribe();
+      this.accountListSubscription = null;
+
+    }
   }
   rowClicked(row) {
     this.stormwater.accountListSelected.next(row);
