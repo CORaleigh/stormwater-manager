@@ -44,7 +44,7 @@ export class MapComponent implements OnInit, OnDestroy {
       ]);
       
       this._info = new OAuthInfo({
-        appId: 'xWoMZTo6ZiZVTwcT',
+        appId: 'u8kxa1iiA6kg2Nhc',
         portalUrl: this._portalUrl,
         popup: false
       });

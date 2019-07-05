@@ -100,6 +100,7 @@ export class StormwaterService {
     let layerInfo:LayerInfo = result as LayerInfo;
     let fieldInfo:FieldInfo = new FieldInfo();
     fieldInfo.layers = [];
+    debugger
     layerInfo.layerDataElements.forEach(layerElement => {
       let layer = new Layer();
       layer.layerId = layerElement.layerId;
