@@ -404,7 +404,8 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       };
       search.on('select-result', event => {
-        if (event.source.name != 'Address Point' ) {
+        
+        if (event.source.name != 'Address Point' && !event.source.layer.isTable) {
           this.getAccount(event.result.feature);
           this.clearResultsList();
           this.account = null;
@@ -464,8 +465,9 @@ export class MapComponent implements OnInit, OnDestroy {
             //   this._lastAccountId = account.AccountId;
               //this.getByAccountId([account.AccountId], 'AccountId', this.stormwater.mapview, true);              
               //this.location.go('/account/' + account.AccountId);
-              this.router.navigate(['/account/' + account.AccountId]);
-
+              //this.router.navigate(['/account/' + account.AccountId]);
+              debugger
+              window.history.pushState({'id':'account'},'',window.location.origin + '/account/' + account.AccountId)
             // } else {
             //   this.router.navigate(['/account/' + account.AccountId]);
             // }
@@ -698,7 +700,9 @@ export class MapComponent implements OnInit, OnDestroy {
         //     this._lastAccountId = account.AccountId;
             //this.getByAccountId([account.AccountId], 'AccountId', this.stormwater.mapview, true);            
             //this.location.go('/account/' + account.AccountId);
-            this.router.navigate(['/account/' + account.AccountId]);
+           // this.router.navigate(['/account/' + account.AccountId]);
+           debugger
+           window.history.pushState({'id':'account'},'',window.location.origin + '/account/' + account.AccountId)
 
           // } else {
           //   this.router.navigate(['/account/' + account.AccountId]);
