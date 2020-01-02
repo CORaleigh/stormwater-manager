@@ -437,9 +437,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
   getAccount(feature: esri.Graphic) { 
     loadModules([    
-      'esri/tasks/support/RelationshipQuery'
+      'esri/tasks/support/RelationshipQuery',
+      'esri/tasks/QueryTask',
+      'esri/request'
     ])
-      .then(([RelationshipQuery]) => {
+      .then(([RelationshipQuery, QueryTask, esriRequest]) => {
       //@ts-ignore
       let relationship = this.stormwater.parcels.relationships.find((r:esri.Relationship) => {
         return r.name === 'Account';
@@ -461,21 +463,16 @@ export class MapComponent implements OnInit, OnDestroy {
             this.stormwater.accounts.next(accounts);
             let account:Account = accounts[0]; 
             this.account = account;
-            // if (!this._lastAccountId) {
-            //   this._lastAccountId = account.AccountId;
-              //this.getByAccountId([account.AccountId], 'AccountId', this.stormwater.mapview, true);              
-              //this.location.go('/account/' + account.AccountId);
-              this.router.navigate(['/account/' + account.AccountId]);
-              //debugger
-              //window.history.pushState({'id':'account'},'',window.location.origin + '/account/' + account.AccountId)
-            // } else {
-            //   this.router.navigate(['/account/' + account.AccountId]);
+            this.stormwater.account.next(account);
+            // let path = window.location.origin + '/account/';
+            // if (!path.includes('localhost')) {
+            //   path = window.location.origin + '/stormwater-manager/account/'
             // }
-            if (this.stormwater.account.getValue().OBJECTID != account.OBJECTID) {
-            //  this.stormwater.account.next(account);
-            }
-          // this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-          }  else {
+            // window.history.pushState({'id':'account'},'', path + account.AccountId);
+            // this.stormwater.account.next(account);
+            // this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+ 
+          } else {
             this.stormwater.account.next(null);
           }
         });
@@ -571,10 +568,8 @@ export class MapComponent implements OnInit, OnDestroy {
           if (result.features) {
             if (result.features.length < 2) {
               let account = result.features[0].attributes;
-             // if (!this.stormwater.account.getValue()) {
               this.stormwater.account.next(account);
-            //  }
-              this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+              //this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
               if (zoom) {
                 this.getParcel(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
               }
@@ -693,28 +688,26 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     });
     this.accountSubscription = this.stormwater.account.subscribe(account => {
-      if (account) {
-        // if (this._lastAccountId != account.AccountId) {
-        //   if (!this._lastAccountId) {
-        //     debugger
-        //     this._lastAccountId = account.AccountId;
-            //this.getByAccountId([account.AccountId], 'AccountId', this.stormwater.mapview, true);            
-            //this.location.go('/account/' + account.AccountId);
-           // this.router.navigate(['/account/' + account.AccountId]);
-           debugger
-           window.history.pushState({'id':'account'},'',window.location.origin + '/account/' + account.AccountId)
-
-          // } else {
-          //   this.router.navigate(['/account/' + account.AccountId]);
-          // }
-        //}
-      } else {
-        this.stormwater.impervious.next([]);
-        this.stormwater.apportionments.next([]);
-        this.stormwater.credits.next([]);
-        this.stormwater.logs.next([]);
-        this.stormwater.journals.next([]);
-      }
+        loadModules([
+        'esri/tasks/QueryTask',
+        'esri/request', ])
+          .then(([QueryTask, esriRequest]) =>  {
+            if (account) {
+              let path = window.location.origin + '/account/';
+              if (!path.includes('localhost')) {
+                path = window.location.origin + '/stormwater-manager/account/'
+              }
+              window.history.pushState({'id':'account'},'', path + account.AccountId);
+              this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+   
+         } else {
+           this.stormwater.impervious.next([]);
+           this.stormwater.apportionments.next([]);
+           this.stormwater.credits.next([]);
+           this.stormwater.logs.next([]);
+           this.stormwater.journals.next([]);
+         }
+        }); 
     });
 
     this.streetNameSubscription = this.stormwater.streetName.subscribe(streetName => {
