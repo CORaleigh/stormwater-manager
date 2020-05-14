@@ -34,7 +34,7 @@ export class StormwaterService {
   credits:BehaviorSubject<Credit[]> = new BehaviorSubject<Credit[]>([]);
   logs:BehaviorSubject<Log[]> = new BehaviorSubject<Log[]>([]);
   journals:BehaviorSubject<Journal[]> = new BehaviorSubject<Journal[]>([]);
-  parcel:BehaviorSubject<Parcel> = new BehaviorSubject<Parcel>(null);
+  parcel:BehaviorSubject<Parcel> = new BehaviorSubject<Parcel>(new Parcel());
   fieldInfo:FieldInfo;
   streetName:BehaviorSubject<string> = new BehaviorSubject<string>(null);
   accountSearch:BehaviorSubject<any> = new BehaviorSubject<any>(null);

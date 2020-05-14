@@ -337,7 +337,7 @@ export class MapComponent implements OnInit, OnDestroy {
       search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
       search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
       //@ts-ignore
-      search.sources.push({
+      search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
         url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["AccountId"],
@@ -349,10 +349,11 @@ export class MapComponent implements OnInit, OnDestroy {
         maxResults: 6,
         maxSuggestions: 6,
         suggestionsEnabled: true,
-        minSuggestCharacters: 3
-      });
+        minSuggestCharacters: 3,
+        popupEnabled: false
+      }));
       //@ts-ignore
-      search.sources.push({
+      search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
         url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["PremiseId"],
@@ -364,10 +365,11 @@ export class MapComponent implements OnInit, OnDestroy {
         maxResults: 6,
         maxSuggestions: 6,
         suggestionsEnabled: true,
-        minSuggestCharacters: 3
-      });    
+        minSuggestCharacters: 3,
+        popupEnabled: false
+      }));    
       //@ts-ignore
-      search.sources.push({
+      search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
         url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["CsaId"],
@@ -379,8 +381,9 @@ export class MapComponent implements OnInit, OnDestroy {
         maxResults: 6,
         maxSuggestions: 6,
         suggestionsEnabled: true,
-        minSuggestCharacters: 3
-      });       
+        minSuggestCharacters: 3,
+        popupEnabled: false
+      }));       
       this.addStreetSource(search); 
       search.sources.push(this.getSource(addresses, LayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
       mapView.ui.add(search, {position: 'top-left', index: 0});
@@ -407,6 +410,7 @@ export class MapComponent implements OnInit, OnDestroy {
         
         if (event.source.name != 'Address Point' && !event.source.layer.isTable) {
           this.getAccount(event.result.feature);
+          this.stormwater.parcel.next(event.result.feature.attributes);
           this.clearResultsList();
           this.account = null;
           this.stormwater.accountListSelected.next(null);
@@ -430,8 +434,8 @@ export class MapComponent implements OnInit, OnDestroy {
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
           mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
             this.highlightSingleParcel(result.features[0]);
-        }
-      }
+        } 
+      } 
     });            
   }
 
@@ -537,6 +541,7 @@ export class MapComponent implements OnInit, OnDestroy {
         if (relationship.role === 'esriRelRoleDestination') {
           let queryTask: esri.QueryTask = new QueryTask(this.stormwater.parcels.url + '/2');
           queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['OBJECTID'], returnGeometry: false, outSpatialReference: mapView.spatialReference}).then(result => {
+            debugger
             if (result[objectId]) {
               this.stormwater.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], objectIds: [result[objectId].features[0].attributes.OBJECTID], outSpatialReference: mapView.spatialReference}).then(result => {
                 if (result.features) {
@@ -549,6 +554,8 @@ export class MapComponent implements OnInit, OnDestroy {
                   }
                 }
               });
+            } else {
+              this.stormwater.parcel.next(null); 
             }
           });
         }
