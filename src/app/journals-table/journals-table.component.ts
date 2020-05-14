@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { JournalsTableDataSource } from './journals-table-datasource';
 import { StormwaterService } from '../stormwater.service';
 import { Subscription } from 'rxjs';

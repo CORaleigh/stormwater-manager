@@ -4,7 +4,7 @@ import { Impervious } from '../impervious';
 import * as moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
-import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 export const MY_FORMATS = {
   parse: {
     dateInput: 'MM/DD/YYYY'

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
-import { MatStepper, MatVerticalStepper } from '@angular/material';
+import { MatStepper, MatVerticalStepper } from '@angular/material/stepper';
 import { Feature } from '../feature';
 import { Apportionment } from '../apportionment';
 import * as moment from 'moment';

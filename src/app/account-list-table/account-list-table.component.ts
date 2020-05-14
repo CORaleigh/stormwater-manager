@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { AccountListTableDataSource } from './account-list-table-datasource';
 import { StormwaterService } from '../stormwater.service';
 import { SelectionModel } from '@angular/cdk/collections';

@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { ApportionmentsTableDataSource } from './apportionments-table-datasource';
 import { StormwaterService } from '../stormwater.service';
 import { Apportionment } from '../apportionment';
