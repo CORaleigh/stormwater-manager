@@ -19,8 +19,8 @@ import { Subscription } from 'rxjs';
 export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild('mapViewNode') private mapViewEl: ElementRef;
-  private _id: string = 'd8309610f598424b9889d62775b6330c';
-  private _portalUrl: string = 'https://mapstest.raleighnc.gov/portal'
+  private _id: string = '975b331137fd4a65a28c7d7b4cdeec47';
+  private _portalUrl: string = 'https://maps.raleighnc.gov/portal'
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
   private _search:esri.widgetsSearch;
@@ -44,7 +44,7 @@ export class MapComponent implements OnInit, OnDestroy {
       ]);
       
       this._info = new OAuthInfo({
-        appId: 'u8kxa1iiA6kg2Nhc',
+        appId: 'xWoMZTo6ZiZVTwcT',
         portalUrl: this._portalUrl,
         popup: false
       });
@@ -339,7 +339,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["AccountId"],
         displayField: "AccountId",
         exactMatch: false,
@@ -355,7 +355,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["PremiseId"],
         displayField: "PremiseId",
         exactMatch: false,
@@ -371,7 +371,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
         searchFields: ["CsaId"],
         displayField: "CsaId",
         exactMatch: false,
@@ -396,14 +396,15 @@ export class MapComponent implements OnInit, OnDestroy {
           this.getParcel(this.stormwater.parcels.url,esriRequest, QueryTask, params.target.target.attributes.OBJECTID, view);
           this._search.clear();
         } else {
-          this.highlightSingleParcel(params.target.target);
-          let target = params.target.target.geometry;
-          if (params.target.target.geometry.extent) {
-            target = params.target.target.geometry.extent.clone().expand(2);      
-          }
-          params.options.duration = 1500;
-          params.options.easing = 'ease-in';
-          return view.goTo(target, params.options);        
+          this.getParcelByObjectId(params.target.target.attributes.OBJECTID, mapView);
+          // this.highlightSingleParcel(params.target.target);
+          // let target = params.target.target.geometry;
+          // if (params.target.target.geometry.extent) {
+          //   target = params.target.target.geometry.extent.clone().expand(2);      
+          // }
+          // params.options.duration = 1500;
+          // params.options.easing = 'ease-in';
+          // return view.goTo(target, params.options);        
         }
       };
       search.on('select-result', event => {
@@ -534,26 +535,27 @@ export class MapComponent implements OnInit, OnDestroy {
     })
     return promise;
   }
-
+  getParcelByObjectId(objectId:number,mapView: esri.MapView) {
+    this.stormwater.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], objectIds: [objectId], outSpatialReference: mapView.spatialReference,}).then(result => {
+      if (result.features) {
+        if (result.features.length > 0) {
+          let parcel:Parcel = result.features[0].attributes as Parcel;
+          this.stormwater.parcel.next(parcel);                    
+          let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
+          mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
+          this.highlightSingleParcel(result.features[0]);
+        }
+      }});
+  }
   getParcel(url: string, esriRequest: any, QueryTask: any, objectId: number, mapView: esri.MapView) {
     esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleDestination') {
           let queryTask: esri.QueryTask = new QueryTask(this.stormwater.parcels.url + '/2');
           queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['OBJECTID'], returnGeometry: false, outSpatialReference: mapView.spatialReference}).then(result => {
-            debugger
+            
             if (result[objectId]) {
-              this.stormwater.parcels.queryFeatures({returnGeometry: true, outFields: ['*'], objectIds: [result[objectId].features[0].attributes.OBJECTID], outSpatialReference: mapView.spatialReference}).then(result => {
-                if (result.features) {
-                  if (result.features.length > 0) {
-                    let parcel:Parcel = result.features[0].attributes as Parcel;
-                    this.stormwater.parcel.next(parcel);                    
-                    let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
-                    mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
-                    this.highlightSingleParcel(result.features[0]);
-                  }
-                }
-              });
+              this.getParcelByObjectId(result[objectId].features[0].attributes.OBJECTID, mapView);
             } else {
               this.stormwater.parcel.next(null); 
             }
@@ -591,6 +593,7 @@ export class MapComponent implements OnInit, OnDestroy {
               if (relationship) {
                 this.queryParcelsRelatedToAccounts(this.stormwater.parcels.url+'/2', relationship.id, QueryTask, oids).then(parcelResult => {
                   let data = [];
+                  debugger
                   result.features.forEach(f => {
                     if (parcelResult[f.attributes.OBJECTID]) {
                       let feature = parcelResult[f.attributes.OBJECTID].features[0]
