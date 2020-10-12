@@ -12,8 +12,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./apportionments-table.component.css'],
 })
 export class ApportionmentsTableComponent implements OnInit, OnDestroy{
-  @ViewChild(MatPaginator, null) paginator: MatPaginator;
-  @ViewChild(MatSort, null) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   @Output() apportionmentSelected: EventEmitter<Apportionment> = new EventEmitter();
   apportionmentsSubscription: Subscription;
   dataSource: ApportionmentsTableDataSource;

@@ -45,7 +45,7 @@ export class ApportionmentDialogComponent implements OnInit, OnDestroy {
   }
   account:Account;
   ccbAccount:any;
-  @ViewChild('stepper', null) stepper:MatStepper;
+  @ViewChild('stepper') stepper:MatStepper;
   @Input() mode: string;
   @Input() apportionment: Apportionment;
   @Output() close: EventEmitter<any> = new EventEmitter();

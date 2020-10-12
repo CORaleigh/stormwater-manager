@@ -20,17 +20,18 @@ import { Subscription } from 'rxjs';
   ],  
 })
 export class ImperviousTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, null) paginator: MatPaginator;
-  @ViewChild(MatSort, null) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   dataSource: ImperviousTableDataSource;
   imperviousSubscription:Subscription;
 
   constructor(private stormwater:StormwaterService) {}
   displayedColumns = ['EffectiveDate', 'TotalImpervious', 'MethodUsed', 'MethodDate', 'Status'];
-  expandedRow: Impervious;
+  expandedRow: Impervious | null;
   rowClick(row) {
-    this.expandedRow = row;
+    this.expandedRow = this.expandedRow === row ? null : row
   }
+
   ngOnInit() {
     this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, []);
     this.imperviousSubscription = this.stormwater.impervious.subscribe(impervious => {
@@ -39,6 +40,7 @@ export class ImperviousTableComponent implements OnInit, OnDestroy {
       }
     })
   }
+
   ngOnDestroy() {
     if (this.imperviousSubscription) {
       this.imperviousSubscription.unsubscribe();

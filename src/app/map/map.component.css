@@ -2,7 +2,7 @@
 @import 'https://js.arcgis.com/4.15/esri/themes/dark/main.css';
 
 .esri-view {
-  height: calc(100% - 64px);
+  height: calc(100% - 58px);
   background-color: #2a2a28;
 
 }

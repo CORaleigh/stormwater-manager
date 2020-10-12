@@ -11,8 +11,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./credits-table.component.css'],
 })
 export class CreditsTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator,null) paginator: MatPaginator;
-  @ViewChild(MatSort,null) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   dataSource: CreditsTableDataSource;
   constructor(public stormwater:StormwaterService){}
   displayedColumns = ['field', 'value'];

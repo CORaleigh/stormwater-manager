@@ -13,8 +13,8 @@ import { Subscription } from 'rxjs';
 })
 
 export class AccountListTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, null) paginator: MatPaginator;
-  @ViewChild(MatSort, null) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   constructor(private stormwater:StormwaterService){};
   dataSource: AccountListTableDataSource;
   displayedColumns = ['select','SiteAddress', 'RealEstateId', 'AccountId', 'Status', 'TotalImpervious', 'ApportionmentUnits'];

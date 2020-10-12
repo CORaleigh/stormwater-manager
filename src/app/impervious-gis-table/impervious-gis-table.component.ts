@@ -11,8 +11,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./impervious-gis-table.component.css'],
 })
 export class ImperviousGisTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, null) paginator: MatPaginator;
-  @ViewChild(MatSort, null) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   dataSource: ImperviousGisTableDataSource;
   total:number = 0;
   displayedColumns = ['category', 'area', 'updated'];

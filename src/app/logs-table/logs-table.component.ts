@@ -11,8 +11,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./logs-table.component.css'],
 })
 export class LogsTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, null) paginator: MatPaginator;
-  @ViewChild(MatSort, null) sort: MatSort;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort: MatSort;
   dataSource: LogsTableDataSource;
   constructor(private stormwater:StormwaterService){}
   displayedColumns = ['created_date', 'created_user', 'LogEntry'];
