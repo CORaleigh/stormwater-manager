@@ -558,6 +558,7 @@ export class MapComponent implements OnInit, OnDestroy {
               this.getParcelByObjectId(result[objectId].features[0].attributes.OBJECTID, mapView);
             } else {
               this.stormwater.parcel.next(null); 
+              this._parcelGraphics.removeAll();
             }
           });
         }
