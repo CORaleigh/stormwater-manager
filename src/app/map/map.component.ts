@@ -334,8 +334,39 @@ export class MapComponent implements OnInit, OnDestroy {
       let search: esri.widgetsSearch = new Search({view: mapView, includeDefaultSources: false, resultGraphicEnabled: false});
       this._search = search;
       search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
-      search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
-      search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
+      //search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
+      //search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
+      search.sources.push(new LayerSearchSource({
+        layer: new FeatureLayer({
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        searchFields: ["RealEstateId"],
+        displayField: "RealEstateId",
+        exactMatch: false,
+        outFields: ["*"],
+        name: "REID",
+        placeholder: "Search by REID",
+        maxResults: 6,
+        maxSuggestions: 6,
+        suggestionsEnabled: true,
+        minSuggestCharacters: 3,
+        popupEnabled: false
+      }));      
+      //@ts-ignore
+      search.sources.push(new LayerSearchSource({
+        layer: new FeatureLayer({
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        searchFields: ["PinNumber"],
+        displayField: "PinNumber",
+        exactMatch: false,
+        outFields: ["*"],
+        name: "PIN",
+        placeholder: "Search by PIN",
+        maxResults: 6,
+        maxSuggestions: 6,
+        suggestionsEnabled: true,
+        minSuggestCharacters: 3,
+        popupEnabled: false
+      }));
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
