@@ -33,12 +33,10 @@ export class ImperviousTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, []);
-    this.imperviousSubscription = this.stormwater.impervious.subscribe(impervious => {
-      if (impervious.length) {
-        this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, impervious);
-      }
-    })
+      this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, []);
+      this.imperviousSubscription = this.stormwater.impervious.subscribe(impervious => {
+      this.dataSource = new ImperviousTableDataSource(this.paginator, this.sort, impervious);  
+    });
   }
 
   ngOnDestroy() {
