@@ -1,8 +1,8 @@
 /* import the required JSAPI css */
-@import 'https://js.arcgis.com/4.16/esri/themes/dark/main.css';
+@import 'https://js.arcgis.com/4.22/esri/themes/dark/main.css';
 
 .esri-view {
-  height: calc(100% - 58px);
+  height: calc(100% - 64px);
   background-color: #2a2a28;
 
 }

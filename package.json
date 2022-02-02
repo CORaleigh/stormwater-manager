@@ -25,7 +25,7 @@
     "@angular/router": "~10.1.5",
     "@types/arcgis-js-api": "^4.16.0",
     "core-js": "^3.6.5",
-    "esri-loader": "^2.15.0",
+    "esri-loader": "^3.3.0",
     "moment": "^2.25.3",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",

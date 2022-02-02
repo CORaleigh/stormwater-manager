@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild('mapViewNode') private mapViewEl: ElementRef;
-  private _id: string = '975b331137fd4a65a28c7d7b4cdeec47';
+  private _id: string = '7be33c08a6704e6fb7f8367b24f4cee6';
   private _portalUrl: string = 'https://maps.raleighnc.gov/portal'
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
@@ -215,13 +215,18 @@ export class MapComponent implements OnInit, OnDestroy {
 
   async configLayerList(mapView: esri.MapView) {
     try {
-      const [LayerList, Expand] = await loadModules([
+      const [LayerList, Legend, Expand] = await loadModules([
         "esri/widgets/LayerList",
+        "esri/widgets/Legend",
         "esri/widgets/Expand"
       ]);
       let list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
       let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-layers', view: mapView, content: list.container});
       mapView.ui.add(expand, 'top-right');
+      let legend: esri.Legend = new Legend({view: mapView, container: document.createElement('div')});
+
+      mapView.ui.add(expand, 'top-right');
+      mapView.ui.add(new Expand({expandIconClass: 'esri-icon-legend', view: mapView, content: legend.container}), 'top-right')
     } catch (error) {
       console.log('We have an error: ' + error);
     }        
@@ -809,7 +814,7 @@ export class MapComponent implements OnInit, OnDestroy {
     this.stormwater.gisScanSelected.subscribe(reid => {
       if (this.stormwater.mapview) {
         let impLyr = this.stormwater.mapview.map.layers.find(l => {
-          return l.title === 'Impervious Areas';
+          return l.title === 'Impervious Area By Parcel';
         }) as esri.FeatureLayer;
         impLyr.queryFeatures({
             where: "RealEstateId = '" + reid + "'",
