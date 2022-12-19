@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
 import { Parcel } from '../parcel';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
 import { Subscription } from 'rxjs';

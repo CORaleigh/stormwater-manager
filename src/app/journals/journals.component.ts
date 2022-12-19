@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Journal } from '../journal';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Feature } from '../feature';
 
 @Component({
