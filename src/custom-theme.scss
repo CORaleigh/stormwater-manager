@@ -1,5 +1,5 @@
-@import '~@angular/material/theming';
-@include mat-core();
+@use '~@angular/material' as mat;
+@include mat.core();
 $mat-theme-ignore-duplication-warnings: true;
 
 
@@ -204,65 +204,65 @@ $skyblue: (
 
 
 
-$my-app-primary: mat-palette($darkgreen);
-$my-app-accent:  mat-palette($twilightblue, 500, 900, A100);
-$my-app-warn:    mat-palette($mediumgreen);
+$my-app-primary: mat.define-palette($darkgreen);
+$my-app-accent:  mat.define-palette($twilightblue, 500, 900, A100);
+$my-app-warn:    mat.define-palette($mediumgreen);
 
-$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+$my-app-theme: mat.define-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
 // Define an alternate dark theme.
-$dark-primary: mat-palette($darkgreen);
-$dark-accent:  mat-palette($twilightblue, 500, 900, A100);
-$dark-warn:    mat-palette($mediumgreen);
-$dark-theme:   mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+$dark-primary: mat.define-palette($darkgreen);
+$dark-accent:  mat.define-palette($twilightblue, 500, 900, A100);
+$dark-warn:    mat.define-palette($mediumgreen);
+$dark-theme:   mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 
    .dark-theme {
-        @include angular-material-theme($dark-theme);
+        @include mat.all-component-themes($dark-theme);
    }
   .dark-theme .mat-form-field-ripple{
         background-color: white;
         
-        @include angular-material-theme($dark-theme);
+        @include mat.all-component-themes($dark-theme);
     }
    .dark-theme.mat-expansion-panel-header{
-        background-color: mat-color($dark-primary) !important;
-        @include angular-material-theme($dark-theme);
+        background-color: mat.get-color-from-palette($dark-primary) !important;
+        @include mat.all-component-themes($dark-theme);
     }   
 
    .dark-theme.mat-expansion-panel-header.mat-expanded:hover {
-        background-color: mat-color($dark-primary, 400) !important;
-        @include angular-material-theme($dark-theme);      
+        background-color: mat.get-color-from-palette($dark-primary, 400) !important;
+        @include mat.all-component-themes($dark-theme);      
     }
    .dark-theme.mat-expansion-panel-header.mat-expanded:focus {
-        background-color: mat-color($dark-primary, 400) !important;
-        @include angular-material-theme($dark-theme);      
+        background-color: mat.get-color-from-palette($dark-primary, 400) !important;
+        @include mat.all-component-themes($dark-theme);      
     }    
    .dark-theme.mat-expansion-panel-header:hover {
-        background-color: mat-color($dark-primary, 400) !important;
-        @include angular-material-theme($dark-theme);      
+        background-color: mat.get-color-from-palette($dark-primary, 400) !important;
+        @include mat.all-component-themes($dark-theme);      
     }
 
    .dark-theme .mat-form-field.mat-focused.mat-primary .mat-form-field-ripple{
         background-color: white;
        
-        @include angular-material-theme($dark-theme);
+        @include mat.all-component-themes($dark-theme);
     }
    .dark-theme .mat-form-field.mat-focused.mat-primary .mat-select-arrow{
         color: white;
         
-        @include angular-material-theme($dark-theme);
+        @include mat.all-component-themes($dark-theme);
     }
 
    .dark-theme .mat-focused.mat-primary {
         color: white;
         
-        @include angular-material-theme($dark-theme);       
+        @include mat.all-component-themes($dark-theme);       
     }
    .dark-theme .mat-select-arrow {
         color: white;
-        @include angular-material-theme($dark-theme);
+        @include mat.all-component-themes($dark-theme);
     }
 
 
-@include angular-material-theme($my-app-theme);
+@include mat.all-component-themes($my-app-theme);
