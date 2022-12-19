@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BillingService } from '../billing-service';
 import { Apportionment } from '../apportionment';
@@ -19,9 +19,9 @@ export interface SearchGroup {
 
 export class ApportionmentSearchComponent implements OnInit {
 
-  constructor(private fb: FormBuilder, private billing:BillingService, private stormwater:StormwaterService) { }
-  control: FormControl = new FormControl();
-  searchForm: FormGroup = this.fb.group({searchGroup: ''});
+  constructor(private fb: UntypedFormBuilder, private billing:BillingService, private stormwater:StormwaterService) { }
+  control: UntypedFormControl = new UntypedFormControl();
+  searchForm: UntypedFormGroup = this.fb.group({searchGroup: ''});
   searchGroups:SearchGroup[] = [{type:'Addresses', values:[]}, {type:'Accounts', values:[]}, {type: 'Premise IDs', values:[]}];
   addressChanges:Subscription;
   accountChanges:Subscription;

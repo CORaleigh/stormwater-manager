@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import * as moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
@@ -40,11 +40,11 @@ export class CreditFormComponent implements OnInit {
   @Input() credit: Credit;
   @Input() mode: string;
   @Output() submitted = new EventEmitter<Credit>();
-  inceptionDate = new FormControl(moment());
-  approvalDate = new FormControl(moment());
+  inceptionDate = new UntypedFormControl(moment());
+  approvalDate = new UntypedFormControl(moment());
   oCodes:any = null;
   uCodes:any = null;
-  constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
+  constructor(private fb: UntypedFormBuilder, private stormwater:StormwaterService) {}
   dateChanged(event) {
     console.log(event);
   }

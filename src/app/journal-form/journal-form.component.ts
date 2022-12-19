@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Journal } from '../journal';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
@@ -20,7 +20,7 @@ export class JournalFormComponent implements OnInit, OnDestroy {
       Validators.required, Validators.minLength(1), Validators.maxLength(300)])
     ]
   });
-  constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
+  constructor(private fb: UntypedFormBuilder, private stormwater:StormwaterService) {}
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;

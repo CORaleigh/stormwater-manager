@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import { Impervious } from '../impervious';
 import * as moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
@@ -41,10 +41,10 @@ export class ImperviousUpdateFormComponent implements OnInit {
     MethodDate: [null, Validators.required]
   });
 
-  effectiveDate = new FormControl(moment());
-  methodDate = new FormControl(moment());
+  effectiveDate = new UntypedFormControl(moment());
+  methodDate = new UntypedFormControl(moment());
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: UntypedFormBuilder) {}
   ngOnInit() {
     if (this.impervious) {
       this.form.get('BuildingImpervious').setValue(this.impervious.BuildingImpervious);

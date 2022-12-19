@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
 import { Feature } from '../feature';
@@ -26,7 +26,7 @@ export class ApportionmentFormComponent implements OnInit, OnDestroy {
     {name: 'Equal', code: 'EQUAL'},
     {name: 'Weighted', code: 'WEIGHTED'}
   ];
-  constructor(private fb: FormBuilder, private stormwater:StormwaterService, private dialog:MatDialog) {}
+  constructor(private fb: UntypedFormBuilder, private stormwater:StormwaterService, private dialog:MatDialog) {}
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       if (account) {

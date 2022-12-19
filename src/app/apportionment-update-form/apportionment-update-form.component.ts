@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, Validators, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormControl, FormGroupDirective, NgForm } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, ErrorStateMatcher } from '@angular/material/core';
 import { MatStepper } from '@angular/material/stepper';
 
@@ -21,7 +21,7 @@ export const MY_FORMATS = {
   },
 };
 export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+  isErrorState(control: UntypedFormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
@@ -36,7 +36,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   ]  
 })
 export class ApportionmentUpdateFormComponent  {
-  expirationDate = new FormControl(moment());
+  expirationDate = new UntypedFormControl(moment());
   private _account = null;
   private _apportionment = null;
 
@@ -91,7 +91,7 @@ export class ApportionmentUpdateFormComponent  {
 
   });
 
-  constructor(private fb: FormBuilder, private billing:BillingService, private stormwater:StormwaterService) {}
+  constructor(private fb: UntypedFormBuilder, private billing:BillingService, private stormwater:StormwaterService) {}
 
   getBilling(premiseId, type) {
     if (this.count < this.types.length) {

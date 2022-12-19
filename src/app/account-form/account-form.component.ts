@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
 import { Subscription } from 'rxjs';
@@ -22,7 +22,7 @@ export class AccountFormComponent implements OnInit, OnDestroy {
   useclasses:any[];
   account:Account;
 
-  constructor(private fb: FormBuilder, private stormwater:StormwaterService) {}
+  constructor(private fb: UntypedFormBuilder, private stormwater:StormwaterService) {}
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;
