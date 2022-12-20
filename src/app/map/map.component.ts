@@ -318,10 +318,10 @@ export class MapComponent implements OnInit, OnDestroy {
 
   async setupSearch (mapView:esri.MapView) {
     try {
-      const [Search, LayerSearchSource, QueryTask, esriRequest, FeatureLayer] = await loadModules([
+      const [Search, LayerSearchSource, query, esriRequest, FeatureLayer] = await loadModules([
         'esri/widgets/Search',
         'esri/widgets/Search/LayerSearchSource',
-        'esri/tasks/QueryTask',
+        'esri/rest/query',
         'esri/request',
         'esri/layers/FeatureLayer'
 
@@ -429,7 +429,7 @@ export class MapComponent implements OnInit, OnDestroy {
           this.stormwater.accounts.next([this.account]);
           this.stormwater.account.next(params.target.target.attributes as Account);
           this.clearResultsList();
-          this.getParcel(this.stormwater.parcels.url,esriRequest, QueryTask, params.target.target.attributes.OBJECTID, view);
+          this.getParcel(this.stormwater.parcels.url,esriRequest, query, params.target.target.attributes.OBJECTID, view);
           this._search.clear();
         } else {
           this.getParcelByObjectId(params.target.target.attributes.OBJECTID, mapView);
@@ -478,11 +478,11 @@ export class MapComponent implements OnInit, OnDestroy {
 
   getAccount(feature: esri.Graphic) { 
     loadModules([    
-      'esri/tasks/support/RelationshipQuery',
-      'esri/tasks/QueryTask',
+      'esri/rest/support/RelationshipQuery',
+      'esri/rest/query',
       'esri/request'
     ])
-      .then(([RelationshipQuery, QueryTask, esriRequest]) => {
+      .then(([RelationshipQuery, query, esriRequest]) => {
       //@ts-ignore
       let relationship = this.stormwater.parcels.relationships.find((r:esri.Relationship) => {
         return r.name === 'Account';
@@ -521,21 +521,21 @@ export class MapComponent implements OnInit, OnDestroy {
     });    
   }
 
-  queryRelatedTables (url: string, relationship: any, QueryTask: any, objectId: number):Promise<any> {
+  queryRelatedTables (url: string, relationship: any, query: esri.query, objectId: number):Promise<any> {
     let promise = new Promise<any>((resolve, reject) => {
-      let queryTask: esri.QueryTask = new QueryTask(this.stormwater.parcels.url + '/2');
-      queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['*']}).then(result => {
+      //let query: esri.query = new query(this.stormwater.parcels.url + '/2');
+      query.executeRelationshipQuery(this.stormwater.parcels.url + '/2', {objectIds: [objectId], relationshipId: relationship.id, outFields:['*']}).then(result => {
         resolve(result);
       });
     })
     return promise;
   }
 
-  queryTables (url: string, esriRequest: any, QueryTask: any, objectId: number) {
+  queryTables (url: string, esriRequest: any, query: esri.query, objectId: number) {
     esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleOrigin') {
-          this.queryRelatedTables(url, relationship, QueryTask, objectId).then(result => {
+          this.queryRelatedTables(url, relationship, query, objectId).then(result => {
             let attributes = [];
             if (result[objectId]) {
               result[objectId].features.forEach(feature => {
@@ -562,10 +562,10 @@ export class MapComponent implements OnInit, OnDestroy {
       });
     });
   }
-  queryParcelsRelatedToAccounts (url: string, relationshipId: number, QueryTask: any, objectIds: number[]):Promise<any> {
+  queryParcelsRelatedToAccounts (url: string, relationshipId: number, query: esri.query, objectIds: number[]):Promise<any> {
     let promise = new Promise<any>((resolve, reject) => {
-      let queryTask: esri.QueryTask = new QueryTask(url);
-      queryTask.executeRelationshipQuery({objectIds: objectIds, relationshipId: relationshipId, outFields:['*'], returnGeometry:true}).then(result => {
+      //let query: esri.query = new query(url);
+      query.executeRelationshipQuery(url, {objectIds: objectIds, relationshipId: relationshipId, outFields:['*'], returnGeometry:true}).then(result => {
         resolve(result);
       });
     })
@@ -583,12 +583,12 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       }});
   }
-  getParcel(url: string, esriRequest: any, QueryTask: any, objectId: number, mapView: esri.MapView) {
+  getParcel(url: string, esriRequest: any, query: esri.query, objectId: number, mapView: esri.MapView) {
     esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleDestination') {
-          let queryTask: esri.QueryTask = new QueryTask(this.stormwater.parcels.url + '/2');
-          queryTask.executeRelationshipQuery({objectIds: [objectId], relationshipId: relationship.id, outFields:['OBJECTID'], returnGeometry: false, outSpatialReference: mapView.spatialReference}).then(result => {
+         // let query: esri.query = new query(this.stormwater.parcels.url + '/2');
+          query.executeRelationshipQuery(this.stormwater.parcels.url + '/2', {objectIds: [objectId], relationshipId: relationship.id, outFields:['OBJECTID'], returnGeometry: false, outSpatialReference: mapView.spatialReference}).then(result => {
             
             if (result[objectId]) {
               this.getParcelByObjectId(result[objectId].features[0].attributes.OBJECTID, mapView);
@@ -604,20 +604,20 @@ export class MapComponent implements OnInit, OnDestroy {
 
   getByAccountId(id: any[], field:string, mapView: esri.MapView, zoom:boolean) {
     loadModules([    
-      'esri/tasks/QueryTask',
+      'esri/rest/query',
       'esri/request',
     ])
-    .then(([QueryTask, esriRequest]) => {
+    .then(([query, esriRequest]) => {
       if (this.stormwater.parcels) {
-        let queryTask: esri.QueryTask = new QueryTask(this.stormwater.parcels.url + '/2');
-        queryTask.execute({where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
+        //let queryTask: esri.query = new query(this.stormwater.parcels.url + '/2');
+        query.execute(this.stormwater.parcels.url + '/2', {where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
           if (result.features) {
             if (result.features.length < 2) {
               let account = result.features[0].attributes;
               this.stormwater.account.next(account);
               //this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
               if (zoom) {
-                this.getParcel(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID, mapView);
+                this.getParcel(this.stormwater.parcels.url, esriRequest, query, account.OBJECTID, mapView);
               }
             } else if (result.features.length > 1) {
               let oids = [];
@@ -628,7 +628,7 @@ export class MapComponent implements OnInit, OnDestroy {
                 return r.name === 'Account';
               });    
               if (relationship) {
-                this.queryParcelsRelatedToAccounts(this.stormwater.parcels.url+'/2', relationship.id, QueryTask, oids).then(parcelResult => {
+                this.queryParcelsRelatedToAccounts(this.stormwater.parcels.url+'/2', relationship.id, query, oids).then(parcelResult => {
                   let data = [];
                   debugger
                   result.features.forEach(f => {
@@ -736,16 +736,16 @@ export class MapComponent implements OnInit, OnDestroy {
     });
     this.accountSubscription = this.stormwater.account.subscribe(account => {
         loadModules([
-        'esri/tasks/QueryTask',
+        'esri/rest/query',
         'esri/request', ])
-          .then(([QueryTask, esriRequest]) =>  {
+          .then(([query, esriRequest]) =>  {
             if (account) {
               let path = window.location.origin + '/account/';
               if (!path.includes('localhost')) {
                 path = window.location.origin + '/stormwater-manager/account/'
               }
               window.history.pushState({'id':'account'},'', path + account.AccountId);
-              this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+              this.queryTables(this.stormwater.parcels.url, esriRequest, query, account.OBJECTID);
    
          } else {
            this.stormwater.impervious.next([]);
@@ -804,9 +804,9 @@ export class MapComponent implements OnInit, OnDestroy {
     this.stormwater.accountListSelected.subscribe(row => {
       if (row) {
         loadModules([
-        'esri/tasks/QueryTask',
+        'esri/rest/query',
         'esri/request', ])
-          .then(([QueryTask, request]) =>  {
+          .then(([query, request]) =>  {
             this.getByAccountId([row.AccountId], 'AccountId', this.stormwater.mapview, true);
         });
       }
