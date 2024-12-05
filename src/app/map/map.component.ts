@@ -619,10 +619,11 @@ export class MapComponent implements OnInit, OnDestroy {
       'esri/request',
     ])
     .then(([query, esriRequest]) => {
+      
       if (this.stormwater.parcels) {
         //let queryTask: esri.query = new query(this.stormwater.parcels.url + '/2');
         
-        query.execute(this.stormwater.parcels.url + '/2', {where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
+        query.executeQueryJSON(this.stormwater.parcels.url + '/2', {where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
           if (result.features) {
             if (result.features.length < 2) {
               let account = result.features[0].attributes;

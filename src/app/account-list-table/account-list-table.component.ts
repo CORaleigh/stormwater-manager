@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { AccountListTableDataSource } from './account-list-table-datasource';
 import { StormwaterService } from '../stormwater.service';
@@ -35,6 +35,7 @@ export class AccountListTableComponent implements OnInit, OnDestroy {
     }
   }
   rowClicked(row) {
+    debugger
     this.stormwater.accountListSelected.next(row);
   };
 }

@@ -12,7 +12,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; overflow: h
 
 
   .mat-drawer-inner-container {
-    overflow: hidden !important;
+    overflow-x: hidden !important;
   }
 
   .mat-tab-body-wrapper {

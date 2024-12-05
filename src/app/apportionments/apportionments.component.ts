@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
 import { Apportionment } from '../apportionment';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Subscription } from 'rxjs';
 

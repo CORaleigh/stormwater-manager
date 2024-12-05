@@ -1,6 +1,7 @@
 <mat-tab-group [selectedIndex]="selectedIndex"
 (selectedIndexChange)="selectedIndex = $event" id="tabGroup"
 [ngClass]="{'info-tab': selectedIndex === 0, 'result-tab': selectedIndex === 1}"
+dynamicHeight
 >
     <mat-tab id="infoTab" label="Info"><app-infotab></app-infotab></mat-tab>
     <mat-tab id="resultTab" label="Results"><app-searchtab></app-searchtab></mat-tab>

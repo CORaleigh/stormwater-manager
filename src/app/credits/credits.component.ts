@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { Credit } from '../credit';
 import * as moment from 'moment';
 import { DialogComponent } from '../dialog/dialog.component';

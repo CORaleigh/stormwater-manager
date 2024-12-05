@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ApportionmentsTableDataSource } from './apportionments-table-datasource';
 import { StormwaterService } from '../stormwater.service';
