@@ -65,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "stormwater-manager:build"
+            "buildTarget": "stormwater-manager:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "stormwater-manager:build:production"
+              "buildTarget": "stormwater-manager:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "stormwater-manager:build"
+            "buildTarget": "stormwater-manager:build"
           }
         },
         "test": {
