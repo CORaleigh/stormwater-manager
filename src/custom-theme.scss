@@ -213,17 +213,17 @@ $skyblue: (
 
 
 
-$my-app-primary: mat.define-palette($darkgreen);
-$my-app-accent:  mat.define-palette($twilightblue, 500, 900, A100);
-$my-app-warn:    mat.define-palette($mediumgreen);
+$my-app-primary: mat.m2-define-palette($darkgreen);
+$my-app-accent:  mat.m2-define-palette($twilightblue, 500, 900, A100);
+$my-app-warn:    mat.m2-define-palette($mediumgreen);
 
-$my-app-theme: mat.define-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+$my-app-theme: mat.m2-define-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
 // Define an alternate dark theme.
-$dark-primary: mat.define-palette($darkgreen);
-$dark-accent:  mat.define-palette($twilightblue, 500, 900, A100);
-$dark-warn:    mat.define-palette($mediumgreen);
-$dark-theme:   mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+$dark-primary: mat.m2-define-palette($darkgreen);
+$dark-accent:  mat.m2-define-palette($twilightblue, 500, 900, A100);
+$dark-warn:    mat.m2-define-palette($mediumgreen);
+$dark-theme:   mat.m2-define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 
    .dark-theme {
@@ -235,20 +235,20 @@ $dark-theme:   mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
         @include mat.all-component-themes($dark-theme);
     }
    .dark-theme.mat-expansion-panel-header{
-        background-color: mat.get-color-from-palette($dark-primary) !important;
+        background-color: mat.m2-get-color-from-palette($dark-primary) !important;
         @include mat.all-component-themes($dark-theme);
     }   
 
    .dark-theme.mat-expansion-panel-header.mat-expanded:hover {
-        background-color: mat.get-color-from-palette($dark-primary, 400) !important;
+        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
         @include mat.all-component-themes($dark-theme);      
     }
    .dark-theme.mat-expansion-panel-header.mat-expanded:focus {
-        background-color: mat.get-color-from-palette($dark-primary, 400) !important;
+        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
         @include mat.all-component-themes($dark-theme);      
     }    
    .dark-theme.mat-expansion-panel-header:hover {
-        background-color: mat.get-color-from-palette($dark-primary, 400) !important;
+        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
         @include mat.all-component-themes($dark-theme);      
     }
 
