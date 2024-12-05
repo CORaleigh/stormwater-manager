@@ -46,7 +46,7 @@ import { LogsTableComponent } from './logs-table/logs-table.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { ImperviousUpdateFormComponent } from './impervious-update-form/impervious-update-form.component';
 import { ReactiveFormsModule, FormsModule  } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { JournalFormComponent } from './journal-form/journal-form.component';
 import { ApportionmentFormComponent } from './apportionment-form/apportionment-form.component';
 import { CreditFormComponent } from './credit-form/credit-form.component';
@@ -61,8 +61,7 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { AccountListTableComponent } from './account-list-table/account-list-table.component';
 import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-gis-table.component';
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         NavigationComponent,
         TabsComponent,
@@ -95,8 +94,7 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
         AccountListTableComponent,
         ImperviousGisTableComponent
     ],
-    imports: [
-        BrowserModule,
+    bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,
         BrowserAnimationsModule,
         LayoutModule,
@@ -120,15 +118,10 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
         FormsModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        HttpClientModule,
         MatStepperModule,
         MatAutocompleteModule,
         MatDividerModule,
-        MatCheckboxModule
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
-})
+        MatCheckboxModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { 
   constructor(overlayContainer: OverlayContainer) {
     overlayContainer.getContainerElement().classList.add('dark-theme');
