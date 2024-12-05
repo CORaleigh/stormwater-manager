@@ -201,6 +201,7 @@ export class MapComponent implements OnInit, OnDestroy {
                   this.stormwater.applyEdits(2, null, [new Feature(account)]).subscribe(result => {
                     if (result.updateResults.length > 0) {
                       this.account = account;
+                      
                       this.stormwater.account.next(account);
                       this.stormwater.accountListSelected.next(account);
                     }
@@ -359,7 +360,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/0'}),
         searchFields: ["PinNumber"],
         displayField: "PinNumber",
         exactMatch: false,
@@ -424,11 +425,14 @@ export class MapComponent implements OnInit, OnDestroy {
       search.sources.push(this.getSource(addresses, LayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
       mapView.ui.add(search, {position: 'top-left', index: 0});
       search.goToOverride = (view:esri.MapView, params:any) => {
-        if (params.target.target.layer.title.indexOf('Stormwater Management - ') > -1) {
+        debugger
+        if (params.target.target.layer.title.indexOf('Stormwater Management - ') > -1 && params.target.target.layer.isTable) {
           this.account = params.target.target.attributes as Account;
           this.stormwater.accounts.next([this.account]);
+          
           this.stormwater.account.next(params.target.target.attributes as Account);
           this.clearResultsList();
+          
           this.getParcel(this.stormwater.parcels.url,esriRequest, query, params.target.target.attributes.OBJECTID, view);
           this._search.clear();
         } else {
@@ -447,7 +451,8 @@ export class MapComponent implements OnInit, OnDestroy {
         
         if (event.source.name != 'Address Point' && !event.source.layer.isTable) {
           this.getAccount(event.result.feature);
-          this.stormwater.parcel.next(event.result.feature.attributes);
+          debugger
+          this.stormwater.parcel.next(event.result.feature.attributes as Parcel);
           this.clearResultsList();
           this.account = null;
           this.stormwater.accountListSelected.next(null);
@@ -466,6 +471,7 @@ export class MapComponent implements OnInit, OnDestroy {
       if (result.features) {
         if (result.features.length > 0) {
           let parcel:Parcel = result.features[0].attributes as Parcel;
+          debugger
           this.stormwater.parcel.next(parcel);                    
           this.getAccount(result.features[0]);
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
@@ -488,6 +494,7 @@ export class MapComponent implements OnInit, OnDestroy {
         return r.name === 'Account';
       });
       this.clearResultsList(); 
+      
       if (relationship) {
         let query: esri.RelationshipQuery = new RelationshipQuery();
         query.relationshipId = relationship.id;
@@ -504,6 +511,7 @@ export class MapComponent implements OnInit, OnDestroy {
             this.stormwater.accounts.next(accounts);
             let account:Account = accounts[0]; 
             this.account = account;
+            
             this.stormwater.account.next(account);
             // let path = window.location.origin + '/account/';
             // if (!path.includes('localhost')) {
@@ -563,6 +571,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });
   }
   queryParcelsRelatedToAccounts (url: string, relationshipId: number, query: esri.query, objectIds: number[]):Promise<any> {
+    
     let promise = new Promise<any>((resolve, reject) => {
       //let query: esri.query = new query(url);
       query.executeRelationshipQuery(url, {objectIds: objectIds, relationshipId: relationshipId, outFields:['*'], returnGeometry:true}).then(result => {
@@ -576,6 +585,7 @@ export class MapComponent implements OnInit, OnDestroy {
       if (result.features) {
         if (result.features.length > 0) {
           let parcel:Parcel = result.features[0].attributes as Parcel;
+          debugger
           this.stormwater.parcel.next(parcel);                    
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
           mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
@@ -593,6 +603,7 @@ export class MapComponent implements OnInit, OnDestroy {
             if (result[objectId]) {
               this.getParcelByObjectId(result[objectId].features[0].attributes.OBJECTID, mapView);
             } else {
+              debugger
               this.stormwater.parcel.next(null); 
               this._parcelGraphics.removeAll();
             }
@@ -610,10 +621,12 @@ export class MapComponent implements OnInit, OnDestroy {
     .then(([query, esriRequest]) => {
       if (this.stormwater.parcels) {
         //let queryTask: esri.query = new query(this.stormwater.parcels.url + '/2');
+        
         query.execute(this.stormwater.parcels.url + '/2', {where: field + " in (" + id.toString() + ")", outFields: ['*'], returnGeometry: false}).then(result => {
           if (result.features) {
             if (result.features.length < 2) {
               let account = result.features[0].attributes;
+              
               this.stormwater.account.next(account);
               //this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
               if (zoom) {
@@ -630,7 +643,7 @@ export class MapComponent implements OnInit, OnDestroy {
               if (relationship) {
                 this.queryParcelsRelatedToAccounts(this.stormwater.parcels.url+'/2', relationship.id, query, oids).then(parcelResult => {
                   let data = [];
-                  debugger
+                  
                   result.features.forEach(f => {
                     if (parcelResult[f.attributes.OBJECTID]) {
                       let feature = parcelResult[f.attributes.OBJECTID].features[0]
