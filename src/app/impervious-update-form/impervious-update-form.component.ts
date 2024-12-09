@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import { Impervious } from '../impervious';
-import * as moment from 'moment';
+import moment from 'moment';
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
 
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';

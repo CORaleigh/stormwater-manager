@@ -4,7 +4,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, ErrorStateMatcher } fro
 import { MatStepper } from '@angular/material/stepper';
 
 import {MomentDateAdapter} from '@angular/material-moment-adapter';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Apportionment } from '../apportionment';
 import { Account } from '../account';
 import { BillingService } from '../billing-service';

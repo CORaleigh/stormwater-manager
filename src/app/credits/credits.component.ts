@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Credit } from '../credit';
-import * as moment from 'moment';
+import moment from 'moment';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Feature } from '../feature';
 import { Subscription } from 'rxjs';
