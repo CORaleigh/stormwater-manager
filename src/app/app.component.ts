@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { setAssetPath as setCalciteComponentsAssetPath } from '@esri/calcite-components/dist/components';
+setCalciteComponentsAssetPath("https://js.arcgis.com/calcite-components/2.13.2/assets");
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,5 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'stormwater-manager';
+
 }

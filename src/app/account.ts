@@ -15,6 +15,7 @@ export class Account {
     BuildingType: string;
     Sfeu: number;
     SfeuPrevious: number;
+    PremiseSfeu: number;
     ApportionmentCode: string;
     PremiseId: number;
     PinNumber: string;
@@ -40,6 +41,7 @@ export class Account {
         BuildingType: string,
         Sfeu: number,
         SfeuPrevious: number,
+        PremiseSfeu: number,
         ApportionmentCode: string,
         PremiseId: number,
         PinNumber: string,
@@ -66,6 +68,7 @@ export class Account {
         this.BuildingType = BuildingType;
         this.Sfeu = Number.isNaN(Sfeu) ? null : Sfeu;
         this.SfeuPrevious = Number.isNaN(SfeuPrevious) ? null : SfeuPrevious;
+        this.PremiseSfeu = Number.isNaN(SfeuPrevious) ? null : SfeuPrevious;
         this.ApportionmentCode = ApportionmentCode;
         this.PremiseId = PremiseId;
         this.PinNumber = PinNumber;

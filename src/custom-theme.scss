@@ -1,277 +1,161 @@
 @use '@angular/material' as mat;
+
 // TODO(v15): As of v15 mat.core no longer includes default typography styles.
-//  The following line adds:
-//    1. Default typography styles for all components
-//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
-//  If you specify typography styles for the components you use elsewhere, you should delete this line.
-//  If you don't need the default component typographies but still want the hierarchy styles,
-//  you can delete this line and instead use:
-//    `@include mat.typography-hierarchy(mat.define-typography-config());`
+// The following line adds:
+//   1. Default typography styles for all components
+//   2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+// If you specify typography styles for the components you use elsewhere, you should delete this line.
+// If you don't need the default component typographies but still want the hierarchy styles,
+// you can delete this line and instead use:
+//   `@include mat.typography-hierarchy(mat.define-typography-config());`
 @include mat.all-component-typographies();
 @include mat.core();
+
 $mat-theme-ignore-duplication-warnings: true;
 
+/* Define missing color palettes */
+$darkgreen: (
+  50: #f1f7f4,
+  100: #d6e7d0,
+  200: #bdd7ac,
+  300: #a4c887,
+  400: #8db972,
+  500: #77a75c, // Base color
+  600: #6e9c53,
+  700: #648c49,
+  800: #5a7c3f,
+  900: #4a6c33,
+  A100: #c6e8b5,
+  A200: #a6e08b,
+  A400: #86d861,
+  A700: #7cc157,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #000000,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  )
+);
 
-
-/* For use in src/lib/core/theming/_palette.scss */
-$lightgreen: (
-    50 : #f5f8e8,
-    100 : #e5edc5,
-    200 : #d4e19f,
-    300 : #c3d479,
-    400 : #b6cb5c,
-    500 : #a9c23f,
-    600 : #a2bc39,
-    700 : #98b431,
-    800 : #8fac29,
-    900 : #7e9f1b,
-    A100 : #f4ffd6,
-    A200 : #e7ffa3,
-    A400 : #d9ff70,
-    A700 : #d2ff57,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #000000,
-        500 : #000000,
-        600 : #000000,
-        700 : #000000,
-        800 : #000000,
-        900 : #000000,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
+$twilightblue: (
+  50: #e1f0ff,
+  100: #a8d1f7,
+  200: #78b2f0,
+  300: #4f92e9,
+  400: #2e73e2,
+  500: #1f5bb6, // Base color
+  600: #1b519e,
+  700: #174680,
+  800: #133c6a,
+  900: #0f3153,
+  A100: #b8dfff,
+  A200: #8bc4ff,
+  A400: #57a9ff,
+  A700: #4789e3,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #ffffff,
+  )
 );
 
 $mediumgreen: (
-    50 : #eff5e0,
-    100 : #d7e6b3,
-    200 : #bcd580,
-    300 : #a1c44d,
-    400 : #8cb726,
-    500 : #78aa00,
-    600 : #70a300,
-    700 : #659900,
-    800 : #5b9000,
-    900 : #487f00,
-    A100 : #d5ffad,
-    A200 : #bcff7a,
-    A400 : #a2ff47,
-    A700 : #95ff2d,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #000000,
-        500 : #000000,
-        600 : #000000,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
+  50: #eaf2e5,
+  100: #c0e1a3,
+  200: #9acb76,
+  300: #73b449,
+  400: #57a73a,
+  500: #3c9b2c, // Base color
+  600: #359025,
+  700: #2a7e1f,
+  800: #21671a,
+  900: #195811,
+  A100: #c2f2b0,
+  A200: #a3e687,
+  A400: #84dc5d,
+  A700: #71cf4f,
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #000000,
+    500: #000000,
+    600: #000000,
+    700: #000000,
+    800: #000000,
+    900: #000000,
+    A100: #000000,
+    A200: #000000,
+    A400: #000000,
+    A700: #000000,
+  )
 );
 
-$darkgreen: (
-    50 : #eaf1e6,
-    100 : #c9ddbf,
-    200 : #a6c695,
-    300 : #82af6b,
-    400 : #679d4b,
-    500 : #4c8c2b,
-    600 : #458426,
-    700 : #3c7920,
-    800 : #336f1a,
-    900 : #245c10,
-    A100 : #abff93,
-    A200 : #83ff60,
-    A400 : #5bff2d,
-    A700 : #47ff14,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #000000,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
-);
+// Define your other color palettes as needed...
 
-$forestgreen: (
-    50 : #eaf1e6,
-    100 : #c9ddbf,
-    200 : #a6c695,
-    300 : #82af6b,
-    400 : #679d4b,
-    500 : #4c8c2b,
-    600 : #458426,
-    700 : #3c7920,
-    800 : #336f1a,
-    900 : #245c10,
-    A100 : #abff93,
-    A200 : #83ff60,
-    A400 : #5bff2d,
-    A700 : #47ff14,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #000000,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
-);
-$twilightblue: (
-    50 : #e1e8ed,
-    100 : #b3c6d2,
-    200 : #80a1b5,
-    300 : #4d7b97,
-    400 : #275e80,
-    500 : #01426a,
-    600 : #013c62,
-    700 : #013357,
-    800 : #012b4d,
-    900 : #001d3c,
-    A100 : #72a8ff,
-    A200 : #3f89ff,
-    A400 : #0c6aff,
-    A700 : #005df1,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #ffffff,
-        400 : #ffffff,
-        500 : #ffffff,
-        600 : #ffffff,
-        700 : #ffffff,
-        800 : #ffffff,
-        900 : #ffffff,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #ffffff,
-        A700 : #ffffff,
-    )
-);
-
-$skyblue: (
-    50 : #fbfdfe,
-    100 : #f6fafc,
-    200 : #f0f7fa,
-    300 : #e9f4f7,
-    400 : #e5f1f6,
-    500 : #e0eff4,
-    600 : #dcedf3,
-    700 : #d8ebf1,
-    800 : #d3e8ef,
-    900 : #cbe4ec,
-    A100 : #ffffff,
-    A200 : #ffffff,
-    A400 : #ffffff,
-    A700 : #ffffff,
-    contrast: (
-        50 : #000000,
-        100 : #000000,
-        200 : #000000,
-        300 : #000000,
-        400 : #000000,
-        500 : #000000,
-        600 : #000000,
-        700 : #000000,
-        800 : #000000,
-        900 : #000000,
-        A100 : #000000,
-        A200 : #000000,
-        A400 : #000000,
-        A700 : #000000,
-    )
-);
-
-
-
+/* Primary, accent, and warn color definitions */
 $my-app-primary: mat.m2-define-palette($darkgreen);
-$my-app-accent:  mat.m2-define-palette($twilightblue, 500, 900, A100);
-$my-app-warn:    mat.m2-define-palette($mediumgreen);
+$my-app-accent: mat.m2-define-palette($twilightblue, 500, 900, A100);
+$my-app-warn: mat.m2-define-palette($mediumgreen);
 
+// Light theme definition
 $my-app-theme: mat.m2-define-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
 
-// Define an alternate dark theme.
+// Dark theme definition
 $dark-primary: mat.m2-define-palette($darkgreen);
-$dark-accent:  mat.m2-define-palette($twilightblue, 500, 900, A100);
-$dark-warn:    mat.m2-define-palette($mediumgreen);
-$dark-theme:   mat.m2-define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+$dark-accent: mat.m2-define-palette($twilightblue, 500, 900, A100);
+$dark-warn: mat.m2-define-palette($mediumgreen);
+$dark-theme: mat.m2-define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
-
-   .dark-theme {
-        @include mat.all-component-themes($dark-theme);
-   }
-  .dark-theme .mat-form-field-ripple{
-        background-color: white;
-        
-        @include mat.all-component-themes($dark-theme);
-    }
-   .dark-theme.mat-expansion-panel-header{
-        background-color: mat.m2-get-color-from-palette($dark-primary) !important;
-        @include mat.all-component-themes($dark-theme);
-    }   
-
-   .dark-theme.mat-expansion-panel-header.mat-expanded:hover {
-        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
-        @include mat.all-component-themes($dark-theme);      
-    }
-   .dark-theme.mat-expansion-panel-header.mat-expanded:focus {
-        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
-        @include mat.all-component-themes($dark-theme);      
-    }    
-   .dark-theme.mat-expansion-panel-header:hover {
-        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
-        @include mat.all-component-themes($dark-theme);      
-    }
-
-   .dark-theme .mat-form-field.mat-focused.mat-primary .mat-form-field-ripple{
-        background-color: white;
-       
-        @include mat.all-component-themes($dark-theme);
-    }
-   .dark-theme .mat-form-field.mat-focused.mat-primary .mat-select-arrow{
-        color: white;
-        
-        @include mat.all-component-themes($dark-theme);
-    }
-
-   .dark-theme .mat-focused.mat-primary {
-        color: white;
-        
-        @include mat.all-component-themes($dark-theme);       
-    }
-   .dark-theme .mat-select-arrow {
-        color: white;
-        @include mat.all-component-themes($dark-theme);
-    }
-
-
+// Apply light theme globally (default theme)
 @include mat.all-component-themes($my-app-theme);
+
+// Apply dark theme only when needed
+.dark-theme {
+    @include mat.all-component-themes($dark-theme);
+
+    .mat-form-field-ripple {
+        background-color: white;
+    }
+
+    .mat-expansion-panel-header {
+        background-color: mat.m2-get-color-from-palette($dark-primary) !important;
+    }
+
+    .mat-expansion-panel-header.mat-expanded:hover,
+    .mat-expansion-panel-header.mat-expanded:focus {
+        background-color: mat.m2-get-color-from-palette($dark-primary, 400) !important;
+    }
+
+    .mat-form-field.mat-focused.mat-primary .mat-form-field-ripple {
+        background-color: white;
+    }
+
+    .mat-form-field.mat-focused.mat-primary .mat-select-arrow,
+    .mat-focused.mat-primary,
+    .mat-select-arrow {
+        color: white;
+    }
+}

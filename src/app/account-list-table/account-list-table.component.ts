@@ -13,13 +13,13 @@ import { Subscription } from 'rxjs';
 })
 
 export class AccountListTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | undefined;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
   constructor(private stormwater:StormwaterService){};
   dataSource: AccountListTableDataSource;
   displayedColumns = ['select','SiteAddress', 'RealEstateId', 'AccountId', 'Status', 'TotalImpervious', 'ApportionmentUnits'];
   selection = new SelectionModel<any>(false, []);  
-  accountListSubscription: Subscription;
+  accountListSubscription: Subscription | null = null;
     
   ngOnInit() {
     this.dataSource = new AccountListTableDataSource(this.paginator, this.sort, []);
@@ -35,7 +35,7 @@ export class AccountListTableComponent implements OnInit, OnDestroy {
     }
   }
   rowClicked(row) {
-    debugger
+    
     this.stormwater.accountListSelected.next(row);
   };
 }

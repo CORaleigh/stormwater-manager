@@ -4,7 +4,6 @@ import { Subscription } from 'rxjs';
 import { BillingService } from '../billing-service';
 import { Apportionment } from '../apportionment';
 import { Account } from '../account';
-import * as moment from 'moment';
 
 import { StormwaterService } from '../stormwater.service';
 export interface SearchGroup {

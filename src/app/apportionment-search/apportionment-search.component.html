@@ -4,7 +4,7 @@
       <mat-autocomplete #searchGroup="matAutocomplete" (optionSelected)="accountSelected($event)" [displayWith]="displayFn">
         <mat-optgroup *ngFor="let group of searchGroups" [label]="group.type">
           <mat-option *ngFor="let value of group.values" [value]="value">
-            {{value.value}}
+            {{value['value']}}
           </mat-option>
       </mat-optgroup>
     </mat-autocomplete>

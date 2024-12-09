@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { loadModules } from 'esri-loader';
+import LOD from "@arcgis/core/layers/support/LOD.js";
+
 import esri = __esri;
 
 @Injectable({
@@ -8,9 +9,6 @@ import esri = __esri;
 export class LodsService {
   lods:esri.LOD[] = [];
   constructor() { 
-    loadModules([    
-      'esri/layers/support/LOD'])
-      .then(([LOD]) => {
       this.lods = [
         new LOD(
         {
@@ -174,7 +172,6 @@ export class LodsService {
         "scale": 70.5310735
         })
         ]
-      });
   }
 
 }

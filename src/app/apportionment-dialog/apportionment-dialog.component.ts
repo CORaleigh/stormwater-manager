@@ -4,7 +4,6 @@ import { Account } from '../account';
 import { MatStepper } from '@angular/material/stepper';
 import { Feature } from '../feature';
 import { Apportionment } from '../apportionment';
-import * as moment from 'moment';
 import { Subscription } from 'rxjs';
 
 @Component({

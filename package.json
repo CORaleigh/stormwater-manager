@@ -7,8 +7,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "postinstall": "ngcc"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -24,9 +23,8 @@
     "@angular/platform-browser-dynamic": "^18.2.13",
     "@angular/router": "^18.2.13",
     "@arcgis/core": "^4.31.6",
-    "@types/arcgis-js-api": "^4.25.0",
+    "@arcgis/map-components": "^4.31.6",
     "core-js": "^3.6.5",
-    "esri-loader": "^3.7.0",
     "moment": "^2.25.3",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",

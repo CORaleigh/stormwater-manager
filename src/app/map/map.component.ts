@@ -1,5 +1,27 @@
 import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
-import { loadModules } from 'esri-loader';
+import OAuthInfo from "@arcgis/core/identity/OAuthInfo.js";
+import esriId from "@arcgis/core/identity/IdentityManager.js";
+import WebMap from "@arcgis/core/WebMap.js";
+import MapView from "@arcgis/core/views/MapView.js";
+import esriConfig from "@arcgis/core/config.js";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer.js";
+import LayerList from "@arcgis/core/widgets/LayerList.js";
+import Legend from "@arcgis/core/widgets/Legend.js";
+import Expand from "@arcgis/core/widgets/Expand.js";
+import BasemapGallery from "@arcgis/core/widgets/BasemapGallery.js";
+import RelationshipQuery from "@arcgis/core/rest/support/RelationshipQuery.js";
+import * as geometryEngine from "@arcgis/core/geometry/geometryEngine.js";
+import * as reactiveUtils from "@arcgis/core/core/reactiveUtils.js";
+
+import ActionButton from "@arcgis/core/support/actions/ActionButton.js";
+import Collection from "@arcgis/core/core/Collection.js";
+import SearchSource from "@arcgis/core/widgets/Search/SearchSource.js";
+import Search from "@arcgis/core/widgets/Search.js";
+import LayerSearchSource from "@arcgis/core/widgets/Search/LayerSearchSource.js";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
+import esriRequest from "@arcgis/core/request.js";
+import * as query from "@arcgis/core/rest/query.js";
+
 import esri = __esri;
 import { Account } from '../account';
 import { StormwaterService } from '../stormwater.service';
@@ -10,6 +32,7 @@ import { Feature } from '../feature';
 import { Location } from '@angular/common';
 import { LodsService } from '../lods.service';
 import { Subscription } from 'rxjs';
+import Graphic from '@arcgis/core/Graphic';
 
 @Component({
   selector: 'app-map',
@@ -18,9 +41,12 @@ import { Subscription } from 'rxjs';
 })
 export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
-  @ViewChild('mapViewNode') private mapViewEl: ElementRef;
-  private _id: string = '7be33c08a6704e6fb7f8367b24f4cee6';
-  private _portalUrl: string = 'https://maps.raleighnc.gov/portal'
+  @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
+
+  private _id: string = '7be33c08a6704e6fb7f8367b24f4cee6';//'d8309610f598424b9889d62775b6330c';
+  private _portalUrl: string = 'https://maps.raleighnc.gov/portal';//'https://mapstest.raleighnc.gov/portal';
+  private _serverUrl: string = 'https://maps.raleighnc.gov';//'https://mapstest.raleighnc.gov';
+  private _clientId: string = 'xWoMZTo6ZiZVTwcT';//'u8kxa1iiA6kg2Nhc';
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
   private _search:esri.widgetsSearch;
@@ -38,13 +64,8 @@ export class MapComponent implements OnInit, OnDestroy {
   constructor(public stormwater: StormwaterService, private billing:BillingService, private route: ActivatedRoute, private router:Router, private location:Location, private lods:LodsService) { }
   async authenicate() {
     try {
-      const [OAuthInfo, esriId] = await loadModules([
-        "esri/identity/OAuthInfo",
-        "esri/identity/IdentityManager"
-      ]);
-      
       this._info = new OAuthInfo({
-        appId: 'xWoMZTo6ZiZVTwcT',
+        appId: this._clientId,
         portalUrl: this._portalUrl,
         popup: false
       });
@@ -69,14 +90,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
   async initializeMap() {
     try {
-      const [WebMap, MapView, GraphicsLayer, config,LOD] = await loadModules([
-        'esri/WebMap',
-        'esri/views/MapView',
-        'esri/layers/GraphicsLayer',
-        'esri/config',
-        'esri/layers/support/LOD'
-      ]);
-      config.portalUrl = this._portalUrl;
+      esriConfig.portalUrl = this._portalUrl;
       const mapProperties: esri.WebMapProperties = {
         portalItem: { 
           id: this._id
@@ -94,15 +108,15 @@ export class MapComponent implements OnInit, OnDestroy {
 
       this.stormwater.mapview = new MapView(mapViewProperties);
 
-      this.stormwater.mapview.when((mapView) => {
+      this.stormwater.mapview.when((mapView: MapView) => {
+        mapView?.ui?.container?.classList?.remove('calcite-mode-light');
         this.mapLoaded.emit(true);
         this._parcelGraphics = new GraphicsLayer({listMode: 'hide'});
         this.stormwater.mapview.map.add(this._parcelGraphics);
         this.stormwater.parcels = mapView.map.layers.find(l => {
           return l.title === 'Parcels';
         }) as esri.FeatureLayer;        
-        this.configLayerList(this.stormwater.mapview);
-        this.configBasemapGallery(this.stormwater.mapview);        
+        this.configMapWidgets(this.stormwater.mapview);
         this.setupSearch(this.stormwater.mapview);
         this.configPopupActions(this.stormwater.mapview);
         this.stormwater.mapview.on('hold', e => {
@@ -128,11 +142,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   configPopupActions(mapView: esri.MapView) {
-    loadModules([    
-      'esri/support/actions/ActionButton',
-      'esri/core/Collection'
-    ])
-    .then(([ActionButton, Collection]) => {
       let parcels = mapView.map.layers.find(l => {
         return l.title === 'Parcels';
       }) as esri.FeatureLayer;    
@@ -145,7 +154,7 @@ export class MapComponent implements OnInit, OnDestroy {
           });        
           l.popupTemplate.actions = new Collection();
           l.popupTemplate.actions.add(button);
-          mapView.popup.on("trigger-action", event => {
+          reactiveUtils.on(() => mapView.popup, "trigger-action", event => {
             if(event.action.id === "select-parcel"){
               this.getAccount(mapView.popup.selectedFeature);
               this._search.clear();
@@ -155,28 +164,33 @@ export class MapComponent implements OnInit, OnDestroy {
           });        
       });
       this.configAddressActions(mapView);
-    });
   }
 
   configAddressActions(mapView:esri.MapView) {
-    loadModules([    
-      'esri/support/actions/ActionButton',
-      'esri/core/Collection'])
-      .then(([ActionButton, Collection]) => {
+
         let addresses = mapView.map.layers.find(l => {
           return l.title === 'Address Points';
         }) as esri.FeatureLayer;      
       
         mapView.whenLayerView(addresses).then(layer => {
           let l = layer.layer as esri.FeatureLayer;
-          mapView.popup.watch('selectedFeature', (e) => {
-            if (e) {
-              if (e.sourceLayer) {
-                if (e.sourceLayer.title === 'Address Points') {
+
+          reactiveUtils.on(() => mapView.popup, "trigger-action", event => {
+            if(event.action.id === "select-parcel"){
+              this.getAccount(mapView.popup.selectedFeature);
+              this._search.clear();
+              this.clearResultsList();
+              this.stormwater.accountListSelected.next(null);
+            }
+          });  
+          reactiveUtils.watch(() => mapView.popup?.selectedFeature, (feature: Graphic) => {
+            if (feature) {
+              if (feature.layer) {
+                if (feature.layer.title === 'Address Points') {
                   if (this._selectedParcel) {
-                    let pt:esri.Point = e.geometry;
+                    let pt:esri.Point = feature.geometry as esri.Point;
                     let poly:esri.Polygon = this._selectedParcel.geometry as esri.Polygon;
-                      e.sourceLayer.popupTemplate.actions.items[0].visible = poly.contains(pt)
+                    (feature.layer as FeatureLayer).popupTemplate.actions.getItemAt(0).visible = poly.contains(pt)
                   }
                 }
               }
@@ -190,7 +204,9 @@ export class MapComponent implements OnInit, OnDestroy {
           });         
           l.popupTemplate.actions = new Collection();
           l.popupTemplate.actions.add(button);  
-          mapView.popup.on("trigger-action", event => {
+
+   
+          reactiveUtils.on(() => mapView.popup, "trigger-action", event => {
             if(event.action.id === "assign-csaid"){
               if (mapView.popup.selectedFeature.attributes.CSAID) {
                 let account = this.stormwater.account.getValue()
@@ -211,37 +227,49 @@ export class MapComponent implements OnInit, OnDestroy {
             }
           });    
         });             
-    });
+
   }
 
-  async configLayerList(mapView: esri.MapView) {
+  configMapWidgets(mapView: esri.MapView) {
     try {
-      const [LayerList, Legend, Expand] = await loadModules([
-        "esri/widgets/LayerList",
-        "esri/widgets/Legend",
-        "esri/widgets/Expand"
-      ]);
-      let list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
-      let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-layers', view: mapView, content: list.container});
-      mapView.ui.add(expand, 'top-right');
-      let legend: esri.Legend = new Legend({view: mapView, container: document.createElement('div')});
+      const list: esri.LayerList = new LayerList({view: mapView, container: document.createElement('div')});
+      const listExpand: esri.Expand = new Expand({expandIcon: 'layers', view: mapView, content: list});
+      mapView.ui.add(listExpand, 'top-right');
+      const legend: esri.Legend = new Legend({view: mapView, container: document.createElement('div')});
+      const legendExpand = new Expand({expandIcon: 'legend', view: mapView, content: legend});
+      mapView.ui.add(legendExpand, 'top-right');      
+      const gallery: esri.BasemapGallery = new BasemapGallery({view: mapView, container: document.createElement('div')});
+      const galleryExpand: esri.Expand = new Expand({expandIcon: 'basemap', view: mapView, content: gallery});
+      mapView.ui.add(galleryExpand, 'top-right');     
+      
+      listExpand.watch('expanded', expanded => {
+        if (expanded) {
+          legendExpand.collapse();
+          galleryExpand.collapse();
+        }
+      });
+      legendExpand.watch('expanded', expanded => {
+        if (expanded) {
+          listExpand.collapse();
+          galleryExpand.collapse();
+        }
+      });
+      galleryExpand.watch('expanded', expanded => {
+        if (expanded) {
+          legendExpand.collapse();
+          listExpand.collapse();
+        }
+      });            
 
-      mapView.ui.add(expand, 'top-right');
-      mapView.ui.add(new Expand({expandIconClass: 'esri-icon-legend', view: mapView, content: legend.container}), 'top-right')
+      
     } catch (error) {
       console.log('We have an error: ' + error);
     }        
   }
 
-  async configBasemapGallery(mapView: esri.MapView) {
+  configBasemapGallery(mapView: esri.MapView) {
     try {
-      const [BasemapGallery, Expand] = await loadModules([
-        "esri/widgets/BasemapGallery",
-        "esri/widgets/Expand"
-      ]);
-      let gallery: esri.BasemapGallery = new BasemapGallery({view: mapView, container: document.createElement('div')});
-      let expand: esri.Expand = new Expand({expandIconClass: 'esri-icon-basemap', view: mapView, content: gallery.container});
-      mapView.ui.add(expand, 'top-right');
+
 
     } catch (error) {
       console.log('We have an error: ' + error);
@@ -288,13 +316,8 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   addStreetSource(search:esri.widgetsSearch) {
-    loadModules([    
-      'esri/widgets/Search/SearchSource'])
-    .then(([SearchSource]) => {
       let source = new SearchSource({
-        name: 'Street name',
         placeholder: 'Search by street name',
-        displayField: 'FullStreetName',
         getSuggestions: params => {
           return this.stormwater.parcels.queryFeatures({returnDistinctValues: true, where: "FullStreetName like '%" + params.suggestTerm.toUpperCase() + "%'", outFields: ["FullStreetName"], returnGeometry: false, orderByFields: ["FullStreetName"]})
           .then(
@@ -308,25 +331,18 @@ export class MapComponent implements OnInit, OnDestroy {
               }
             );
           });
-        },
-        getResults: params => {
-          this.stormwater.streetName.next(params.suggestResult.text)
         }
+        // },
+        // getResults: params => {
+        //   this.stormwater.streetName.next(params.suggestResult.text)
+        // }
       });
       search.sources.push(source);
-    });
+
   }
 
   async setupSearch (mapView:esri.MapView) {
     try {
-      const [Search, LayerSearchSource, query, esriRequest, FeatureLayer] = await loadModules([
-        'esri/widgets/Search',
-        'esri/widgets/Search/LayerSearchSource',
-        'esri/rest/query',
-        'esri/request',
-        'esri/layers/FeatureLayer'
-
-      ]);
       //@ts-ignore
       let accounts = mapView.map.tables.find(l => {
         return l.title === 'Stormwater_Management - Account';
@@ -337,14 +353,14 @@ export class MapComponent implements OnInit, OnDestroy {
       let addresses = mapView.map.layers.find(l => {
         return l.title === 'Address Points';
       }) as esri.FeatureLayer;
-      let search: esri.widgetsSearch = new Search({view: mapView, includeDefaultSources: false, resultGraphicEnabled: false});
+      let search: Search = new Search({view: mapView, includeDefaultSources: false, resultGraphicEnabled: false});
       this._search = search;
       search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'SiteAddress', 'Site Address', "Account = 'A'", "Search by site address"));
       //search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'RealEstateId', 'REID', "Account = 'A'", "Search by REID"));
       //search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: `${this._serverUrl}.arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2`}),
         searchFields: ["RealEstateId"],
         displayField: "RealEstateId",
         exactMatch: false,
@@ -360,7 +376,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/0'}),
+        url: `${this._serverUrl}/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/0`}),
         searchFields: ["PinNumber"],
         displayField: "PinNumber",
         exactMatch: false,
@@ -376,7 +392,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: `${this._serverUrl}/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2`}),
         searchFields: ["AccountId"],
         displayField: "AccountId",
         exactMatch: false,
@@ -392,7 +408,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: `${this._serverUrl}/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2`}),
         searchFields: ["PremiseId"],
         displayField: "PremiseId",
         exactMatch: false,
@@ -408,7 +424,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //@ts-ignore
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2'}),
+        url: `${this._serverUrl}/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2`}),
         searchFields: ["CsaId"],
         displayField: "CsaId",
         exactMatch: false,
@@ -425,7 +441,7 @@ export class MapComponent implements OnInit, OnDestroy {
       search.sources.push(this.getSource(addresses, LayerSearchSource, 'ADDRESS', 'Address Point', "", "Search by address point" ));
       mapView.ui.add(search, {position: 'top-left', index: 0});
       search.goToOverride = (view:esri.MapView, params:any) => {
-        debugger
+        
         if (params.target.target.layer.title.indexOf('Stormwater Management - ') > -1 && params.target.target.layer.isTable) {
           this.account = params.target.target.attributes as Account;
           this.stormwater.accounts.next([this.account]);
@@ -433,7 +449,7 @@ export class MapComponent implements OnInit, OnDestroy {
           this.stormwater.account.next(params.target.target.attributes as Account);
           this.clearResultsList();
           
-          this.getParcel(this.stormwater.parcels.url,esriRequest, query, params.target.target.attributes.OBJECTID, view);
+          this.getParcel(this.stormwater.parcels.url,esriRequest, params.target.target.attributes.OBJECTID, view);
           this._search.clear();
         } else {
           this.getParcelByObjectId(params.target.target.attributes.OBJECTID, mapView);
@@ -451,7 +467,7 @@ export class MapComponent implements OnInit, OnDestroy {
         
         if (event.source.name != 'Address Point' && !event.source.layer.isTable) {
           this.getAccount(event.result.feature);
-          debugger
+          
           this.stormwater.parcel.next(event.result.feature.attributes as Parcel);
           this.clearResultsList();
           this.account = null;
@@ -471,7 +487,7 @@ export class MapComponent implements OnInit, OnDestroy {
       if (result.features) {
         if (result.features.length > 0) {
           let parcel:Parcel = result.features[0].attributes as Parcel;
-          debugger
+          
           this.stormwater.parcel.next(parcel);                    
           this.getAccount(result.features[0]);
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
@@ -481,14 +497,8 @@ export class MapComponent implements OnInit, OnDestroy {
       } 
     });            
   }
-
   getAccount(feature: esri.Graphic) { 
-    loadModules([    
-      'esri/rest/support/RelationshipQuery',
-      'esri/rest/query',
-      'esri/request'
-    ])
-      .then(([RelationshipQuery, query, esriRequest]) => {
+
       //@ts-ignore
       let relationship = this.stormwater.parcels.relationships.find((r:esri.Relationship) => {
         return r.name === 'Account';
@@ -525,8 +535,7 @@ export class MapComponent implements OnInit, OnDestroy {
             this.stormwater.account.next(null);
           }
         });
-      }
-    });    
+      }  
   }
 
   queryRelatedTables (url: string, relationship: any, query: esri.query, objectId: number):Promise<any> {
@@ -585,7 +594,7 @@ export class MapComponent implements OnInit, OnDestroy {
       if (result.features) {
         if (result.features.length > 0) {
           let parcel:Parcel = result.features[0].attributes as Parcel;
-          debugger
+          
           this.stormwater.parcel.next(parcel);                    
           let parcelExtent = result.features[0].geometry.extent.clone().expand(2);
           mapView.goTo(parcelExtent,{duration: 1500, easing:'ease-in'});
@@ -593,7 +602,7 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       }});
   }
-  getParcel(url: string, esriRequest: any, query: esri.query, objectId: number, mapView: esri.MapView) {
+  getParcel(url: string, esriRequest: any, objectId: number, mapView: esri.MapView) {
     esriRequest(url + '/2?f=json', {responseType: 'json'}).then(response => {
       response.data.relationships.forEach(relationship => {
         if (relationship.role === 'esriRelRoleDestination') {
@@ -603,7 +612,7 @@ export class MapComponent implements OnInit, OnDestroy {
             if (result[objectId]) {
               this.getParcelByObjectId(result[objectId].features[0].attributes.OBJECTID, mapView);
             } else {
-              debugger
+              
               this.stormwater.parcel.next(null); 
               this._parcelGraphics.removeAll();
             }
@@ -614,12 +623,6 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   getByAccountId(id: any[], field:string, mapView: esri.MapView, zoom:boolean) {
-    loadModules([    
-      'esri/rest/query',
-      'esri/request',
-    ])
-    .then(([query, esriRequest]) => {
-      
       if (this.stormwater.parcels) {
         //let queryTask: esri.query = new query(this.stormwater.parcels.url + '/2');
         
@@ -631,7 +634,7 @@ export class MapComponent implements OnInit, OnDestroy {
               this.stormwater.account.next(account);
               //this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
               if (zoom) {
-                this.getParcel(this.stormwater.parcels.url, esriRequest, query, account.OBJECTID, mapView);
+                this.getParcel(this.stormwater.parcels.url, esriRequest, account.OBJECTID, mapView);
               }
             } else if (result.features.length > 1) {
               let oids = [];
@@ -661,14 +664,11 @@ export class MapComponent implements OnInit, OnDestroy {
             }
           }
         });
-      }      
-    });    
+      }       
   }
 
   zoomToParcels(features, mapView) {
-    loadModules([    
-    'esri/geometry/geometryEngine'])
-      .then(([geometryEngine]) => {
+
         let geoms = [];
         features.forEach(feature => {
           geoms.push(feature.geometry);
@@ -677,7 +677,7 @@ export class MapComponent implements OnInit, OnDestroy {
         let extent = result.extent.clone().expand(2);
         
         mapView.goTo(extent,{duration: 1500, easing:'ease-in'});
-    });
+
   }
 
   highlightSingleParcel(feature:esri.Graphic) {
@@ -749,10 +749,7 @@ export class MapComponent implements OnInit, OnDestroy {
       }
     });
     this.accountSubscription = this.stormwater.account.subscribe(account => {
-        loadModules([
-        'esri/rest/query',
-        'esri/request', ])
-          .then(([query, esriRequest]) =>  {
+
             if (account) {
               let path = window.location.origin + '/account/';
               if (!path.includes('localhost')) {
@@ -768,7 +765,7 @@ export class MapComponent implements OnInit, OnDestroy {
            this.stormwater.logs.next([]);
            this.stormwater.journals.next([]);
          }
-        }); 
+
     });
 
     this.streetNameSubscription = this.stormwater.streetName.subscribe(streetName => {
@@ -817,12 +814,9 @@ export class MapComponent implements OnInit, OnDestroy {
     });
     this.stormwater.accountListSelected.subscribe(row => {
       if (row) {
-        loadModules([
-        'esri/rest/query',
-        'esri/request', ])
-          .then(([query, request]) =>  {
+
             this.getByAccountId([row.AccountId], 'AccountId', this.stormwater.mapview, true);
-        });
+
       }
     });
     this.stormwater.gisScanSelected.subscribe(reid => {
@@ -830,26 +824,24 @@ export class MapComponent implements OnInit, OnDestroy {
         let impLyr = this.stormwater.mapview.map.layers.find(l => {
           return l.title === 'Impervious Area By Parcel';
         }) as esri.FeatureLayer;
-        impLyr.queryFeatures({
+        impLyr?.queryFeatures({
             where: "RealEstateId = '" + reid + "'",
             returnGeometry: true, 
             outFields:['*']
         }).then(result => {
    
           if (result) {
-            loadModules([    
-              'esri/geometry/geometryEngine'])
-                .then(([geometryEngine]) => {
+
                   let data =[];
                   let features = result.features;
                   let area:number = null;
                   features.forEach(f => {
-                    area = geometryEngine.planarArea(f.geometry, 'square-feet');
+                    area = geometryEngine.planarArea(f.geometry as esri.Polygon, 'square-feet');
                     //area = f.attributes['Shape.STArea()'];
                     data.push({area:area, category:f.attributes.CATEGORY, updated:f.attributes.UPDATE_DATE});
                   });
                 this.stormwater.gisscan.next(data);         
-              });                   
+                 
           }
         });           
       }

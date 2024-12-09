@@ -93,6 +93,8 @@ export class ApportionmentFormComponent implements OnInit, OnDestroy {
   checkCode() {
     if (this.apptForm.get('code').value === 'NA' || !this.apptForm.get('code').value) {
       return true;
+    } else {
+      return false;
     }
   }
   updateApportionments(account:Account) {

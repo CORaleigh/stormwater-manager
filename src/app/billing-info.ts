@@ -13,5 +13,5 @@ export class BillingInfo {
     lastBill: Bill;
     lastStormwaterBill: StormwaterBill;
     services: BillService[];
-
+    csaId: string;
 }
