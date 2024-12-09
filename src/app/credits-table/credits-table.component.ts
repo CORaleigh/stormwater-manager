@@ -6,9 +6,10 @@ import { StormwaterService } from '../stormwater.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-credits-table',
-  templateUrl: './credits-table.component.html',
-  styleUrls: ['./credits-table.component.css'],
+    selector: 'app-credits-table',
+    templateUrl: './credits-table.component.html',
+    styleUrls: ['./credits-table.component.css'],
+    standalone: false
 })
 export class CreditsTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

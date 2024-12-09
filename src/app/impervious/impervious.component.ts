@@ -8,9 +8,10 @@ import { Feature } from '../feature';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-impervious',
-  templateUrl: './impervious.component.html',
-  styleUrls: ['./impervious.component.css']
+    selector: 'app-impervious',
+    templateUrl: './impervious.component.html',
+    styleUrls: ['./impervious.component.css'],
+    standalone: false
 })
 export class ImperviousComponent implements OnInit, OnDestroy {
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }

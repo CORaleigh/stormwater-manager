@@ -6,9 +6,10 @@ import { StormwaterService } from '../stormwater.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-impervious-gis-table',
-  templateUrl: './impervious-gis-table.component.html',
-  styleUrls: ['./impervious-gis-table.component.css'],
+    selector: 'app-impervious-gis-table',
+    templateUrl: './impervious-gis-table.component.html',
+    styleUrls: ['./impervious-gis-table.component.css'],
+    standalone: false
 })
 export class ImperviousGisTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

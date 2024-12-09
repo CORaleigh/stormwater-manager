@@ -6,9 +6,10 @@ import { Account } from '../account';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-journal-form',
-  templateUrl: './journal-form.component.html',
-  styleUrls: ['./journal-form.component.css'],
+    selector: 'app-journal-form',
+    templateUrl: './journal-form.component.html',
+    styleUrls: ['./journal-form.component.css'],
+    standalone: false
 })
 export class JournalFormComponent implements OnInit, OnDestroy {
   @Output() submitted = new EventEmitter<Journal>();

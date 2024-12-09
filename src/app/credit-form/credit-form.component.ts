@@ -18,13 +18,14 @@ export const MY_FORMATS = {
   },
 };
 @Component({
-  selector: 'app-credit-form',
-  templateUrl: './credit-form.component.html',
-  styleUrls: ['./credit-form.component.css'],
-  providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-  ]    
+    selector: 'app-credit-form',
+    templateUrl: './credit-form.component.html',
+    styleUrls: ['./credit-form.component.css'],
+    providers: [
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class CreditFormComponent implements OnInit {
   form = this.fb.group({

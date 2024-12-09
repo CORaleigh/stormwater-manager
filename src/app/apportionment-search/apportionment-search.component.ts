@@ -11,9 +11,10 @@ export interface SearchGroup {
   values: string[];
 }
 @Component({
-  selector: 'app-apportionment-search',
-  templateUrl: './apportionment-search.component.html',
-  styleUrls: ['./apportionment-search.component.css']
+    selector: 'app-apportionment-search',
+    templateUrl: './apportionment-search.component.html',
+    styleUrls: ['./apportionment-search.component.css'],
+    standalone: false
 })
 
 export class ApportionmentSearchComponent implements OnInit {

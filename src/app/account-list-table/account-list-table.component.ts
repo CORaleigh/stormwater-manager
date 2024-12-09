@@ -7,9 +7,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-account-list-table',
-  templateUrl: './account-list-table.component.html',
-  styleUrls: ['./account-list-table.component.css'],
+    selector: 'app-account-list-table',
+    templateUrl: './account-list-table.component.html',
+    styleUrls: ['./account-list-table.component.css'],
+    standalone: false
 })
 
 export class AccountListTableComponent implements OnInit, OnDestroy {

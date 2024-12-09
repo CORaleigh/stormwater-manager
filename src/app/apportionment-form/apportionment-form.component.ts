@@ -9,9 +9,10 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-apportionment-form',
-  templateUrl: './apportionment-form.component.html',
-  styleUrls: ['./apportionment-form.component.css'],
+    selector: 'app-apportionment-form',
+    templateUrl: './apportionment-form.component.html',
+    styleUrls: ['./apportionment-form.component.css'],
+    standalone: false
 })
 export class ApportionmentFormComponent implements OnInit, OnDestroy {
   apptForm = this.fb.group({

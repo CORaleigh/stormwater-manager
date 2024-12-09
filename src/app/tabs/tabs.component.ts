@@ -4,9 +4,10 @@ import { StormwaterService } from '../stormwater.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-tabs',
-  templateUrl: './tabs.component.html',
-  styleUrls: ['./tabs.component.css']
+    selector: 'app-tabs',
+    templateUrl: './tabs.component.html',
+    styleUrls: ['./tabs.component.css'],
+    standalone: false
 })
 export class TabsComponent implements OnInit, OnDestroy {
   constructor(overlayContainer: OverlayContainer, private stormwater:StormwaterService) {

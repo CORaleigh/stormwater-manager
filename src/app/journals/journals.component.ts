@@ -6,9 +6,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { Feature } from '../feature';
 
 @Component({
-  selector: 'app-journals',
-  templateUrl: './journals.component.html',
-  styleUrls: ['./journals.component.css']
+    selector: 'app-journals',
+    templateUrl: './journals.component.html',
+    styleUrls: ['./journals.component.css'],
+    standalone: false
 })
 export class JournalsComponent {
   constructor(private dialog: MatDialog, private stormwater:StormwaterService) { }

@@ -4,9 +4,10 @@ import { Account } from '../account';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-infotab',
-  templateUrl: './infotab.component.html',
-  styleUrls: ['./infotab.component.css']
+    selector: 'app-infotab',
+    templateUrl: './infotab.component.html',
+    styleUrls: ['./infotab.component.css'],
+    standalone: false
 })
 export class InfotabComponent implements OnInit, OnDestroy {
   constructor(private stormwater:StormwaterService) { }

@@ -5,9 +5,10 @@ import { BillingServiceTableDataSource } from './billing-service-table-datasourc
 import { BillService } from '../bill-service';
 
 @Component({
-  selector: 'app-billing-service-table',
-  templateUrl: './billing-service-table.component.html',
-  styleUrls: ['./billing-service-table.component.css'],
+    selector: 'app-billing-service-table',
+    templateUrl: './billing-service-table.component.html',
+    styleUrls: ['./billing-service-table.component.css'],
+    standalone: false
 })
 export class BillingServiceTableComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

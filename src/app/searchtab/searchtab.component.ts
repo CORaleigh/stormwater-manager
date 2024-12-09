@@ -4,9 +4,10 @@ import { StormwaterService } from '../stormwater.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-searchtab',
-  templateUrl: './searchtab.component.html',
-  styleUrls: ['./searchtab.component.css']
+    selector: 'app-searchtab',
+    templateUrl: './searchtab.component.html',
+    styleUrls: ['./searchtab.component.css'],
+    standalone: false
 })
 
 export class SearchtabComponent implements OnInit, OnDestroy {

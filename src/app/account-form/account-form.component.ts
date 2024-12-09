@@ -5,9 +5,10 @@ import { Account } from '../account';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-account-form',
-  templateUrl: './account-form.component.html',
-  styleUrls: ['./account-form.component.css'],
+    selector: 'app-account-form',
+    templateUrl: './account-form.component.html',
+    styleUrls: ['./account-form.component.css'],
+    standalone: false
 })
 export class AccountFormComponent implements OnInit, OnDestroy {
   accountSubscription:Subscription;

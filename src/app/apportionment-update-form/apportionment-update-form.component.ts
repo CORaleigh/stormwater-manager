@@ -27,13 +27,14 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   }
 }
 @Component({
-  selector: 'app-apportionment-update-form',
-  templateUrl: './apportionment-update-form.component.html',
-  styleUrls: ['./apportionment-update-form.component.css'],
-  providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-  ]  
+    selector: 'app-apportionment-update-form',
+    templateUrl: './apportionment-update-form.component.html',
+    styleUrls: ['./apportionment-update-form.component.css'],
+    providers: [
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class ApportionmentUpdateFormComponent  {
   expirationDate = new UntypedFormControl(moment());

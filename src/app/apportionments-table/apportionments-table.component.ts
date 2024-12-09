@@ -7,9 +7,10 @@ import { Apportionment } from '../apportionment';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-apportionments-table',
-  templateUrl: './apportionments-table.component.html',
-  styleUrls: ['./apportionments-table.component.css'],
+    selector: 'app-apportionments-table',
+    templateUrl: './apportionments-table.component.html',
+    styleUrls: ['./apportionments-table.component.css'],
+    standalone: false
 })
 export class ApportionmentsTableComponent implements OnInit, OnDestroy{
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

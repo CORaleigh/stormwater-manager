@@ -7,9 +7,10 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-apportionments',
-  templateUrl: './apportionments.component.html',
-  styleUrls: ['./apportionments.component.css']
+    selector: 'app-apportionments',
+    templateUrl: './apportionments.component.html',
+    styleUrls: ['./apportionments.component.css'],
+    standalone: false
 })
 export class ApportionmentsComponent implements OnInit, OnDestroy {
 

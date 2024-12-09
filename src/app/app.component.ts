@@ -3,9 +3,10 @@ import { setAssetPath as setCalciteComponentsAssetPath } from '@esri/calcite-com
 setCalciteComponentsAssetPath("https://js.arcgis.com/calcite-components/2.13.2/assets");
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent {
   title = 'stormwater-manager';

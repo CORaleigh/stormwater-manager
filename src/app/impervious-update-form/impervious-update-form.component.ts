@@ -17,13 +17,14 @@ export const MY_FORMATS = {
   },
 };
 @Component({
-  selector: 'app-impervious-update-form',
-  templateUrl: './impervious-update-form.component.html',
-  styleUrls: ['./impervious-update-form.component.css'],
-  providers: [
-    {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
-    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
-  ]  
+    selector: 'app-impervious-update-form',
+    templateUrl: './impervious-update-form.component.html',
+    styleUrls: ['./impervious-update-form.component.css'],
+    providers: [
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+    ],
+    standalone: false
 })
 export class ImperviousUpdateFormComponent implements OnInit {
   @Input() impervious: Impervious;

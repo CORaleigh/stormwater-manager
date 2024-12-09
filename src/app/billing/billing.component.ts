@@ -5,9 +5,10 @@ import { BillingInfo } from '../billing-info';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-billing',
-  templateUrl: './billing.component.html',
-  styleUrls: ['./billing.component.css']
+    selector: 'app-billing',
+    templateUrl: './billing.component.html',
+    styleUrls: ['./billing.component.css'],
+    standalone: false
 })
 export class BillingComponent implements OnInit, OnDestroy {
 

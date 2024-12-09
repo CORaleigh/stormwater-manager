@@ -7,11 +7,11 @@ import { Apportionment } from '../apportionment';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-apportionment-dialog',
-  templateUrl: './apportionment-dialog.component.html',
-  styleUrls: ['./apportionment-dialog.component.css'],
-  providers: [{ provide: MatStepper, useValue: undefined }], 
-
+    selector: 'app-apportionment-dialog',
+    templateUrl: './apportionment-dialog.component.html',
+    styleUrls: ['./apportionment-dialog.component.css'],
+    providers: [{ provide: MatStepper, useValue: undefined }],
+    standalone: false
 })
 export class ApportionmentDialogComponent implements OnInit, OnDestroy {
 

@@ -35,9 +35,10 @@ import { Subscription } from 'rxjs';
 import Graphic from '@arcgis/core/Graphic';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+    selector: 'app-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.css'],
+    standalone: false
 })
 export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();

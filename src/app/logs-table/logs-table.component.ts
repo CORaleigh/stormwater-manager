@@ -6,9 +6,10 @@ import { StormwaterService } from '../stormwater.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-logs-table',
-  templateUrl: './logs-table.component.html',
-  styleUrls: ['./logs-table.component.css'],
+    selector: 'app-logs-table',
+    templateUrl: './logs-table.component.html',
+    styleUrls: ['./logs-table.component.css'],
+    standalone: false
 })
 export class LogsTableComponent implements OnInit, OnDestroy {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

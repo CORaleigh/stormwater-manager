@@ -8,9 +8,10 @@ import { Feature } from '../feature';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-credits',
-  templateUrl: './credits.component.html',
-  styleUrls: ['./credits.component.css']
+    selector: 'app-credits',
+    templateUrl: './credits.component.html',
+    styleUrls: ['./credits.component.css'],
+    standalone: false
 })
 export class CreditsComponent implements OnInit, OnDestroy {
 
