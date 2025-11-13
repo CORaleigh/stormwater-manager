@@ -1,15 +1,19 @@
 <form [formGroup]="journalForm" novalidate (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Journal Entry</mat-label>
 
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <textarea rows="5" matInput placeholder="Journal Entry" formControlName="JournalEntry"></textarea>
-            <!-- <mat-hint align="end">{{JournalEntry.value.length}} / 300</mat-hint> -->
+        <textarea
+          rows="5"
+          matInput
+          placeholder="Journal Entry"
+          formControlName="JournalEntry"
+        ></textarea>
+        <!-- <mat-hint align="end">{{JournalEntry.value.length}} / 300</mat-hint> -->
+      </mat-form-field>
+    </div>
+  </div>
 
-          </mat-form-field>
-        </div>
-      </div>
-     
-      <button mat-raised-button color="primary" type="submit">Submit</button>
-
+  <button mat-raised-button color="primary" type="submit">Submit</button>
 </form>

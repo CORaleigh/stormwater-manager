@@ -1,43 +1,61 @@
 <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
-    <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <mat-select placeholder="Status" formControlName="status">
-              <mat-option *ngFor="let status of statuses" [value]="status.code">
-                {{ status.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <mat-select placeholder="Use Class" formControlName="useclass">
-              <mat-option *ngFor="let useclass of useclasses" [value]="useclass.code">
-                {{ useclass.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col"> 
-          <mat-form-field class="full-width">
-            <input matInput #PremiseId placeholder="Premise ID" formControlName="premiseid">
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col"> 
-          <mat-form-field class="full-width">
-            <input matInput #csaid placeholder="CSA ID" type="number" formControlName="csaid">
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-          <div class="col">     
-            <button mat-raised-button color="primary" type="submit">Submit</button>
-          </div>          
-        </div>         
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Status</mat-label>
+        <mat-select placeholder="Status" formControlName="status">
+          <mat-option *ngFor="let status of statuses" [value]="status.code">
+            {{ status.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Use Class</mat-label>
+        <mat-select placeholder="Use Class" formControlName="useclass">
+          <mat-option
+            *ngFor="let useclass of useclasses"
+            [value]="useclass.code"
+          >
+            {{ useclass.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Premise ID</mat-label>
+        <input
+          matInput
+          #PremiseId
+          placeholder="Premise ID"
+          formControlName="premiseid"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>CSA ID</mat-label>
+        <input
+          matInput
+          #csaid
+          placeholder="CSA ID"
+          type="number"
+          formControlName="csaid"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+    </div>
+  </div>
 </form>

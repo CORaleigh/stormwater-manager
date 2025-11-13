@@ -1,12 +1,26 @@
 <form [formGroup]="searchForm">
-    <mat-form-field class="example-full-width">
-      <input (input)="inputChanged($event)" matInput placeholder="Address, account ID, premise ID" aria-label="State" formControlName="searchGroup" [formControl]="control" [matAutocomplete]="searchGroup">
-      <mat-autocomplete #searchGroup="matAutocomplete" (optionSelected)="accountSelected($event)" [displayWith]="displayFn">
-        <mat-optgroup *ngFor="let group of searchGroups" [label]="group.type">
-          <mat-option *ngFor="let value of group.values" [value]="value">
-            {{value['value']}}
-          </mat-option>
+  <mat-form-field class="example-full-width">
+    <mat-label>Address, account ID, premise ID</mat-label>
+
+    <input
+      (input)="inputChanged($event)"
+      matInput
+      placeholder="Address, account ID, premise ID"
+      aria-label="State"
+      formControlName="searchGroup"
+      [formControl]="control"
+      [matAutocomplete]="searchGroup"
+    />
+    <mat-autocomplete
+      #searchGroup="matAutocomplete"
+      (optionSelected)="accountSelected($event)"
+      [displayWith]="displayFn"
+    >
+      <mat-optgroup *ngFor="let group of searchGroups" [label]="group.type">
+        <mat-option *ngFor="let value of group.values" [value]="value">
+          {{ value["value"] }}
+        </mat-option>
       </mat-optgroup>
     </mat-autocomplete>
-    </mat-form-field>   
-  </form>  
+  </mat-form-field>
+</form>

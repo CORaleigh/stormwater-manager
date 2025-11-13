@@ -1,33 +1,73 @@
 <mat-list role="list" *ngIf="ccbAccount">
-    <mat-list-item role="listitem">CCB Premise: {{ccbAccount.premiseId}}</mat-list-item>
-    <mat-list-item role="listitem">CCB Account: {{ccbAccount.accountId}}</mat-list-item>
-    <mat-list-item role="listitem">Address: {{ccbAccount.address}}</mat-list-item>
-    <mat-list-item role="listitem">Entity: {{ccbAccount.entityName}}</mat-list-item>
-    <mat-list-item role="listitem">CSAID: {{ccbAccount.csaId}}</mat-list-item>    
+  <mat-list-item role="listitem"
+    >CCB Premise: {{ ccbAccount.premiseId }}</mat-list-item
+  >
+  <mat-list-item role="listitem"
+    >CCB Account: {{ ccbAccount.accountId }}</mat-list-item
+  >
+  <mat-list-item role="listitem"
+    >Address: {{ ccbAccount.address }}</mat-list-item
+  >
+  <mat-list-item role="listitem"
+    >Entity: {{ ccbAccount.entityName }}</mat-list-item
+  >
+  <mat-list-item role="listitem">CSAID: {{ ccbAccount.csaId }}</mat-list-item>
 </mat-list>
 <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
-    <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <input matInput #PercentApportioned placeholder="Percent" type="number" formControlName="PercentApportioned">
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="row">
-          <div class="col">
-            <mat-form-field class="full-width">
-              <input matInput [matDatepicker]="ExpirationDate" placeholder="Expiration Date" [formControl]="expirationDate" name="ExpirationDate">
-              <mat-datepicker-toggle matSuffix [for]="ExpirationDate"></mat-datepicker-toggle>
-              <mat-datepicker #ExpirationDate></mat-datepicker>              
-            </mat-form-field>
-          </div>
-        </div>     
-        <div class="row">
-            <div class="col">     
-              <button mat-raised-button color="primary" type="submit" [disabled]="checkInvalid()">Submit</button>
-            </div>          
-            <div class="col">     
-                <button mat-raised-button color="warn" (click)="delete()" *ngIf="mode === 'update'">Delete</button>
-              </div>               
-          </div>   
+  <div class="row">
+    <div class="col">
+      <mat-label>Percent</mat-label>
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          #PercentApportioned
+          placeholder="Percent"
+          type="number"
+          formControlName="PercentApportioned"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-label>Expiration Date</mat-label>
+
+      <mat-form-field class="full-width">
+        <input
+          matInput
+          [matDatepicker]="ExpirationDate"
+          placeholder="Expiration Date"
+          [formControl]="expirationDate"
+          name="ExpirationDate"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="ExpirationDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #ExpirationDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="checkInvalid()"
+      >
+        Submit
+      </button>
+    </div>
+    <div class="col">
+      <button
+        mat-raised-button
+        color="warn"
+        (click)="delete()"
+        *ngIf="mode === 'update'"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
 </form>

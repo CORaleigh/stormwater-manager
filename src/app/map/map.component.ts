@@ -47,7 +47,7 @@ export class MapComponent implements OnInit, OnDestroy {
   private _id: string = '7be33c08a6704e6fb7f8367b24f4cee6';//'d8309610f598424b9889d62775b6330c';
   private _portalUrl: string = 'https://maps.raleighnc.gov/portal';//'https://mapstest.raleighnc.gov/portal';
   private _serverUrl: string = 'https://maps.raleighnc.gov';//'https://mapstest.raleighnc.gov';
-  private _clientId: string = 'xWoMZTo6ZiZVTwcT';//'u8kxa1iiA6kg2Nhc';
+  private _clientId: string = 'xWoMZTo6ZiZVTwcT';//'u8kxa1iiA6kg2Nhc';u8kxa1iiA6kg2Nhc
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
   private _search:esri.widgetsSearch;
@@ -361,7 +361,7 @@ export class MapComponent implements OnInit, OnDestroy {
       //search.sources.push(this.getSource(this.stormwater.parcels, LayerSearchSource, 'PinNumber', 'PIN', "Account = 'A'", "Search by PIN"));
       search.sources.push(new LayerSearchSource({
         layer: new FeatureLayer({
-        url: `${this._serverUrl}.arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2`}),
+        url: `${this._serverUrl}/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/2`}),
         searchFields: ["RealEstateId"],
         displayField: "RealEstateId",
         exactMatch: false,

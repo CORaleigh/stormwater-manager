@@ -92,7 +92,8 @@ export class StormwaterService {
 
 
   getDataElements(token:string):Observable<any> { 
-    let url = this.url + "/queryDataElements?f=json&layers=*&token="+ token;
+    let url = this.url + "/queryDataElements?f=json&token="+ token;
+    debugger
     return this.http.get<any>(url);
   }
 
@@ -100,6 +101,7 @@ export class StormwaterService {
     let layerInfo:LayerInfo = result as LayerInfo;
     let fieldInfo:FieldInfo = new FieldInfo();
     fieldInfo.layers = [];
+    debugger
     layerInfo.layerDataElements.forEach(layerElement => {
       let layer = new Layer();
       layer.layerId = layerElement.layerId;
@@ -166,7 +168,7 @@ export class StormwaterService {
     }
 
     public getDomain(layerId, fieldName): any {
-    
+      debugger
       let layers = this.fieldInfo.layers.filter(layer => {return layerId === layer.layerId});
       let returnValue = '';
       if (layers.length > 0) {

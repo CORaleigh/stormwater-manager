@@ -16,7 +16,7 @@ const options = {
   providedIn: 'root'
 })
 export class BillingService {
-  baseUrl: string = 'https://cityconnect.raleighnc.gov/RaleighAPI/ccb/';
+  baseUrl: string = 'https://gis.raleighnc.gov/stormwater-ccb-api/';
   constructor(private http:HttpClient) {
   }  
 
@@ -27,11 +27,12 @@ export class BillingService {
   public getBilling(premise:string, type: string):Promise<BillingInfo> {
     let promise = new Promise<BillingInfo>((resolve, reject) => {
       if (this.count < this.types.length) {
+        
         this.getBillingInfo(premise, type).subscribe(data => {
           if (data) {          
-            if (data.length > 0) {
+            if (data.rowCount > 0) {
               this.count = 0;
-              resolve(data[0]);
+              resolve(data.results[0]);
             } else {
               this.count += 1;
               this.getBilling(premise, this.types[this.count])
@@ -51,23 +52,25 @@ export class BillingService {
         info.services = [];
         this.count = 0;
         this.getBilling(account.PremiseId.toString(), this.types[this.count]).then(result => {
+          debugger
           if (result) {
             info = result as BillingInfo;
             this.getLastBill(info.accountId).subscribe(result => {
-              if (result.length > 0) {
-                info.lastBill = result[0] as Bill;
+    
+              if (result.rowCount > 0) {
+                info.lastBill = result.results[0] as Bill;
                 this.getLastSwBill(account.PremiseId.toString(), info.lastBill.billId).subscribe(result => {
-                  if (result.length > 0) {
-                    info.lastStormwaterBill = result[0] as StormwaterBill;
+                  if (result.rowCount > 0) {
+                    info.lastStormwaterBill = result.results[0] as StormwaterBill;
                   }
                   this.getBillingServices(info.premiseId).subscribe(result => {
-                    info.services = result as BillService[];
+                    info.services = result.results as BillService[];
                     resolve(info);
                   });
                 });
               } else {
                 this.getBillingServices(info.premiseId).subscribe(result => {
-                  info.services = result as BillService[];
+                  info.services = result.results as BillService[];
                   resolve(info);
                 });
               }
@@ -84,69 +87,45 @@ export class BillingService {
   }
 
   getBillingInfo(premise:string, serviceType: string):Observable<any> {
-   let url = this.baseUrl + 'getPremiseAccounts';
-    let body:any = {
-      "CM-GetPremiseAccounts": {
-        "premiseId": premise,
-        "serviceType": serviceType
-      }
-    } 
-    return this.http.post<any>(url, body, options);    
+    const url = `${this.baseUrl}getPremiseAccounts`;
+    const params = { premiseId: premise, serviceType };
+    return this.http.get<any>(url, { params });
   }
 
   getLastBill(account:string):Observable<any> {
-    let url = this.baseUrl + 'getLastBillByAccount';
-    let body:any = {
-      "CM-GetLastBillByAccount": {
-        "accountId": account,
-        "serviceType": "ST"
-      }
-    } 
-    return this.http.post<any>(url, body, options);    
+    const url = `${this.baseUrl}getLastBillByAccount`;
+
+    const params = { accountId: account, serviceType: "ST" };
+
+    return this.http.get<any>(url, { params });
   }
 
   getLastSwBill(premise:string, billid: string):Observable<any> {
-    let url = this.baseUrl + 'getBillingByPremise';
-    let body:any = {
-      "CM-GetBillingByPremise": {
-        "premiseId": premise,
-        "billId": billid,
-        "serviceType": "ST"
-      }
-    }     
-    return this.http.post<any>(url, body);    
+    const url = `${this.baseUrl}getBillingByPremise`;
+
+   
+    const params = { premiseId: premise, billId: billid, serviceType: "ST" };
+
+    return this.http.get<any>(url, { params });
   }
   getBillingServices(premise:string):Observable<any> {
-    let url = this.baseUrl + 'getPremiseSPs';
-    let body:any = {
-      "CM-GetPremiseSPs": {
-        "premiseId": premise,
-      }
-    }     
-    return this.http.post<any>(url, body, options);    
+    const url = `${this.baseUrl}getServicePoints`;
+    const params = { premiseId: premise };
+    return this.http.get<any>(url, { params });
   }
 
-  searchCcbAccounts(type:string, input:string):Observable<any> {
-    let url = this.baseUrl + 'getPremiseInformation';
-    let address = "";
-    let premise = "";
-    let account = "";
+  searchCcbAccounts(type: string, input: string): Observable<any> {
+    const url = `${this.baseUrl}getPremiseInfo`;
+
+    let params: any = {};
     if (type === 'address') {
-      address = input;
+      params.address = input;
+    } else if (type === 'premise') {
+      params.premiseId = input;
+    } else if (type === 'account') {
+      params.accountId = input;
     }
-    if (type === 'premise') {
-      premise = input;
-    }
-    if (type === 'account') {
-      account = input;
-    }        
-    let body:any = {
-      "CM-GetPremiseInformation": {
-        "premiseId": premise,
-        "accountId": account,
-        "address": address
-      }
-    }     
-    return this.http.post<any>(url, body, options);      
-  }  
+
+    return this.http.get<any>(url, { params });
+  }
 }

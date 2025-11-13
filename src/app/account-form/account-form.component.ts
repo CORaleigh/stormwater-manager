@@ -27,6 +27,7 @@ export class AccountFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;
+      debugger
       this.statuses = this.stormwater.getDomain(2, 'Status');
       this.form.get('status').setValue(account.Status);
       this.useclasses = this.stormwater.getDomain(2, 'UseClass');

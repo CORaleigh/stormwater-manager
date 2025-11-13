@@ -1,73 +1,130 @@
 <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Controlled Surface</mat-label>
 
-      <div class="row">
-          <div class="col">
-              <mat-form-field class="full-width">
-                <input matInput #ControlledSurface placeholder="Controlled Surface" type="number" formControlName="ControlledSurface">
-              </mat-form-field>
-            </div>          
-        </div>
-        <div class="row">
-            <div class="col">
-                <mat-form-field class="full-width">
-                  <mat-select placeholder="Upstream Code" formControlName="UpstreamPercentage">
-                    <mat-option *ngFor="let uCode of uCodes" [value]="uCode.code">
-                      {{ uCode.name }}
-                    </mat-option>
-                  </mat-select>
-                  <mat-error *ngIf="form.controls['UpstreamPercentage'].hasError('required')">
-                      Upstream Percentage is <strong>required</strong>
-                  </mat-error>
-                </mat-form-field>
-              </div>          
-              <div class="col">
-                  <mat-form-field class="full-width">
-                    <mat-select placeholder="On Site Code" formControlName="OnsitePercentage">
-                      <mat-option *ngFor="let oCode of oCodes" [value]="oCode.code">
-                        {{ oCode.name }}
-                      </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="form.controls['OnsitePercentage'].hasError('required')">
-                        Onsite Percentage is <strong>required</strong>
-                    </mat-error>
-                  </mat-form-field>
-                </div>                    
-        </div>
-        <div class="row">
-            <div class="col">
-              <mat-form-field class="full-width">
-                <input matInput #NpdesPercentage placeholder="NPDES Percentage" type="number" formControlName="NpdesPercentage" min="0" max="50">
-                <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('required')">
-                  NPDES Percentage is <strong>required</strong>
-                </mat-error>  
-                <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('min')">
-                  NPDES Percentage cannot be less than 0
-                </mat-error>           
-                <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('max')">
-                  NPDES Percentage cannot exceed 50
-                </mat-error>                                        
-              </mat-form-field>
-            </div>
-          </div>
-          <div class="row">
-              <div class="col">
-                <mat-form-field class="full-width">                      
-                  <input  matInput [matDatepicker]="ApprovalDate" placeholder="Approval Date" [formControl]="approvalDate">
-                  <mat-datepicker-toggle matSuffix [for]="ApprovalDate"></mat-datepicker-toggle>
-                  <mat-datepicker #ApprovalDate></mat-datepicker>              
-                </mat-form-field>
-              </div>
-              <div class="col">
-                  <mat-form-field class="full-width">
-                    <input matInput [matDatepicker]="InceptionDate" placeholder="Inception Date" [formControl]="inceptionDate" name="InceptionDate">
-                    <mat-datepicker-toggle matSuffix [for]="InceptionDate"></mat-datepicker-toggle>
-                    <mat-datepicker #InceptionDate></mat-datepicker>              
-                  </mat-form-field>
-                </div>          
-            </div>      
-            <div class="row">
-                <div class="col">     
-                  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Submit</button>
-                </div>          
-              </div>   
+        <input
+          matInput
+          #ControlledSurface
+          placeholder="Controlled Surface"
+          type="number"
+          formControlName="ControlledSurface"
+        />
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Upstream Code</mat-label>
+        <mat-select
+          placeholder="Upstream Code"
+          formControlName="UpstreamPercentage"
+        >
+          <mat-option *ngFor="let uCode of uCodes" [value]="uCode.code">
+            {{ uCode.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="form.controls['UpstreamPercentage'].hasError('required')"
+        >
+          Upstream Percentage is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>On Site Code</mat-label>
+
+        <mat-select
+          placeholder="On Site Code"
+          formControlName="OnsitePercentage"
+        >
+          <mat-option *ngFor="let oCode of oCodes" [value]="oCode.code">
+            {{ oCode.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error
+          *ngIf="form.controls['OnsitePercentage'].hasError('required')"
+        >
+          Onsite Percentage is <strong>required</strong>
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>NPDES Percentage</mat-label>
+        <input
+          matInput
+          #NpdesPercentage
+          placeholder="NPDES Percentage"
+          type="number"
+          formControlName="NpdesPercentage"
+          min="0"
+          max="50"
+        />
+        <mat-error
+          *ngIf="form.controls['NpdesPercentage'].hasError('required')"
+        >
+          NPDES Percentage is <strong>required</strong>
+        </mat-error>
+        <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('min')">
+          NPDES Percentage cannot be less than 0
+        </mat-error>
+        <mat-error *ngIf="form.controls['NpdesPercentage'].hasError('max')">
+          NPDES Percentage cannot exceed 50
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Approval Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="ApprovalDate"
+          placeholder="Approval Date"
+          [formControl]="approvalDate"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="ApprovalDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #ApprovalDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Inception Date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="InceptionDate"
+          placeholder="Inception Date"
+          [formControl]="inceptionDate"
+          name="InceptionDate"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="InceptionDate"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #InceptionDate></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
 </form>

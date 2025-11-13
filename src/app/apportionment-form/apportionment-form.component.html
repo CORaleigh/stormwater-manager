@@ -1,21 +1,32 @@
 <form [formGroup]="apptForm" novalidate>
+  <div class="row">
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Code</mat-label>
+        <mat-select
+          placeholder="Code"
+          formControlName="code"
+          (selectionChange)="codeChanged($event)"
+        >
+          <mat-option *ngFor="let code of codes" [value]="code.code">
+            {{ code.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col">
+      <mat-form-field class="full-width">
+        <mat-label>Units</mat-label>
 
-      <div class="row">
-        <div class="col">
-          <mat-form-field class="full-width">
-            <mat-select placeholder="Code" formControlName="code" (selectionChange)="codeChanged($event)">
-              <mat-option *ngFor="let code of codes" [value]="code.code">
-                {{ code.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col">
-            <mat-form-field class="full-width">
-              <input matInput #units placeholder="Units" type="number" formControlName="units" (blur)="unitsChanged($event)">
-            </mat-form-field>
-          </div>        
-      </div>
-
-
+        <input
+          matInput
+          #units
+          placeholder="Units"
+          type="number"
+          formControlName="units"
+          (blur)="unitsChanged($event)"
+        />
+      </mat-form-field>
+    </div>
+  </div>
 </form>

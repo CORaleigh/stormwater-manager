@@ -39,8 +39,8 @@ export class ApportionmentSearchComponent implements OnInit {
   getBilling(event, type) {
       if (this.count < this.types.length) {
         this.billing.getBillingInfo(event.option.value.premiseId, type).subscribe(data => {
-          if (data.length > 0) {
-            this.ccbAccount = data[0];
+          if (data.results.length > 0) {
+            this.ccbAccount = data.results[0];
             this.ccbAccountSelected.emit(this.ccbAccount);
             this.count = 0;
           } else {
@@ -77,15 +77,15 @@ export class ApportionmentSearchComponent implements OnInit {
     this.searchGroups[1].values=[];
     this.searchGroups[2].values=[];        
     this.addressChanges = this.billing.searchCcbAccounts('address', event.target.value).subscribe(result => {
-      if (result) {
-        result.forEach(r => {
+      if (result.results) {
+        result.results.forEach(r => {
           //@ts-ignore
           this.searchGroups[0].values.push({value: r.address, premiseId: r.premiseId, address: r.address});
         });
       }
       this.accountChanges = this.billing.searchCcbAccounts('account', event.target.value).subscribe(result => {
-        if (result) {
-          result.forEach(r => {
+        if (result.results) {
+          result.results.forEach(r => {
             if (r.premiseId.length) {
               //@ts-ignore
               this.searchGroups[1].values.push({value: r.accountId, premiseId: r.premiseId, address: r.address});
@@ -94,8 +94,8 @@ export class ApportionmentSearchComponent implements OnInit {
         }
           
         this.premiseChanges = this.billing.searchCcbAccounts('premise', event.target.value).subscribe(result => {
-          if (result) {
-            result.forEach(r => {
+          if (result.results) {
+            result.results.forEach(r => {
             //@ts-ignore
               this.searchGroups[2].values.push({value: r.premiseId, premiseId: r.premiseId, address: r.address});
             });     

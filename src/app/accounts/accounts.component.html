@@ -1,139 +1,137 @@
 <mat-expansion-panel expanded="true">
-    <mat-expansion-panel-header class="dark-theme">
-      <mat-panel-title>
-        Accounts
-      </mat-panel-title>
+  <mat-expansion-panel-header class="dark-theme">
+    <mat-panel-title> Accounts </mat-panel-title>
+  </mat-expansion-panel-header>
+  <div class="row" *ngIf="accounts.length > 1">
+    <mat-form-field class="full-width">
+      <mat-label>Status</mat-label>
 
-    </mat-expansion-panel-header>
-    <div class="row" *ngIf="accounts.length > 1">
-      <mat-form-field class="full-width">
-          <mat-select  placeholder="Status" (selectionChange)="statusChanged($event)" [(ngModel)]="selectedAccount">
-            <mat-option *ngFor="let acc of accounts" [value]="acc">
-              {{getDomain(acc.Status, 'Status', 2)}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-    </div>
-    <div class="row" *ngIf="account">
-      <div class="col">
-        <div class="row">
-          Account ID
-        </div>
-        <div class="row">
-            {{account.AccountId}}
-        </div>        
+      <mat-select
+        placeholder="Status"
+        (selectionChange)="statusChanged($event)"
+        [(ngModel)]="selectedAccount"
+      >
+        <mat-option *ngFor="let acc of accounts" [value]="acc">
+          {{ getDomain(acc.Status, "Status", 2) }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="row" *ngIf="account">
+    <div class="col">
+      <div class="row">Account ID</div>
+      <div class="row">
+        {{ account.AccountId }}
       </div>
-      <div class="col">
-          <div class="row">
-            CSA ID
-          </div>
-          <div class="row">
-              {{account.CsaId}}
-          </div>        
-      </div>           
-      <div class="col">
-          <div class="row">
-            Premise ID
-          </div>
-          <div class="row">
-              {{account.PremiseId}}
-          </div>        
-      </div>     
     </div>
-    <mat-divider></mat-divider>
+    <div class="col">
+      <div class="row">CSA ID</div>
+      <div class="row">
+        {{ account.CsaId }}
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">Premise ID</div>
+      <div class="row">
+        {{ account.PremiseId }}
+      </div>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
 
-    <div class="row" *ngIf="account">
-        <div class="col">
-          <div class="row">
-            Status
-          </div>
-          <div class="row">
-              {{getDomain(account.Status, 'Status', 2)}}
-          </div>        
-        </div>
-        <div class="col">
-            <div class="row">
-              SFEU
-            </div>
-            <div class="row">
-                {{account.Sfeu | number: '1.0-1'}}
-                <span *ngIf="account.Sfeu != account.PremiseSfeu && account.PremiseSfeu != null">&nbsp;({{account.PremiseSfeu | number:'1.1-1'}})</span>
-            </div>        
-        </div>           
-        <div class="col">
-            <div class="row">
-              Use Class
-            </div>
-            <div class="row">
-                {{getDomain(account.UseClass, 'UseClass', 2)}}
-            </div>        
-        </div>     
-      </div>   
-      <mat-divider></mat-divider>
+  <div class="row" *ngIf="account">
+    <div class="col">
+      <div class="row">Status</div>
+      <div class="row">
+        {{ getDomain(account.Status, "Status", 2) }}
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">SFEU</div>
+      <div class="row">
+        {{ account.Sfeu | number : "1.0-1" }}
+        <span
+          *ngIf="
+            account.Sfeu != account.PremiseSfeu && account.PremiseSfeu != null
+          "
+          >&nbsp;({{ account.PremiseSfeu | number : "1.1-1" }})</span
+        >
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">Use Class</div>
+      <div class="row">
+        {{ getDomain(account.UseClass, "UseClass", 2) }}
+      </div>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
 
-      <div class="row" *ngIf="account">
-          <div class="col">
-            <div class="row">
-              Billing Tier
-            </div>
-            <div class="row">
-                {{account.BillingTier}}
-            </div>        
-          </div>
-          <div class="col" *ngIf="parcel">
-              <div class="row">
-                Parcel Address
-              </div>
-              <div class="row">
-                  {{parcel.SiteAddress}}
-              </div>        
-          </div>           
-          <div class="col" *ngIf="parcel">
-              <div class="row">
-                  Owner
-              </div>
-              <div class="row">
-                  {{parcel.Owner}}
-              </div>        
-          </div>     
-        </div>     
-        <mat-divider></mat-divider>
+  <div class="row" *ngIf="account">
+    <div class="col">
+      <div class="row">Billing Tier</div>
+      <div class="row">
+        {{ account.BillingTier }}
+      </div>
+    </div>
+    <div class="col" *ngIf="parcel">
+      <div class="row">Parcel Address</div>
+      <div class="row">
+        {{ parcel.SiteAddress }}
+      </div>
+    </div>
+    <div class="col" *ngIf="parcel">
+      <div class="row">Owner</div>
+      <div class="row">
+        {{ parcel.Owner }}
+      </div>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
 
-        <div class="row">
-            <div class="col" *ngIf="parcel">
-              <div class="row">
-                Real Estate ID
-              </div>
-              <div class="row">
-                  {{parcel.RealEstateId}}
-              </div>        
-            </div>
-            <div class="col" *ngIf="parcel">
-                <div class="row">
-                  PIN #
-                </div>
-                <div class="row">
-                    {{parcel.PinNumber}}
-                </div>        
-            </div>           
-            <div class="col" *ngIf="parcel">
-              <div class="row">
-                Acreage
-              </div>
-              <div class="row">
-                  {{parcel.DeedAcres}}
-              </div>        
-            </div>   
-            <div class="col" *ngIf="!parcel">
-              <div class="row">
-                <span>PROPERTY ASSOCIATED WITH THIS ACCOUNT IS RETIRED</span>    
-                <a mat-icon-button color="warn" href="http://services.wakegov.com/realestate/retiredparcels/default.aspx?reid={{account.RealEstateId}}" target="_blank"><mat-icon>info</mat-icon></a>
-              </div>      
-            </div>  
-          </div>             
-    <!-- <app-account-table></app-account-table> -->
-    <mat-action-row *ngIf="account">
-      <button mat-button (click)="sendToCCB()" *ngIf="account.CCBUpdateFlag != 'Y'">Send To CCB</button>
-      <button mat-button (click)="update()">Update</button>
-    </mat-action-row>
-  </mat-expansion-panel>
+  <div class="row">
+    <div class="col" *ngIf="parcel">
+      <div class="row">Real Estate ID</div>
+      <div class="row">
+        {{ parcel.RealEstateId }}
+      </div>
+    </div>
+    <div class="col" *ngIf="parcel">
+      <div class="row">PIN #</div>
+      <div class="row">
+        {{ parcel.PinNumber }}
+      </div>
+    </div>
+    <div class="col" *ngIf="parcel">
+      <div class="row">Acreage</div>
+      <div class="row">
+        {{ parcel.DeedAcres }}
+      </div>
+    </div>
+    <div class="col" *ngIf="!parcel">
+      <div class="row">
+        <span>PROPERTY ASSOCIATED WITH THIS ACCOUNT IS RETIRED</span>
+        <a
+          mat-icon-button
+          color="warn"
+          href="http://services.wakegov.com/realestate/retiredparcels/default.aspx?reid={{
+            account.RealEstateId
+          }}"
+          target="_blank"
+          ><mat-icon>info</mat-icon></a
+        >
+      </div>
+    </div>
+  </div>
+  <!-- <app-account-table></app-account-table> -->
+  <mat-action-row *ngIf="account">
+    <button
+      mat-button
+      (click)="sendToCCB()"
+      *ngIf="account.CCBUpdateFlag != 'Y'"
+    >
+      Send To CCB
+    </button>
+    <button mat-button (click)="update()">Update</button>
+  </mat-action-row>
+</mat-expansion-panel>
