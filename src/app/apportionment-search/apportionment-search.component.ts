@@ -39,7 +39,8 @@ export class ApportionmentSearchComponent implements OnInit {
   getBilling(event, type) {
       if (this.count < this.types.length) {
         this.billing.getBillingInfo(event.option.value.premiseId, type).subscribe(data => {
-          if (data.results.length > 0) {
+          console.log(data)
+          if (data.results) {
             this.ccbAccount = data.results[0];
             this.ccbAccountSelected.emit(this.ccbAccount);
             this.count = 0;

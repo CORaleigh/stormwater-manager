@@ -1,4 +1,4 @@
-<mat-expansion-panel [expanded]="apportionments.length > 0">
+<mat-expansion-panel [expanded]="apportionments.length > 0 || account.ApportionmentUnits > 0 || account.ApportionmentCode != 'NA'">
     <mat-expansion-panel-header class="dark-theme">
       <mat-panel-title>
         Apportionments

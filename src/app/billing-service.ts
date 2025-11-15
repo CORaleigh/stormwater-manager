@@ -52,7 +52,6 @@ export class BillingService {
         info.services = [];
         this.count = 0;
         this.getBilling(account.PremiseId.toString(), this.types[this.count]).then(result => {
-          debugger
           if (result) {
             info = result as BillingInfo;
             this.getLastBill(info.accountId).subscribe(result => {
