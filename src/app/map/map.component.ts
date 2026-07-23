@@ -54,10 +54,10 @@ export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild("mapViewNode", { static: true }) private mapViewEl!: ElementRef;
 
-  private _id: string = "d8309610f598424b9889d62775b6330c"; //'d8309610f598424b9889d62775b6330c';
-  private _portalUrl: string = "https://mapstest.raleighnc.gov/portal"; //'https://mapstest.raleighnc.gov/portal';
-  private _serverUrl: string = "https://mapstest.raleighnc.gov"; //'https://mapstest.raleighnc.gov';
-  private _clientId: string = "u8kxa1iiA6kg2Nhc"; //'xWoMZTo6ZiZVTwcT';u8kxa1iiA6kg2Nhc
+  private _id: string = "975b331137fd4a65a28c7d7b4cdeec47"; //'d8309610f598424b9889d62775b6330c';
+  private _portalUrl: string = "https://maps.raleighnc.gov/portal"; //'https://mapstest.raleighnc.gov/portal';
+  private _serverUrl: string = "https://maps.raleighnc.gov"; //'https://mapstest.raleighnc.gov';
+  private _clientId: string = "xWoMZTo6ZiZVTwcT"; //'xWoMZTo6ZiZVTwcT';u8kxa1iiA6kg2Nhc
   private _esriId: esri.IdentityManager | null = null;
   private _info: esri.OAuthInfo | null = null;
   private _search: esri.widgetsSearch | null = null;
