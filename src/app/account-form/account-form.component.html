@@ -4,9 +4,11 @@
       <mat-form-field class="full-width">
         <mat-label>Status</mat-label>
         <mat-select placeholder="Status" formControlName="status">
-          <mat-option *ngFor="let status of statuses" [value]="status.code">
-            {{ status.name }}
-          </mat-option>
+          @for (status of statuses; track status) {
+            <mat-option [value]="status.code">
+              {{ status.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -16,12 +18,13 @@
       <mat-form-field class="full-width">
         <mat-label>Use Class</mat-label>
         <mat-select placeholder="Use Class" formControlName="useclass">
-          <mat-option
-            *ngFor="let useclass of useclasses"
-            [value]="useclass.code"
-          >
-            {{ useclass.name }}
-          </mat-option>
+          @for (useclass of useclasses; track useclass) {
+            <mat-option
+              [value]="useclass.code"
+              >
+              {{ useclass.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -35,27 +38,27 @@
           #PremiseId
           placeholder="Premise ID"
           formControlName="premiseid"
-        />
-      </mat-form-field>
+          />
+        </mat-form-field>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <mat-form-field class="full-width">
-        <mat-label>CSA ID</mat-label>
-        <input
-          matInput
-          #csaid
-          placeholder="CSA ID"
-          type="number"
-          formControlName="csaid"
-        />
-      </mat-form-field>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col">
-      <button mat-raised-button color="primary" type="submit">Submit</button>
-    </div>
-  </div>
-</form>
+    <div class="row">
+      <div class="col">
+        <mat-form-field class="full-width">
+          <mat-label>CSA ID</mat-label>
+          <input
+            matInput
+            #csaid
+            placeholder="CSA ID"
+            type="number"
+            formControlName="csaid"
+            />
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <button mat-raised-button color="primary" type="submit">Submit</button>
+        </div>
+      </div>
+    </form>

@@ -1,47 +1,53 @@
 <mat-expansion-panel  expanded="true" >
-    <mat-expansion-panel-header class="dark-theme">
-      <mat-panel-title>
-        Impervious
-      </mat-panel-title>
+  <mat-expansion-panel-header class="dark-theme">
+    <mat-panel-title>
+      Impervious
+    </mat-panel-title>
 
-    </mat-expansion-panel-header>
+  </mat-expansion-panel-header>
 
-    <mat-tab-group [selectedIndex]="selectedIndex" 
+  <mat-tab-group [selectedIndex]="selectedIndex"
     (selectedIndexChange)="indexChanged($event)" id="tabGroup">
-        <mat-tab label="Impervious">
-            <div class="row">
-                <div class="col">
-                  <div class="row">
-                    Billable
-                  </div>
-                  <div class="row">
-                      {{account.BillableImpervious | number}}
-                  </div>        
-                </div>
-                <div class="col">
-                    <div class="row">
-                      Credited
-                    </div>
-                    <div class="row">
-                        {{account.CreditedImpervious | number}}
-                    </div>        
-                </div>                     
-                <div class="col">
-                    <div class="row">
-                      Total
-                    </div>
-                    <div class="row">
-                        {{account.TotalImpervious | number}}
-                    </div>        
-                </div>           
-              </div>
-          <app-impervious-table></app-impervious-table>
-        </mat-tab>
-        <mat-tab label="GIS Scan"><app-impervious-gis-table></app-impervious-gis-table></mat-tab>
-    </mat-tab-group>    
-    <mat-action-row>
-      <button *ngIf="apportionedTo.length > 0" mat-button (click)="apportionedToClicked()">Apportioned To</button>    
-      <button *ngIf="impervious.length > 0" mat-button (click)="updateClicked()">Update</button>
-      <button *ngIf="impervious.length === 0" mat-button (click)="updateClicked()">Add</button>    
-    </mat-action-row>
-  </mat-expansion-panel>
+    <mat-tab label="Impervious">
+      <div class="row">
+        <div class="col">
+          <div class="row">
+            Billable
+          </div>
+          <div class="row">
+            {{account.BillableImpervious | number}}
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            Credited
+          </div>
+          <div class="row">
+            {{account.CreditedImpervious | number}}
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            Total
+          </div>
+          <div class="row">
+            {{account.TotalImpervious | number}}
+          </div>
+        </div>
+      </div>
+      <app-impervious-table></app-impervious-table>
+    </mat-tab>
+    <mat-tab label="GIS Scan"><app-impervious-gis-table></app-impervious-gis-table></mat-tab>
+  </mat-tab-group>
+  <mat-action-row>
+    @if (apportionedTo.length > 0) {
+      <button mat-button (click)="apportionedToClicked()">Apportioned To</button>
+    }
+    @if (impervious.length > 0) {
+      <button mat-button (click)="updateClicked()">Update</button>
+    }
+    @if (impervious.length === 0) {
+      <button mat-button (click)="updateClicked()">Add</button>
+    }
+  </mat-action-row>
+</mat-expansion-panel>

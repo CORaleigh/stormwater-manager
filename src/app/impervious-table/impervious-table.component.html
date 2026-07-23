@@ -23,25 +23,27 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Method Date</th>
       <td mat-cell *matCellDef="let row">{{row.MethodDate| date: 'medium'}}</td>
     </ng-container>
-    
+
     <!-- Status Column -->
     <ng-container matColumnDef="Status">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
       <td mat-cell *matCellDef="let row">{{row.Status}}</td>
-    </ng-container>    
-  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    </ng-container>
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
         <div class="example-element-detail"
-            [@detailExpand]="row == expandedRow ? 'expanded' : 'collapsed'">
+          [@detailExpand]="row == expandedRow ? 'expanded' : 'collapsed'">
           <div class="example-element-diagram">
-            <div class="example-element-name" *ngIf="row.PermitNumber">Permit #: {{row.PermitNumber}}</div>    
+            @if (row.PermitNumber) {
+              <div class="example-element-name">Permit #: {{row.PermitNumber}}</div>
+            }
             <div class="example-element-position">Building: {{row.BuildingImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-position">Road: {{row.RoadTrailImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-position">Parking: {{row.ParkingImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-weight">Recreation: {{row.RecreationImpervious | number}} ft<sup>2</sup> </div>
             <div class="example-element-position">Miscellaneous: {{row.MiscImpervious | number}} ft<sup>2</sup> </div>
-            <div class="example-element-name">Permitted: {{row.PermittedImpervious | number}} ft<sup>2</sup> </div>    
+            <div class="example-element-name">Permitted: {{row.PermittedImpervious | number}} ft<sup>2</sup> </div>
 
           </div>
         </div>
@@ -49,16 +51,16 @@
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-    (click)="rowClick(row)">
+      (click)="rowClick(row)">
     </tr>
     <tr mat-row  *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 
   </table>
 
   <mat-paginator #paginator
-      [length]="dataSource.data.length"
-      [pageIndex]="0"
-      [pageSize]="10"
-      [pageSizeOptions]="[10, 25, 50, 100, 250]">
+    [length]="dataSource.data.length"
+    [pageIndex]="0"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 25, 50, 100, 250]">
   </mat-paginator>
 </div>

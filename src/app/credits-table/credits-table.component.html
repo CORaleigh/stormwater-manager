@@ -10,11 +10,21 @@
     <ng-container matColumnDef="value">
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let row">
-          <span *ngIf="row.type === 'percent'">{{row.value | percent}}</span>   
-          <span *ngIf="row.type === 'area'">{{row.value | number}} ft<sup>2</sup></span>    
-          <span *ngIf="row.type === 'acres'">{{row.value | number}} AC</span>      
-          <span *ngIf="row.type === 'date'">{{row.value | date}}</span>      
-          <span *ngIf="!row.type">{{row.value}}</span>                  
+        @if (row.type === 'percent') {
+          <span>{{row.value | percent}}</span>
+        }
+        @if (row.type === 'area') {
+          <span>{{row.value | number}} ft<sup>2</sup></span>
+        }
+        @if (row.type === 'acres') {
+          <span>{{row.value | number}} AC</span>
+        }
+        @if (row.type === 'date') {
+          <span>{{row.value | date}}</span>
+        }
+        @if (!row.type) {
+          <span>{{row.value}}</span>
+        }
       </td>
     </ng-container>
 

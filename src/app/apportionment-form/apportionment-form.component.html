@@ -7,10 +7,12 @@
           placeholder="Code"
           formControlName="code"
           (selectionChange)="codeChanged($event)"
-        >
-          <mat-option *ngFor="let code of codes" [value]="code.code">
-            {{ code.name }}
-          </mat-option>
+          >
+          @for (code of codes; track code) {
+            <mat-option [value]="code.code">
+              {{ code.name }}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </div>
@@ -25,7 +27,7 @@
           type="number"
           formControlName="units"
           (blur)="unitsChanged($event)"
-        />
+          />
       </mat-form-field>
     </div>
   </div>
