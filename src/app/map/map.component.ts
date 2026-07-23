@@ -42,6 +42,7 @@ import { Location } from "@angular/common";
 import { LodsService } from "../lods.service";
 import { Subscription } from "rxjs";
 import Graphic from "@arcgis/core/Graphic";
+import Layer from "@arcgis/core/layers/Layer";
 
 @Component({
   selector: "app-map",
@@ -133,7 +134,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.mapLoaded.emit(true);
         this._parcelGraphics = new GraphicsLayer({ listMode: "hide" });
         this.stormwater.mapview.map.add(this._parcelGraphics);
-        this.stormwater.parcels = mapView.map.layers.find((l) => {
+        this.stormwater.parcels = mapView.map?.layers.find((l) => {
           return l.title === "Parcels";
         }) as esri.FeatureLayer;
         this.configMapWidgets(this.stormwater.mapview);
@@ -166,7 +167,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   configPopupActions(mapView: esri.MapView) {
-    let parcels = mapView.map.layers.find((l) => {
+    let parcels = mapView.map?.layers.find((l) => {
       return l.title === "Parcels";
     }) as esri.FeatureLayer;
     mapView.whenLayerView(parcels).then((layer) => {
@@ -176,14 +177,18 @@ export class MapComponent implements OnInit, OnDestroy {
         id: "select-parcel",
         className: "esri-icon-checkbox-checked",
       });
-      l.popupTemplate.actions = new Collection();
-      l.popupTemplate.actions.add(button);
+      if (l.popupTemplate) {
+        l.popupTemplate.actions = new Collection();
+        if (!l.popupTemplate.actions) return;
+        l.popupTemplate.actions.add(button);
+      }
+
       reactiveUtils.on(
         () => mapView.popup,
         "trigger-action",
         (event) => {
           if (event.action.id === "select-parcel") {
-            this.getAccount(mapView.popup.selectedFeature);
+            this.getAccount(mapView.popup?.selectedFeature);
             this._search?.clear();
             this.clearResultsList();
             this.stormwater.accountListSelected.next(null);
@@ -195,7 +200,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   configAddressActions(mapView: esri.MapView) {
-    let addresses = mapView.map.layers.find((l) => {
+    let addresses = mapView.map?.layers.find((l) => {
       return l.title === "Address Points";
     }) as esri.FeatureLayer;
 
@@ -207,7 +212,7 @@ export class MapComponent implements OnInit, OnDestroy {
         "trigger-action",
         (event) => {
           if (event.action.id === "select-parcel") {
-            this.getAccount(mapView.popup.selectedFeature);
+            this.getAccount(mapView.popup?.selectedFeature);
             this._search?.clear();
             this.clearResultsList();
             this.stormwater.accountListSelected.next(null);
@@ -216,18 +221,21 @@ export class MapComponent implements OnInit, OnDestroy {
       );
       reactiveUtils.watch(
         () => mapView.popup?.selectedFeature,
-        (feature: Graphic) => {
+        (feature: Graphic | nullish) => {
           if (feature) {
             if (feature.layer) {
               if (feature.layer.title === "Address Points") {
                 if (this._selectedParcel) {
+                  if (feature.layer.type !== "feature") return;
+                  const layer = feature.layer as FeatureLayer;
+                  if (!layer.popupTemplate || !layer.popupTemplate.actions)
+                    return;
+                  const action = layer.popupTemplate.actions.getItemAt(0);
+                  if (!action) return;
                   let pt: esri.Point = feature.geometry as esri.Point;
                   let poly: esri.Polygon = this._selectedParcel
                     .geometry as esri.Polygon;
-                  (
-                    feature.layer as FeatureLayer
-                  ).popupTemplate.actions.getItemAt(0).visible =
-                    poly.contains(pt);
+                  action.visible = poly.contains(pt);
                 }
               }
             }
@@ -240,15 +248,17 @@ export class MapComponent implements OnInit, OnDestroy {
         className: "esri-icon-checkbox-checked",
         visible: false,
       });
-      l.popupTemplate.actions = new Collection();
-      l.popupTemplate.actions.add(button);
+      if (l.popupTemplate) {
+        l.popupTemplate.actions = new Collection();
+        l.popupTemplate.actions?.add(button);
+      }
 
       reactiveUtils.on(
         () => mapView.popup,
         "trigger-action",
         (event) => {
           if (event.action.id === "assign-csaid") {
-            if (mapView.popup.selectedFeature.attributes.CSAID) {
+            if (mapView.popup?.selectedFeature?.attributes.CSAID) {
               let account = this.stormwater.account.getValue();
               if (!account) return;
               let newCsa = mapView.popup.selectedFeature.attributes.CSAID;
@@ -336,10 +346,12 @@ export class MapComponent implements OnInit, OnDestroy {
     }
   }
 
-  getImperviousLayers(mapView: esri.MapView): esri.Collection<esri.Layer> {
-    return mapView.map.layers.filter((layer) => {
+  getImperviousLayers(mapView: esri.MapView): esri.Layer[] {
+    if (!mapView.map) return [];
+    return mapView.map.layers.toArray().filter((layer: Layer) => {
       if (layer.type === "feature") {
         let fl: esri.FeatureLayer = layer as esri.FeatureLayer;
+        if (!fl.popupTemplate?.fieldInfos) return new Collection();
         if (fl.popupTemplate) {
           let fields = fl.popupTemplate.fieldInfos.filter((info) => {
             return info.fieldName === "IMPERVIOUS";
@@ -421,10 +433,14 @@ export class MapComponent implements OnInit, OnDestroy {
       let accounts = mapView.map.tables.find((l) => {
         return l.title === "Stormwater_Management - Account";
       }) as esri.FeatureLayer;
-      mapView.whenLayerView(this.stormwater.parcels).then((layerView) => {
-        this._parcelView = layerView as esri.FeatureLayerView;
-      });
-      let addresses = mapView.map.layers.find((l) => {
+      mapView
+        .whenLayerView(this.stormwater.parcels)
+        .then((layerView: esri.LayerView) => {
+          if (layerView.layer.type === "feature") {
+            this._parcelView = layerView as esri.FeatureLayerView;
+          }
+        });
+      let addresses = mapView.map?.layers.find((l) => {
         return l.title === "Address Points";
       }) as esri.FeatureLayer;
       let search: Search = new Search({
@@ -551,7 +567,10 @@ export class MapComponent implements OnInit, OnDestroy {
         ),
       );
       mapView.ui.add(search, { position: "top-left", index: 0 });
-      search.goToOverride = (view: esri.MapView | esri.SceneView, params: any) => {
+      search.goToOverride = (
+        view: esri.MapView | esri.SceneView,
+        params: any,
+      ) => {
         if (
           params.target.target.layer.title.indexOf("Stormwater Management - ") >
             -1 &&
@@ -601,6 +620,7 @@ export class MapComponent implements OnInit, OnDestroy {
           this.account = null;
           this.stormwater.accountListSelected.next(null);
         } else if (event.source.name === "Address Point") {
+          if (!event.result.feature.geometry) return;
           this.getPropertyByGeometry(
             this.stormwater.mapview,
             event.result.feature.geometry,
@@ -628,6 +648,7 @@ export class MapComponent implements OnInit, OnDestroy {
 
             this.stormwater.parcel.next(parcel);
             this.getAccount(result.features[0]);
+            if (!result.features[0].geometry?.extent) return;
             let parcelExtent = result.features[0].geometry.extent
               .clone()
               .expand(2);
@@ -637,7 +658,7 @@ export class MapComponent implements OnInit, OnDestroy {
         }
       });
   }
-  getAccount(feature: esri.Graphic) {
+  getAccount(feature: esri.Graphic | nullish) {
     //@ts-ignore
     let relationship = this.stormwater.parcels.relationships.find(
       (r: esri.Relationship) => {
@@ -650,33 +671,37 @@ export class MapComponent implements OnInit, OnDestroy {
       let query: esri.RelationshipQuery = new RelationshipQuery();
       query.relationshipId = relationship.id;
       query.returnGeometry = false;
-      query.objectIds = [feature.attributes.OBJECTID];
+      query.objectIds = [feature?.attributes.OBJECTID];
       query.outFields = ["*"];
-      this.stormwater.parcels.queryRelatedFeatures(query).then((result: any) => {
-        if (result[feature.attributes.OBJECTID]) {
-          let accounts: Account[] = [];
-          result[feature.attributes.OBJECTID].features.forEach((f: __esri.Graphic) => {
-            accounts.push(f.attributes as Account);
-          });
-          accounts.sort((a, b) =>
-            a.Status > b.Status ? 1 : b.Status > a.Status ? -1 : 0,
-          );
-          this.stormwater.accounts.next(accounts);
-          let account: Account = accounts[0];
-          this.account = account;
+      this.stormwater.parcels
+        .queryRelatedFeatures(query)
+        .then((result: any) => {
+          if (result[feature?.attributes.OBJECTID]) {
+            let accounts: Account[] = [];
+            result[feature?.attributes.OBJECTID].features.forEach(
+              (f: __esri.Graphic) => {
+                accounts.push(f.attributes as Account);
+              },
+            );
+            accounts.sort((a, b) =>
+              a.Status > b.Status ? 1 : b.Status > a.Status ? -1 : 0,
+            );
+            this.stormwater.accounts.next(accounts);
+            let account: Account = accounts[0];
+            this.account = account;
 
-          this.stormwater.account.next(account);
-          // let path = window.location.origin + '/account/';
-          // if (!path.includes('localhost')) {
-          //   path = window.location.origin + '/stormwater-manager/account/'
-          // }
-          // window.history.pushState({'id':'account'},'', path + account.AccountId);
-          // this.stormwater.account.next(account);
-          // this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
-        } else {
-          this.stormwater.account.next(null);
-        }
-      });
+            this.stormwater.account.next(account);
+            // let path = window.location.origin + '/account/';
+            // if (!path.includes('localhost')) {
+            //   path = window.location.origin + '/stormwater-manager/account/'
+            // }
+            // window.history.pushState({'id':'account'},'', path + account.AccountId);
+            // this.stormwater.account.next(account);
+            // this.queryTables(this.stormwater.parcels.url, esriRequest, QueryTask, account.OBJECTID);
+          } else {
+            this.stormwater.account.next(null);
+          }
+        });
     }
   }
 
@@ -715,9 +740,11 @@ export class MapComponent implements OnInit, OnDestroy {
               (result) => {
                 let attributes: any[] = [];
                 if (result[objectId]) {
-                  result[objectId].features.forEach((feature: __esri.Graphic) => {
-                    attributes.push(feature.attributes);
-                  });
+                  result[objectId].features.forEach(
+                    (feature: __esri.Graphic) => {
+                      attributes.push(feature.attributes);
+                    },
+                  );
                 }
                 if (relationship.name.indexOf("ImperviousSurface") > -1) {
                   this.stormwater.impervious.next(attributes);
@@ -776,6 +803,7 @@ export class MapComponent implements OnInit, OnDestroy {
             let parcel: Parcel = result.features[0].attributes as Parcel;
 
             this.stormwater.parcel.next(parcel);
+            if (!result.features[0].geometry?.extent) return;
             let parcelExtent = result.features[0].geometry.extent
               .clone()
               .expand(2);
@@ -903,6 +931,7 @@ export class MapComponent implements OnInit, OnDestroy {
       geoms.push(feature.geometry);
     });
     let result = geometryEngine.union(geoms);
+    if (!result.extent?.clone()) return;
     let extent = result.extent.clone().expand(2);
 
     mapView.goTo(extent, { duration: 1500, easing: "ease-in" });
@@ -1031,7 +1060,7 @@ export class MapComponent implements OnInit, OnDestroy {
               outSpatialReference: this.stormwater.mapview.spatialReference,
             })
             .then((result: __esri.FeatureSet) => {
-              let oids: number [] = [];
+              let oids: number[] = [];
               result.features.forEach((feature: __esri.Graphic) => {
                 oids.push(feature.attributes.OBJECTID);
               });
@@ -1086,9 +1115,11 @@ export class MapComponent implements OnInit, OnDestroy {
     });
     this.stormwater.gisScanSelected.subscribe((reid) => {
       if (this.stormwater.mapview) {
-        let impLyr = this.stormwater.mapview.map.layers.find((l: __esri.Layer) => {
-          return l.title === "Impervious Area By Parcel";
-        }) as esri.FeatureLayer;
+        let impLyr = this.stormwater.mapview.map.layers.find(
+          (l: __esri.Layer) => {
+            return l.title === "Impervious Area By Parcel";
+          },
+        ) as esri.FeatureLayer;
         impLyr
           ?.queryFeatures({
             where: "RealEstateId = '" + reid + "'",
