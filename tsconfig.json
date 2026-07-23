@@ -4,11 +4,10 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "declaration": false,
     "module": "es2015",
-    "moduleResolution": "node10",
+    "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "target": "ES2022",
     "typeRoots": [
@@ -18,6 +17,7 @@
       "es2018",
       "dom"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "skipLibCheck": true    
   }
 }
