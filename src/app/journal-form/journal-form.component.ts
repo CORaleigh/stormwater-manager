@@ -13,8 +13,8 @@ import { Subscription } from 'rxjs';
 })
 export class JournalFormComponent implements OnInit, OnDestroy {
   @Output() submitted = new EventEmitter<Journal>();
-  account:Account = null;
-  accountSubscription:Subscription;
+  account:Account | null = null;
+  accountSubscription:Subscription | null = null;
 
   journalForm = this.fb.group({
     JournalEntry: [null, Validators.compose([
@@ -34,7 +34,8 @@ export class JournalFormComponent implements OnInit, OnDestroy {
     }
   }
   onSubmit() {
-    let journal = new Journal(this.account.AccountId, this.journalForm.get('JournalEntry').value);
+    if (!this.account) return;
+    let journal = new Journal(this.account.AccountId, this.journalForm.get('JournalEntry')?.value);
     this.submitted.emit(journal);
   }
 }

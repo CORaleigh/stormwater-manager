@@ -1,12 +1,12 @@
 export class Journal {
-    OBJECTID: number;
-    GlobalId: string;
+    OBJECTID?: number;
+    GlobalId?: string;
     AccountId: number;
     JournalEntry: string;
-    created_user: string;
-    created_date: number;
-    last_edited_user: string;
-    last_edited_date: number;
+    created_user?: string;
+    created_date?: number;
+    last_edited_user?: string;
+    last_edited_date?: number;
     constructor(
         AccountId: number,
         JournalEntry: string,

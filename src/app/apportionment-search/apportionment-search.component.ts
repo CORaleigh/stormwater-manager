@@ -23,11 +23,11 @@ export class ApportionmentSearchComponent implements OnInit {
   control: UntypedFormControl = new UntypedFormControl();
   searchForm: UntypedFormGroup = this.fb.group({searchGroup: ''});
   searchGroups:SearchGroup[] = [{type:'Addresses', values:[]}, {type:'Accounts', values:[]}, {type: 'Premise IDs', values:[]}];
-  addressChanges:Subscription;
-  accountChanges:Subscription;
-  premiseChanges:Subscription;
-  apportionment:Apportionment;
-  @Input() account:Account;
+  addressChanges:Subscription | null = null;
+  accountChanges:Subscription | null = null;
+  premiseChanges:Subscription | null = null;
+  apportionment:Apportionment | null = null;
+  @Input() account:Account | null = null;
   @Output() ccbAccountSelected:EventEmitter<any> = new EventEmitter();
   ccbAccount:any;
   selectedValue:string = "";
@@ -36,7 +36,7 @@ export class ApportionmentSearchComponent implements OnInit {
   ngOnInit() {
   }
 
-  getBilling(event, type) {
+  getBilling(event: any, type: string) {
       if (this.count < this.types.length) {
         this.billing.getBillingInfo(event.option.value.premiseId, type).subscribe(data => {
           console.log(data)
@@ -56,7 +56,7 @@ export class ApportionmentSearchComponent implements OnInit {
   }
    
 
-  accountSelected(event) {
+  accountSelected(event: any) {
     this.selectedValue = event.option.viewValue;
     this.getBilling(event, this.types[this.count]);
 
@@ -64,7 +64,7 @@ export class ApportionmentSearchComponent implements OnInit {
   displayFn(user?: any): string | undefined {
     return user ? user.value : undefined;
   }
-  inputChanged(event) {
+  inputChanged(event: any) {
     if (this.addressChanges) {
       this.addressChanges.unsubscribe();
     }
@@ -79,14 +79,14 @@ export class ApportionmentSearchComponent implements OnInit {
     this.searchGroups[2].values=[];        
     this.addressChanges = this.billing.searchCcbAccounts('address', event.target.value).subscribe(result => {
       if (result.results) {
-        result.results.forEach(r => {
+        result.results.forEach((r: any) => {
           //@ts-ignore
           this.searchGroups[0].values.push({value: r.address, premiseId: r.premiseId, address: r.address});
         });
       }
       this.accountChanges = this.billing.searchCcbAccounts('account', event.target.value).subscribe(result => {
         if (result.results) {
-          result.results.forEach(r => {
+          result.results.forEach((r: any) => {
             if (r.premiseId.length) {
               //@ts-ignore
               this.searchGroups[1].values.push({value: r.accountId, premiseId: r.premiseId, address: r.address});
@@ -96,7 +96,7 @@ export class ApportionmentSearchComponent implements OnInit {
           
         this.premiseChanges = this.billing.searchCcbAccounts('premise', event.target.value).subscribe(result => {
           if (result.results) {
-            result.results.forEach(r => {
+            result.results.forEach((r: any) => {
             //@ts-ignore
               this.searchGroups[2].values.push({value: r.premiseId, premiseId: r.premiseId, address: r.address});
             });     

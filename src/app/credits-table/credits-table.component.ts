@@ -12,12 +12,12 @@ import { Subscription } from 'rxjs';
     standalone: false
 })
 export class CreditsTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  dataSource: CreditsTableDataSource;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | null = null;
+  @ViewChild(MatSort, {static: true}) sort: MatSort | null = null;
+  dataSource: CreditsTableDataSource | null = null;
   constructor(public stormwater:StormwaterService){}
   displayedColumns = ['field', 'value'];
-  creditsSubscription:Subscription;
+  creditsSubscription:Subscription | null = null;
 
   ngOnInit() {
     this.dataSource = new CreditsTableDataSource([]);
@@ -27,8 +27,8 @@ export class CreditsTableComponent implements OnInit, OnDestroy {
         let attributes = [
           {field: 'Controlled Surface', value: credit.ControlledSurface ? credit.ControlledSurface: 0, type: 'area'},
           {field: 'NPDES MS4 Permit /GI/LID/Other (Percentage not to exceed 50%)', value: credit.NpdesPercentage ? credit.NpdesPercentage : 0, type:'percent'},
-          {field: 'On Site Credits', value: this.stormwater.checkDomain(4,'OnsitePercentage', null, credit.OnsitePercentage)},
-          {field: 'Upstream Credits', value: this.stormwater.checkDomain(4 ,'UpstreamPercentage',null, credit.UpstreamPercentage)},
+          {field: 'On Site Credits', value: this.stormwater.checkDomain(4,'OnsitePercentage', undefined, credit.OnsitePercentage)},
+          {field: 'Upstream Credits', value: this.stormwater.checkDomain(4 ,'UpstreamPercentage',undefined, credit.UpstreamPercentage)},
           {field: 'Inception Date', value: credit.InceptionDate, type: 'date'},
           {field: 'Expires', value: credit.ExpirationDate, type: 'date'},
           {field: 'Approved', value: credit.ApprovalDate, type: 'date'},

@@ -12,15 +12,15 @@ import { Subscription } from 'rxjs';
     standalone: false
 })
 export class ImperviousGisTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  dataSource: ImperviousGisTableDataSource;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | null = null;
+  @ViewChild(MatSort, {static: true}) sort: MatSort | null = null;
+  dataSource: ImperviousGisTableDataSource | null = null;
   total:number = 0;
   displayedColumns = ['category', 'area', 'updated'];
-  gisscanSubscription:Subscription;
+  gisscanSubscription:Subscription | null = null;
   constructor(private stormwater:StormwaterService) {}
   getTotal() {
-    return this.dataSource.data.map(t => t.area).reduce((acc, value) => acc + value, 0);
+    return this.dataSource?.data.map(t => t.area).reduce((acc, value) => acc + value, 0);
   }
   ngOnInit() {
     this.dataSource = new ImperviousGisTableDataSource([]);    

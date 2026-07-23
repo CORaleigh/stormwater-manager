@@ -23,10 +23,10 @@ export class StormwaterService {
   constructor(private http:HttpClient) {}
   url:string = 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/';
 
-  account:BehaviorSubject<Account> = new BehaviorSubject<Account>(null);
+  account:BehaviorSubject<Account | null> = new BehaviorSubject<Account | null>(null);
   accounts:BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
   impervious:BehaviorSubject<Impervious[]> = new BehaviorSubject<Impervious[]>([]);
-  apportionments:BehaviorSubject<Apportionment[]> = new BehaviorSubject<Apportionment[]>([]);
+  apportionments:BehaviorSubject<Apportionment[] | null> = new BehaviorSubject<Apportionment[] | null>([]);
   loggedIn:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   logInClicked:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   logOutClicked:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -34,14 +34,14 @@ export class StormwaterService {
   credits:BehaviorSubject<Credit[]> = new BehaviorSubject<Credit[]>([]);
   logs:BehaviorSubject<Log[]> = new BehaviorSubject<Log[]>([]);
   journals:BehaviorSubject<Journal[]> = new BehaviorSubject<Journal[]>([]);
-  parcel:BehaviorSubject<Parcel> = new BehaviorSubject<Parcel>(new Parcel());
-  fieldInfo:FieldInfo;
-  streetName:BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  parcel:BehaviorSubject<Parcel | null> = new BehaviorSubject<Parcel | null>(new Parcel());
+  fieldInfo:FieldInfo | null = null;
+  streetName:BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   accountSearch:BehaviorSubject<any> = new BehaviorSubject<any>(null);
   accountList:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   accountListSelected:BehaviorSubject<any> = new BehaviorSubject<any>(null);
   apportionedToClicked:BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  gisScanSelected: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  gisScanSelected: BehaviorSubject<string | null> = new BehaviorSubject<string | null>(null);
   gisscan: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   parcels: any = null;
   mapview: any = null;
@@ -132,8 +132,8 @@ export class StormwaterService {
   }
 
 
-  public checkDomain(layerId, fieldName, value?, code?): string {
-    
+  public checkDomain(layerId: number, fieldName: string, value?: any, code?: any): string {
+    if (!this.fieldInfo) return "";
     let layers = this.fieldInfo.layers.filter(layer => {return layerId === layer.layerId});
     let returnValue = '';
     if (value) {
@@ -167,8 +167,8 @@ export class StormwaterService {
       return returnValue;
     }
 
-    public getDomain(layerId, fieldName): any {
-      
+    public getDomain(layerId: number, fieldName: string): any {
+      if (!this.fieldInfo) return;
       let layers = this.fieldInfo.layers.filter(layer => {return layerId === layer.layerId});
       let returnValue = '';
       if (layers.length > 0) {

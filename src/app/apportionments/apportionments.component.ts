@@ -15,14 +15,14 @@ import { Subscription } from 'rxjs';
 export class ApportionmentsComponent implements OnInit, OnDestroy {
 
   constructor(private stormwater: StormwaterService, public dialog: MatDialog) { }
-  account:Account = null;
+  account:Account | null = null;
   apportionments:Apportionment[] = [];
-  accountSubscription:Subscription;
-  apportionmentsSubscription:Subscription;
+  accountSubscription:Subscription | null = null;
+  apportionmentsSubscription:Subscription | null = null;
 
   ngOnInit() {
     this.accountSubscription = this.stormwater.apportionments.subscribe(apportionments => {
-      this.apportionments = apportionments;
+      this.apportionments = apportionments ?? [];
     });
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       if (account) {
@@ -41,7 +41,7 @@ export class ApportionmentsComponent implements OnInit, OnDestroy {
     }
   }
 
-  apportionmentSelected(apportionment) {
+  apportionmentSelected(apportionment: Apportionment) {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Apportion', mode:'update', apportionment:apportionment}});
     ref.afterClosed().subscribe((data:any) => {
       this.stormwater.accountListSelected.next(this.account);   

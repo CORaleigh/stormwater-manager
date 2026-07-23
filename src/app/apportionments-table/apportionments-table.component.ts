@@ -1,42 +1,69 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { ApportionmentsTableDataSource } from './apportionments-table-datasource';
-import { StormwaterService } from '../stormwater.service';
-import { Apportionment } from '../apportionment';
-import { Subscription } from 'rxjs';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from "@angular/core";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatSort } from "@angular/material/sort";
+import { ApportionmentsTableDataSource } from "./apportionments-table-datasource";
+import { StormwaterService } from "../stormwater.service";
+import { Apportionment } from "../apportionment";
+import { Subscription } from "rxjs";
 
 @Component({
-    selector: 'app-apportionments-table',
-    templateUrl: './apportionments-table.component.html',
-    styleUrls: ['./apportionments-table.component.css'],
-    standalone: false
+  selector: "app-apportionments-table",
+  templateUrl: "./apportionments-table.component.html",
+  styleUrls: ["./apportionments-table.component.css"],
+  standalone: false,
 })
-export class ApportionmentsTableComponent implements OnInit, OnDestroy{
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  @Output() apportionmentSelected: EventEmitter<Apportionment> = new EventEmitter();
-  apportionmentsSubscription: Subscription;
-  dataSource: ApportionmentsTableDataSource;
-  constructor(private stormwater:StormwaterService) {}
+export class ApportionmentsTableComponent implements OnInit, OnDestroy {
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator | null =
+    null;
+  @ViewChild(MatSort, { static: true }) sort: MatSort | null = null;
+  @Output() apportionmentSelected: EventEmitter<Apportionment> =
+    new EventEmitter();
+  apportionmentsSubscription: Subscription | null = null;
+  dataSource: ApportionmentsTableDataSource | null = null;
+  constructor(private stormwater: StormwaterService) {}
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns =  ['OBJECTID', 'PremiseId', 'Address', 'PercentApportioned', 'Sfeu', 'Impervious'];
-  rowClicked(row) {
+  displayedColumns = [
+    "OBJECTID",
+    "PremiseId",
+    "Address",
+    "PercentApportioned",
+    "Sfeu",
+    "Impervious",
+  ];
+  rowClicked(row: any) {
     this.apportionmentSelected.emit(row);
   }
   ngOnInit() {
-    this.dataSource = new ApportionmentsTableDataSource(this.paginator, this.sort, []);
-    this.apportionmentsSubscription = this.stormwater.apportionments.subscribe(apportionments => {
-      if (apportionments) {
-        this.dataSource = new ApportionmentsTableDataSource(this.paginator, this.sort, apportionments);
-      }
-    })
+    if (!this.paginator || !this.sort) return;
+    this.dataSource = new ApportionmentsTableDataSource(
+      this.paginator,
+      this.sort,
+      [],
+    );
+    this.apportionmentsSubscription = this.stormwater.apportionments.subscribe(
+      (apportionments) => {
+        if (!this.paginator || !this.sort) return;
+        if (apportionments) {
+          this.dataSource = new ApportionmentsTableDataSource(
+            this.paginator,
+            this.sort,
+            apportionments,
+          );
+        }
+      },
+    );
   }
   ngOnDestroy() {
     if (this.apportionmentsSubscription) {
       this.apportionmentsSubscription.unsubscribe();
       this.apportionmentsSubscription = null;
-
-    }    
+    }
   }
 }

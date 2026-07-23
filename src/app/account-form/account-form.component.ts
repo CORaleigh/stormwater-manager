@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
     standalone: false
 })
 export class AccountFormComponent implements OnInit, OnDestroy {
-  accountSubscription:Subscription;
+  accountSubscription:Subscription | null = null;
   form = this.fb.group({
     status: [null, Validators.required],
     useclass: [null, Validators.required],
@@ -19,21 +19,21 @@ export class AccountFormComponent implements OnInit, OnDestroy {
     csaid: []
   });
   @Output() submitted = new EventEmitter<Account>();
-  statuses:any[];
-  useclasses:any[];
-  account:Account;
+  statuses:any[] = [];
+  useclasses:any[] = [];
+  account:Account | null = null;
 
   constructor(private fb: UntypedFormBuilder, private stormwater:StormwaterService) {}
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       this.account = account;
-      
+      if (!account) return;
       this.statuses = this.stormwater.getDomain(2, 'Status');
-      this.form.get('status').setValue(account.Status);
+      this.form.get('status')?.setValue(account.Status);
       this.useclasses = this.stormwater.getDomain(2, 'UseClass');
-      this.form.get('useclass').setValue(account.UseClass);     
-      this.form.get('premiseid').setValue(account.PremiseId); 
-      this.form.get('csaid').setValue(account.CsaId); 
+      this.form.get('useclass')?.setValue(account.UseClass);     
+      this.form.get('premiseid')?.setValue(account.PremiseId); 
+      this.form.get('csaid')?.setValue(account.CsaId); 
 
     });
   }
@@ -45,10 +45,11 @@ export class AccountFormComponent implements OnInit, OnDestroy {
     }
   }
   onSubmit() {
-    this.account.Status = this.form.get('status').value;
-    this.account.UseClass = this.form.get('useclass').value;
-    this.account.PremiseId = this.form.get('premiseid').value;
-    this.account.CsaId = this.form.get('csaid').value;    
+    if (!this.account) return;
+    this.account.Status = this.form.get('status')?.value;
+    this.account.UseClass = this.form.get('useclass')?.value;
+    this.account.PremiseId = this.form.get('premiseid')?.value;
+    this.account.CsaId = this.form.get('csaid')?.value;    
     this.submitted.emit(this.account);
   }
 }

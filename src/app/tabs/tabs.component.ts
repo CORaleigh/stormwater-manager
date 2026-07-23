@@ -14,8 +14,8 @@ export class TabsComponent implements OnInit, OnDestroy {
     overlayContainer.getContainerElement().classList.add('dark-theme');
   }
   selectedIndex:number= 0;
-  accountSubscription:Subscription;
-  accountListSubscription:Subscription;
+  accountSubscription:Subscription | null = null;
+  accountListSubscription:Subscription | null = null;
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
       if (account) {

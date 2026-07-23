@@ -44,10 +44,10 @@ export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild('mapViewNode', { static: true }) private mapViewEl!: ElementRef;
 
-  private _id: string = '7be33c08a6704e6fb7f8367b24f4cee6';//'d8309610f598424b9889d62775b6330c';
-  private _portalUrl: string = 'https://maps.raleighnc.gov/portal';//'https://mapstest.raleighnc.gov/portal';
-  private _serverUrl: string = 'https://maps.raleighnc.gov';//'https://mapstest.raleighnc.gov';
-  private _clientId: string = 'xWoMZTo6ZiZVTwcT';//'u8kxa1iiA6kg2Nhc';u8kxa1iiA6kg2Nhc
+  private _id: string = 'd8309610f598424b9889d62775b6330c';//'d8309610f598424b9889d62775b6330c';
+  private _portalUrl: string = 'https://mapstest.raleighnc.gov/portal';//'https://mapstest.raleighnc.gov/portal';
+  private _serverUrl: string = 'https://mapstest.raleighnc.gov';//'https://mapstest.raleighnc.gov';
+  private _clientId: string = 'u8kxa1iiA6kg2Nhc';//'xWoMZTo6ZiZVTwcT';u8kxa1iiA6kg2Nhc
   private _esriId:esri.IdentityManager = null;
   private _info:esri.OAuthInfo = null;
   private _search:esri.widgetsSearch;
@@ -499,6 +499,7 @@ export class MapComponent implements OnInit, OnDestroy {
     });            
   }
   getAccount(feature: esri.Graphic) { 
+          debugger
 
       //@ts-ignore
       let relationship = this.stormwater.parcels.relationships.find((r:esri.Relationship) => {

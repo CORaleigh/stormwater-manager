@@ -24,8 +24,8 @@ export class BillingService {
   count = 0;
 
 
-  public getBilling(premise:string, type: string):Promise<BillingInfo> {
-    let promise = new Promise<BillingInfo>((resolve, reject) => {
+  public getBilling(premise:string, type: string):Promise<BillingInfo | null> {
+    let promise = new Promise<BillingInfo | null>((resolve, reject) => {
       if (this.count < this.types.length) {
         
         this.getBillingInfo(premise, type).subscribe(data => {
@@ -45,8 +45,8 @@ export class BillingService {
     });
     return promise;
   }
-  public getBillingData(account:Account):Promise<BillingInfo> {
-    let promise = new Promise<BillingInfo>((resolve, reject) => {
+  public getBillingData(account:Account):Promise<BillingInfo | null> {
+    let promise = new Promise<BillingInfo | null>((resolve, reject) => {
       if (account.PremiseId) {        
         let info = new BillingInfo();
         info.services = [];

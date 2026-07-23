@@ -13,8 +13,8 @@ import { Subscription } from 'rxjs';
 export class BillingComponent implements OnInit, OnDestroy {
 
   constructor(private stormwater:StormwaterService,private billing:BillingService) { }
-  billingInfo:BillingInfo;
-  accountSubscription: Subscription;
+  billingInfo:BillingInfo | null = null;
+  accountSubscription: Subscription | null = null;
 
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {

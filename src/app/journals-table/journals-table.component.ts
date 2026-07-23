@@ -12,19 +12,20 @@ import { Subscription } from 'rxjs';
     standalone: false
 })
 export class JournalsTableComponent implements OnInit, OnDestroy {
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  dataSource: JournalsTableDataSource;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | null = null;
+  @ViewChild(MatSort, {static: true}) sort: MatSort | null = null;
+  dataSource: JournalsTableDataSource | null = null;;
   constructor(private stormwater:StormwaterService){}
   displayedColumns = ['created_date', 'created_user',  'JournalEntry'];
-  journalsSubscription:Subscription;
+  journalsSubscription:Subscription | null = null;
   ngOnInit() {
+    if (!this.paginator || !this.sort) return;
     this.dataSource = new JournalsTableDataSource(this.paginator, this.sort, []);
-    this.journalsSubscription = this.stormwater.journals.subscribe(journals => {
-      if (journals) {
-        this.dataSource = new JournalsTableDataSource(this.paginator, this.sort, journals);
-      }
-    });
+    // this.journalsSubscription = this.stormwater.journals.subscribe(journals => {
+    //   if (journals && this.paginator && this.sort) {
+    //     this.dataSource = new JournalsTableDataSource(this.paginator, this.sort, );
+    //   }
+    // });
   }
   ngOnDestroy() {
     if (this.journalsSubscription) {

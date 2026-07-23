@@ -16,12 +16,12 @@ import { Subscription } from 'rxjs';
 export class AccountsComponent implements OnInit, OnDestroy {
 
   constructor(private stormwater:StormwaterService, public dialog: MatDialog) { }
-  account:Account;
+  account:Account | null = null;
   accounts:Account[] = [];
-  parcel:Parcel;
-  selectedAccount:Account;
-  accountSubscription: Subscription;
-  parcelSubscription: Subscription;
+  parcel:Parcel | null = null;
+  selectedAccount:Account | null = null;
+  accountSubscription: Subscription | null = null;
+  parcelSubscription: Subscription | null = null;
 
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {
@@ -51,12 +51,12 @@ export class AccountsComponent implements OnInit, OnDestroy {
     }  
   }
 
-  getDomain(code, field, id):string {
+  getDomain(code: any, field: any, id: any):string {
     
     return this.stormwater.checkDomain(id, field, null, code);
   }
 
-  statusChanged(event) {
+  statusChanged(event: any) {
     this.stormwater.account.next(event.value);
   }
 
@@ -64,7 +64,7 @@ export class AccountsComponent implements OnInit, OnDestroy {
     let ref = this.dialog.open(DialogComponent, {data: {title: 'Update Account'}});
     ref.afterClosed().subscribe((account:Account) => {
       if (account) {        
-        this.stormwater.applyEdits(2, null, [new Feature(account)], null).subscribe(result => {
+        this.stormwater.applyEdits(2, undefined, [new Feature(account)], undefined).subscribe(result => {
           if (result.updateResults.length > 0) {
             if (result.updateResults[0].success) {
               this.stormwater.account.next(account);
@@ -77,8 +77,9 @@ export class AccountsComponent implements OnInit, OnDestroy {
   }
 
   sendToCCB() {
+    if (!this.account) return;
     this.account.CCBUpdateFlag = 'Y';
-    this.stormwater.applyEdits(2, null, [new Feature(this.account)], null).subscribe(result => {
+    this.stormwater.applyEdits(2, undefined, [new Feature(this.account)], undefined).subscribe(result => {
       if (result.updateResults.length > 0) {
         if (result.updateResults[0].success) {
           this.stormwater.account.next(this.account);

@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 export class SearchtabComponent implements OnInit, OnDestroy {
   constructor(private billing:BillingService, private stormwater:StormwaterService) { }
   accountList: any[] = [];
-  accountListSubscription:Subscription;
+  accountListSubscription:Subscription | null = null;
   ngOnInit() {
     this.accountListSubscription = this.stormwater.accountList.subscribe(data => {
       this.accountList = data;

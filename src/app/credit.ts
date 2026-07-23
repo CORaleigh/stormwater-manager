@@ -1,7 +1,7 @@
 export class Credit {
-    last_edited_user: string;
-    last_edited_date: number;
-    created_date: number;
+    last_edited_user?: string;
+    last_edited_date?: number;
+    created_date?: number;
     AccountId: number;
     InceptionDate: number;
     ExpirationDate: number;
@@ -12,9 +12,9 @@ export class Credit {
     NpdesPercentage: number;
     ControlledAcreage: number;
     ControlledSurface: number;
-    created_user: string;
-    OBJECTID: number;
-    GlobalId: string;
+    created_user?: string;
+    OBJECTID?: number;
+    GlobalId?: string;
     constructor(
         AccountId: number,
         InceptionDate: number,
@@ -27,7 +27,7 @@ export class Credit {
         ControlledAcreage: number,
         ControlledSurface: number,
         created_user?: string,
-        created_date?: number,    
+        created_date?: number,
         last_edited_user?: string,
         last_edited_date?: number,
         OBJECTID?: number,
@@ -47,7 +47,7 @@ export class Credit {
             this.ControlledAcreage = ControlledAcreage;
             this.ControlledSurface = ControlledSurface;
             this.created_user = created_user;
-            this.created_date = created_date;    
+            this.created_date = created_date;
             this.last_edited_user = last_edited_user;
             this.last_edited_date = last_edited_date;
     }

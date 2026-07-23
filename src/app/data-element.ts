@@ -153,6 +153,6 @@
     }
 
     export class LayerInfo {
-        layerDataElements: LayerDataElement[];
+        layerDataElements: LayerDataElement[] = [];
     }
 

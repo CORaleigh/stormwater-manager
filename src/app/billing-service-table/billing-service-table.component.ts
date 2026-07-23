@@ -11,9 +11,9 @@ import { BillService } from '../bill-service';
     standalone: false
 })
 export class BillingServiceTableComponent implements OnInit {
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  dataSource: BillingServiceTableDataSource;
+  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator | null = null;
+  @ViewChild(MatSort, {static: true}) sort: MatSort | null = null;
+  dataSource: BillingServiceTableDataSource | null = null;
   
   @Input('services') 
   set services(services:BillService[]) {
