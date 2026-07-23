@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { StormwaterService } from "../stormwater.service";
 import { Impervious } from "../impervious";
 import { Account } from "../account";
@@ -11,6 +11,7 @@ import { Subscription } from "rxjs";
   selector: "app-impervious",
   templateUrl: "./impervious.component.html",
   styleUrls: ["./impervious.component.css"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ImperviousComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectionStrategy } from "@angular/core";
 import {
   UntypedFormBuilder,
   Validators,
@@ -36,6 +36,7 @@ export const MY_FORMATS = {
     },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ImperviousUpdateFormComponent implements OnInit {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { DialogComponent } from '../dialog/dialog.component';
 import { Journal } from '../journal';
@@ -9,6 +9,7 @@ import { Feature } from '../feature';
     selector: 'app-journals',
     templateUrl: './journals.component.html',
     styleUrls: ['./journals.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class JournalsComponent {

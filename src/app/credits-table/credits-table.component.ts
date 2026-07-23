@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { CreditsTableDataSource } from './credits-table-datasource';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-credits-table',
     templateUrl: './credits-table.component.html',
     styleUrls: ['./credits-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class CreditsTableComponent implements OnInit, OnDestroy {

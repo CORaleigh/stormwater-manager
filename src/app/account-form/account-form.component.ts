@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-account-form',
     templateUrl: './account-form.component.html',
     styleUrls: ['./account-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AccountFormComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Output, Input, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import {
   UntypedFormBuilder,
   Validators,
@@ -37,6 +37,7 @@ export const MY_FORMATS = {
     },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreditFormComponent implements OnInit {

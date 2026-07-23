@@ -5,6 +5,7 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
@@ -17,6 +18,7 @@ import { Subscription } from "rxjs";
   selector: "app-apportionments-table",
   templateUrl: "./apportionments-table.component.html",
   styleUrls: ["./apportionments-table.component.css"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ApportionmentsTableComponent implements OnInit, OnDestroy {

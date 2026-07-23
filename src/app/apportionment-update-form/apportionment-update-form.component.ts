@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from "@angular/core";
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from "@angular/core";
 import {
   UntypedFormBuilder,
   Validators,
@@ -56,6 +56,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     },
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ApportionmentUpdateFormComponent {

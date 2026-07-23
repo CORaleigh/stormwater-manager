@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, ChangeDetectionStrategy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { BillingServiceTableDataSource } from './billing-service-table-datasource';
@@ -8,6 +8,7 @@ import { BillService } from '../bill-service';
     selector: 'app-billing-service-table',
     templateUrl: './billing-service-table.component.html',
     styleUrls: ['./billing-service-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BillingServiceTableComponent implements OnInit {

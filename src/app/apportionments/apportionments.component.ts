@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
 import { Apportionment } from '../apportionment';
@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-apportionments',
     templateUrl: './apportionments.component.html',
     styleUrls: ['./apportionments.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ApportionmentsComponent implements OnInit, OnDestroy {

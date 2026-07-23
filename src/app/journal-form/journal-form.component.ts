@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Journal } from '../journal';
 import { StormwaterService } from '../stormwater.service';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-journal-form',
     templateUrl: './journal-form.component.html',
     styleUrls: ['./journal-form.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class JournalFormComponent implements OnInit, OnDestroy {

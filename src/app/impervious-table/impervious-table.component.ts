@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import {
@@ -30,6 +30,7 @@ import { Subscription } from "rxjs";
       ),
     ]),
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ImperviousTableComponent implements OnInit, OnDestroy {

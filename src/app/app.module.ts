@@ -46,7 +46,7 @@ import { LogsTableComponent } from './logs-table/logs-table.component';
 import { DialogComponent } from './dialog/dialog.component';
 import { ImperviousUpdateFormComponent } from './impervious-update-form/impervious-update-form.component';
 import { ReactiveFormsModule, FormsModule  } from '@angular/forms';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { JournalFormComponent } from './journal-form/journal-form.component';
 import { ApportionmentFormComponent } from './apportionment-form/apportionment-form.component';
 import { CreditFormComponent } from './credit-form/credit-form.component';
@@ -121,7 +121,7 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
         MatStepperModule,
         MatAutocompleteModule,
         MatDividerModule,
-        MatCheckboxModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+        MatCheckboxModule], providers: [provideHttpClient(withXhr(), withInterceptorsFromDi())] })
 export class AppModule { 
   constructor(overlayContainer: OverlayContainer) {
     overlayContainer.getContainerElement().classList.add('dark-theme');

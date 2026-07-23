@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { StormwaterService } from '../stormwater.service';
 import { Account } from '../account';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-infotab',
     templateUrl: './infotab.component.html',
     styleUrls: ['./infotab.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class InfotabComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BillingService } from '../billing-service';
@@ -14,6 +14,7 @@ export interface SearchGroup {
     selector: 'app-apportionment-search',
     templateUrl: './apportionment-search.component.html',
     styleUrls: ['./apportionment-search.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 

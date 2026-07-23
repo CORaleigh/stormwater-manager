@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { StormwaterService } from "../stormwater.service";
 import { MatDialog } from "@angular/material/dialog";
 import { Credit } from "../credit";
@@ -11,6 +11,7 @@ import { Subscription } from "rxjs";
   selector: "app-credits",
   templateUrl: "./credits.component.html",
   styleUrls: ["./credits.component.css"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class CreditsComponent implements OnInit, OnDestroy {

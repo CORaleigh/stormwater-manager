@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { JournalsTableDataSource } from './journals-table-datasource';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-journals-table',
     templateUrl: './journals-table.component.html',
     styleUrls: ['./journals-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class JournalsTableComponent implements OnInit, OnDestroy {

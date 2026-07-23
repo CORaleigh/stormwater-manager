@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { UntypedFormBuilder } from "@angular/forms";
 import { Account } from "../account";
 import { StormwaterService } from "../stormwater.service";
@@ -12,6 +12,7 @@ import { Subscription } from "rxjs";
   selector: "app-apportionment-form",
   templateUrl: "./apportionment-form.component.html",
   styleUrls: ["./apportionment-form.component.css"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ApportionmentFormComponent implements OnInit, OnDestroy {

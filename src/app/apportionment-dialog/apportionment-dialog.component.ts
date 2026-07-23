@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { StormwaterService } from "../stormwater.service";
 import { Account } from "../account";
@@ -19,6 +20,7 @@ import { Subscription } from "rxjs";
   templateUrl: "./apportionment-dialog.component.html",
   styleUrls: ["./apportionment-dialog.component.css"],
   providers: [{ provide: MatStepper, useValue: undefined }],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class ApportionmentDialogComponent implements OnInit, OnDestroy {

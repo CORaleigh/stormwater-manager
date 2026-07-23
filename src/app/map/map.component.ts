@@ -7,6 +7,7 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import OAuthInfo from "@arcgis/core/identity/OAuthInfo.js";
 import esriId from "@arcgis/core/identity/IdentityManager.js";
@@ -48,6 +49,7 @@ import Layer from "@arcgis/core/layers/Layer";
   selector: "app-map",
   templateUrl: "./map.component.html",
   styleUrls: ["./map.component.css"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class MapComponent implements OnInit, OnDestroy {

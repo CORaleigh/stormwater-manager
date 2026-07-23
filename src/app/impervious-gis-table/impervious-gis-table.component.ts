@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ImperviousGisTableDataSource } from './impervious-gis-table-datasource';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-impervious-gis-table',
     templateUrl: './impervious-gis-table.component.html',
     styleUrls: ['./impervious-gis-table.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ImperviousGisTableComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { BillingService } from '../billing-service';
 import { StormwaterService } from '../stormwater.service';
 import { BillingInfo } from '../billing-info';
@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
     selector: 'app-billing',
     templateUrl: './billing.component.html',
     styleUrls: ['./billing.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class BillingComponent implements OnInit, OnDestroy {
