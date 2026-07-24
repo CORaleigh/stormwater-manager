@@ -21,7 +21,7 @@ const httpOptions = {headers: new HttpHeaders({
 
 export class StormwaterService {
   constructor(private http:HttpClient) {}
-  url:string = 'https://maps.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/';
+  url:string = 'https://mapstest.raleighnc.gov/arcgis/rest/services/Stormwater/Stormwater_Management/FeatureServer/';
 
   account:BehaviorSubject<Account | null> = new BehaviorSubject<Account | null>(null);
   accounts:BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
@@ -45,6 +45,7 @@ export class StormwaterService {
   gisscan: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   parcels: any = null;
   mapview: any = null;
+  
   applyEdits(id:number, adds?:Array<Feature>, updates?:Array<Feature>, deletes?:Array<number>): Observable<any> {
     
     let params:HttpParams = new HttpParams()
@@ -92,6 +93,7 @@ export class StormwaterService {
 
 
   getDataElements(token:string):Observable<any> { 
+    console.log(this.url)
     let url = this.url + "/queryDataElements?f=json&token="+ token;
     
     return this.http.get<any>(url);
@@ -168,7 +170,9 @@ export class StormwaterService {
     }
 
     public getDomain(layerId: number, fieldName: string): any {
+      
       if (!this.fieldInfo) return;
+      
       let layers = this.fieldInfo.layers.filter(layer => {return layerId === layer.layerId});
       let returnValue = '';
       if (layers.length > 0) {

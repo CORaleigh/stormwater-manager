@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import {
@@ -60,27 +66,41 @@ export class ImperviousTableComponent implements OnInit, OnDestroy {
       this.sort,
       [],
     );
-    this.imperviousSubscription = this.stormwater.impervious.subscribe(
-      (impervious) => {
-        if (!this.paginator || !this.sort) return;
-        const imperviousItems: ImperviousTableItem[] = impervious.map(
-          (impervious: Impervious) => {
-            return {
-              EffectiveDate: impervious.EffectiveDate,
-              TotalImpervious: impervious.TotalImpervious,
-              MethodUsed: impervious.MethodUsed,
-              MethodDate: impervious.MethodDate,
-              Status: impervious.Status,
-            } as ImperviousTableItem;
-          },
-        );
-        this.dataSource = new ImperviousTableDataSource(
-          this.paginator,
-          this.sort,
-          imperviousItems,
-        );
+this.imperviousSubscription = this.stormwater.impervious.subscribe(
+  (impervious) => {
+    if (!this.paginator || !this.sort) return;
+
+    const imperviousItems: ImperviousTableItem[] = impervious.map(
+      (imp: Impervious) => {
+        return {
+          // 1. Keep your main columns
+          EffectiveDate: imp.EffectiveDate ?? 0,
+          TotalImpervious: imp.TotalImpervious ?? 0,
+          MethodUsed: imp.MethodUsed ?? '',
+          MethodDate: imp.MethodDate ?? 0,
+          Status: imp.Status ?? '',
+
+          // 2. EXPLICITLY PASS THE POPULATED DETAILS!
+          BuildingImpervious: imp.BuildingImpervious ?? 0,
+          RoadTrailImpervious: imp.RoadTrailImpervious ?? 0,
+          ParkingImpervious: imp.ParkingImpervious ?? 0,
+          RecreationImpervious: imp.RecreationImpervious ?? 0,
+          MiscImpervious: imp.MiscImpervious ?? 0,
+          PermittedImpervious: imp.PermittedImpervious ?? 0,
+          PermitNumber: imp.PermitNumber ?? ''
+        } as ImperviousTableItem;
       },
     );
+
+    // Reconstruct your custom data source helper class with the full payload objects
+    this.dataSource = new ImperviousTableDataSource(
+      this.paginator,
+      this.sort,
+      imperviousItems,
+    );
+  },
+);
+
   }
 
   ngOnDestroy() {

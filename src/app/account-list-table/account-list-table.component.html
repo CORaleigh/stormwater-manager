@@ -1,5 +1,5 @@
 <div class="mat-elevation-z8 table-container">
-  <table mat-table class="full-width-table" [dataSource]="dataSource" matSort matSortActive="SiteAddress" matSortDirection="asc" aria-label="Elements">
+  <table mat-table class="full-width-table" [dataSource]="dataSource ?? []" matSort matSortActive="SiteAddress" matSortDirection="asc" aria-label="Elements">
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
 
@@ -47,7 +47,7 @@
 
   <mat-paginator #paginator
       class="mat-paginator-sticky" 
-      [length]="dataSource.data.length"
+      [length]="dataSource?.data?.length"
       [pageIndex]="0"
       [pageSize]="50"
       [pageSizeOptions]="[25, 50, 100, 250]">

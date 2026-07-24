@@ -8,6 +8,10 @@ export class Impervious {
   RoadTrailImpervious: number;
   ParkingImpervious: number;
   PermittedImpervious: number;
+
+  // 1. Declare the missing string property here
+  PermitNumber?: string;
+
   MethodUsed?: string;
   MethodDate?: number;
   EffectiveDate?: number;
@@ -41,6 +45,7 @@ export class Impervious {
     last_edited_date?: number,
     OBJECTID?: number,
     GlobalId?: string,
+    PermitNumber?: string,
   ) {
     this.AccountId = AccountId;
     this.ImperviousId = ImperviousId;
@@ -52,6 +57,7 @@ export class Impervious {
     this.RoadTrailImpervious = RoadTrailImpervious;
     this.ParkingImpervious = ParkingImpervious;
     this.PermittedImpervious = PermittedImpervious;
+
     this.MethodUsed = MethodUsed;
     this.MethodDate = MethodDate;
     this.EffectiveDate = EffectiveDate;
@@ -62,5 +68,6 @@ export class Impervious {
     this.last_edited_date = last_edited_date;
     this.OBJECTID = OBJECTID;
     this.GlobalId = GlobalId;
+    this.PermitNumber = PermitNumber;
   }
 }

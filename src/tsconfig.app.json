@@ -9,12 +9,12 @@
     "**/*.spec.ts"
   ],
   "angularCompilerOptions": {
+    "strictTemplates": true,
     "extendedDiagnostics": {
+      "defaultCategory": "warning",
       "checks": {
-        "nullishCoalescingNotNullable": "suppress",
-        "optionalChainNotNullable": "suppress"
+        "invalidBananaInBox": "error"
       }
-    },
-    "strictTemplates": false
+    }
   }
 }

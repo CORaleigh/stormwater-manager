@@ -12,8 +12,8 @@ import { Subscription } from 'rxjs';
 })
 export class InfotabComponent implements OnInit, OnDestroy {
   constructor(private stormwater:StormwaterService) { }
-  account:Account = null;
-  accountSubscription:Subscription;
+  account:Account | null = null;
+  accountSubscription:Subscription | null = null;
 
   ngOnInit() {
     this.accountSubscription = this.stormwater.account.subscribe(account => {

@@ -1,12 +1,11 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
+    "module": "ES2022",
     "moduleResolution": "bundler",
     "experimentalDecorators": true,
     "target": "ES2022",
@@ -16,7 +15,8 @@
     "useDefineForClassFields": false,
     "skipLibCheck": true
   },
-  "angularCompilerOptions": {
-    "typeCheckHostBindings": false
-  }  
+  "exclude": [
+    "src/**/*.spec.ts",
+    "src/test.ts"
+  ]  
 }

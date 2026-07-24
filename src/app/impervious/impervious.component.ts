@@ -1,4 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from "@angular/core";
 import { StormwaterService } from "../stormwater.service";
 import { Impervious } from "../impervious";
 import { Account } from "../account";
@@ -6,6 +11,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { DialogComponent } from "../dialog/dialog.component";
 import { Feature } from "../feature";
 import { Subscription } from "rxjs";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 
 @Component({
   selector: "app-impervious",
@@ -26,9 +32,14 @@ export class ImperviousComponent implements OnInit, OnDestroy {
   imperviousSubscription: Subscription | null = null;
   accountSubscription: Subscription | null = null;
   indexChanged(event: any) {
+    
+    // 1. Always update the active index first so the UI stays synchronized
+    this.selectedIndex = event;
+
+    // 2. Run your specific side-effect logic strictly when conditions match
+    
     if (this.account && event === 1) {
       this.stormwater.gisScanSelected.next(this.account.RealEstateId);
-      this.selectedIndex = event;
     }
   }
   ngOnInit() {

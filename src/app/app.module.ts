@@ -63,11 +63,11 @@ import { ImperviousGisTableComponent } from './impervious-gis-table/impervious-g
 
 @NgModule({ declarations: [
         AppComponent,
+        MapComponent,
         NavigationComponent,
         TabsComponent,
         InfotabComponent,
         SearchtabComponent,
-        MapComponent,
         AccountsComponent,
         ImperviousComponent,
         ImperviousTableComponent,

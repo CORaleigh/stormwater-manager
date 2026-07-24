@@ -7,7 +7,7 @@ import {
   EventEmitter,
   Input,
   OnDestroy,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
 } from "@angular/core";
 import OAuthInfo from "@arcgis/core/identity/OAuthInfo.js";
 import esriId from "@arcgis/core/identity/IdentityManager.js";
@@ -56,10 +56,10 @@ export class MapComponent implements OnInit, OnDestroy {
   @Output() mapLoaded = new EventEmitter<boolean>();
   @ViewChild("mapViewNode", { static: true }) private mapViewEl!: ElementRef;
 
-  private _id: string = "975b331137fd4a65a28c7d7b4cdeec47"; //'d8309610f598424b9889d62775b6330c';
-  private _portalUrl: string = "https://maps.raleighnc.gov/portal"; //'https://mapstest.raleighnc.gov/portal';
-  private _serverUrl: string = "https://maps.raleighnc.gov"; //'https://mapstest.raleighnc.gov';
-  private _clientId: string = "xWoMZTo6ZiZVTwcT"; //'xWoMZTo6ZiZVTwcT';u8kxa1iiA6kg2Nhc
+  private _id: string = "d8309610f598424b9889d62775b6330c"; //'7be33c08a6704e6fb7f8367b24f4cee6''d8309610f598424b9889d62775b6330c';
+  private _portalUrl: string = "https://mapstest.raleighnc.gov/portal"; //'https://maps.raleighnc.gov/portal';
+  private _serverUrl: string = "https://mapstest.raleighnc.gov"; //'https://mapstest.raleighnc.gov';
+  private _clientId: string = "u8kxa1iiA6kg2Nhc"; //'xWoMZTo6ZiZVTwcT';u8kxa1iiA6kg2Nhc
   private _esriId: esri.IdentityManager | null = null;
   private _info: esri.OAuthInfo | null = null;
   private _search: esri.widgetsSearch | null = null;
@@ -397,8 +397,9 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   addStreetSource(search: esri.widgetsSearch) {
-    let source = new SearchSource({
+    let source = new LayerSearchSource({
       placeholder: "Search by street name",
+      name: "Street",
       getSuggestions: (params) => {
         return this.stormwater.parcels
           .queryFeatures({
@@ -421,10 +422,30 @@ export class MapComponent implements OnInit, OnDestroy {
             });
           });
       },
-      // },
-      // getResults: params => {
-      //   this.stormwater.streetName.next(params.suggestResult.text)
-      // }
+
+      getResults: (params) => {
+        return this.stormwater.parcels
+          .queryFeatures({
+            where:
+              "FullStreetName = '" +
+              params.suggestResult.text?.replace(/'/g, "''") +
+              "'",
+            outFields: ["*"],
+            returnGeometry: true,
+          })
+          .then((results: __esri.FeatureSet) => {
+            
+            this.stormwater.streetName.next(params.suggestResult.text ?? "");
+
+            return results.features.map((feature) => {
+              return {
+                feature: feature,
+                name: feature.attributes.FullStreetName,
+                target: feature,
+              };
+            });
+          });
+      },
     });
     search.sources.push(source);
   }
@@ -971,6 +992,7 @@ export class MapComponent implements OnInit, OnDestroy {
       })
       .then((relatedResults: any) => {
         features.forEach((feature) => {
+
           if (relatedResults[feature.attributes.OBJECTID]) {
             let r = relatedResults[feature.attributes.OBJECTID];
             let f = r.features[0];
@@ -1062,6 +1084,7 @@ export class MapComponent implements OnInit, OnDestroy {
               outSpatialReference: this.stormwater.mapview.spatialReference,
             })
             .then((result: __esri.FeatureSet) => {
+              
               let oids: number[] = [];
               result.features.forEach((feature: __esri.Graphic) => {
                 oids.push(feature.attributes.OBJECTID);

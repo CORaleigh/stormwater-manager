@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { AccountListTableDataSource } from "./account-list-table-datasource";
 import { StormwaterService } from "../stormwater.service";
 import { SelectionModel } from "@angular/cdk/collections";
 import { Subscription } from "rxjs";
+import { Account } from "../account";
 
 @Component({
   selector: "app-account-list-table",
   templateUrl: "./account-list-table.component.html",
   styleUrls: ["./account-list-table.component.css"],
-  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false,
 })
 export class AccountListTableComponent implements OnInit, OnDestroy {
@@ -56,7 +56,7 @@ export class AccountListTableComponent implements OnInit, OnDestroy {
       this.accountListSubscription = null;
     }
   }
-  rowClicked(row) {
+  rowClicked(row: Account) {
     this.stormwater.accountListSelected.next(row);
   }
 }

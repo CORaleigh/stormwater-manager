@@ -10,17 +10,17 @@
       formControlName="searchGroup"
       [formControl]="control"
       [matAutocomplete]="searchGroup"
-      />
+    />
     <mat-autocomplete
       #searchGroup="matAutocomplete"
       (optionSelected)="accountSelected($event)"
       [displayWith]="displayFn"
-      >
-      @for (group of searchGroups; track group) {
+    >
+      @for (group of searchGroups; track group.type) {
         <mat-optgroup [label]="group.type">
-          @for (value of group.values; track value) {
-            <mat-option [value]="value">
-              {{ value["value"] }}
+          @for (item of group.values; track item) {
+            <mat-option [value]="item">
+              {{ item }}
             </mat-option>
           }
         </mat-optgroup>

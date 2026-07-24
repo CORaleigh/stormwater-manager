@@ -1,18 +1,30 @@
 <mat-horizontal-stepper #stepper linear="true">
-  @if (mode === 'add') {
+  @if (mode === "add") {
     <mat-step label="Select Account" state="phone" [completed]="ccbAccount">
-      <app-apportionment-search [account]="account" (ccbAccountSelected)="ccbAccountSelected($event)"></app-apportionment-search>
+      <app-apportionment-search
+        [account]="account"
+        (ccbAccountSelected)="ccbAccountSelected($event)"
+      ></app-apportionment-search>
     </mat-step>
   }
   <mat-step label="Submit" state="chat">
-    <app-apportionment-update-form [ccbAccount]="ccbAccount" [account]="account" (submitted)="submitted($event)" [apportionment]="apportionment" [mode]="mode" (ccbAccountSelected)="goToNextStep()" (deleted)="apportionmentDeleted($event)" [stepper]="stepper"></app-apportionment-update-form>
+    @if (apportionment && account) {
+      <app-apportionment-update-form
+        [ccbAccount]="ccbAccount"
+        [account]="account"
+        (submitted)="submitted($event)"
+        [apportionment]="apportionment"
+        [mode]="mode"
+        (ccbAccountSelected)="goToNextStep()"
+        (deleted)="apportionmentDeleted($event)"
+        [stepper]="stepper"
+      >
+      </app-apportionment-update-form>
+    }
     <div>
-      @if (mode === 'add') {
-        <button mat-button matStepperPrevious >Back</button>
+      @if (mode === "add") {
+        <button mat-button matStepperPrevious>Back</button>
       }
-
     </div>
   </mat-step>
-
-
 </mat-horizontal-stepper>
